@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Midnight navy base, ice-cyan as the single working accent,
+ * cobalt for depth, violet only inside glows.
+ */
+@theme {
+  --color-ink: #07101b;
+  --color-deep: #0b1624;
+  --color-panel: #102034;
+  --color-raised: #16294a;
+  --color-line: rgb(148 180 220 / 0.14);
+  --color-line-strong: rgb(148 180 220 / 0.28);
+  --color-fg: #e6eef7;
+  --color-fg-muted: #93a4ba;
+  --color-ice: #42d5f6;
+  --color-ice-soft: #9fe8fa;
+  --color-cobalt: #2f6bff;
+  --color-violet: #8b7cff;
+  --color-ok: #4ade80;
+  --color-pending: #f5b544;
+
+  --font-sans: var(--font-plex), var(--font-plex-hebrew), var(--font-plex-arabic), ui-sans-serif, system-ui,
+    "Segoe UI", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Arabic needs taller lines and must never be letter-spaced (it breaks joining). */
+  :lang(ar) body,
+  body:lang(ar) {
+    line-height: 1.8;
+  }
+  :lang(ar) * {
+    letter-spacing: 0 !important;
+  }
+  :lang(he) body,
+  body:lang(he) {
+    line-height: 1.7;
+  }
+
+  ::selection {
+    background: rgb(66 213 246 / 0.3);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ice);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Page atmosphere: one fixed layer, no images, no JS. */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, rgb(47 107 255 / 0.16), transparent 60%),
+    radial-gradient(40rem 30rem at 10% 10%, rgb(66 213 246 / 0.07), transparent 65%),
+    radial-gradient(30rem 24rem at 70% 55%, rgb(139 124 255 / 0.06), transparent 70%),
+    var(--color-ink);
+}
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(148 180 220 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(148 180 220 / 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* Restrained glass: only for panels that sit above the particle layer. */
+.glass {
+  background: linear-gradient(180deg, rgb(22 41 74 / 0.55), rgb(11 22 36 / 0.55));
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* The one orchestrated moment: the portrait frame locks on. */
+@keyframes bracket-in {
+  from {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes scan {
+  0% {
+    transform: translateY(-10%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(1000%);
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(74 222 128 / 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgb(74 222 128 / 0);
+  }
+}
+
+.bracket {
+  animation: bracket-in 0.9s var(--ease-out-soft) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 200ms);
+}
+.scanline {
+  animation: scan 2.4s var(--ease-out-soft) 0.9s 1 both;
+}
+.rise {
+  animation: rise 0.7s var(--ease-out-soft) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 120ms);
+}
+.live-dot {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Prose measure for long reading in all three scripts. */
+.measure {
+  max-width: 68ch;
+}
+:lang(ar) .measure {
+  max-width: 62ch;
+}
