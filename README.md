@@ -5,7 +5,10 @@ English (`/en`, LTR), Hebrew (`/he`, RTL) and Arabic (`/ar`, RTL).
 
 ## Status
 
-Phase 1: Home, About, Certifications and Open to Work.
+Phase 1: Home, About, Certifications and Open to Work, with the premium visual
+redesign (cinematic navy atmosphere, numbered section headings, glass panels,
+redesigned hero, portrait frame, certificate showcase, Open to Work panel,
+mobile menu and footer). Same pages, routes, content and languages as before.
 
 **Verified, not deployed.** `npm run verify` (i18n check, ESLint, TypeScript,
 production build) passes, `npm audit --omit=dev` reports 0 vulnerabilities, and
