@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "siteName": "Eli Saad",
+    "home": {
+      "title": "Eli Saad | Aspiring SOC Analyst, Blue Team & IT Support",
+      "description": "Early-career cybersecurity portfolio of Eli Saad: EC-Council Certified SOC Analyst, Blue Team training and technical support experience. Open to work in Northern Israel."
+    },
+    "about": {
+      "title": "About Eli Saad | From technical support to the SOC",
+      "description": "Eli Saad’s path from Tier 1 technical support at Cellcom to Blue Team training: experience, education and how he works."
+    },
+    "certifications": {
+      "title": "Certifications | Eli Saad",
+      "description": "Original certificates earned by Eli Saad: EC-Council Certified SOC Analyst (C|SA) and Cisco Networking Academy course completions."
+    },
+    "contact": {
+      "title": "Open to work | Eli Saad",
+      "description": "Eli Saad is looking for entry-level SOC, help desk, desktop support and NOC roles in Northern Israel. Get in touch on LinkedIn."
+    },
+    "notFound": {
+      "title": "Page not found | Eli Saad"
+    }
+  },
+  "nav": {
+    "skip": "Skip to main content",
+    "primary": "Main navigation",
+    "home": "Home",
+    "about": "About",
+    "certifications": "Certifications",
+    "contact": "Open to work",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "switchTo": "Switch to {language}"
+  },
+  "localeNames": {
+    "en": "English",
+    "he": "עברית",
+    "ar": "العربية"
+  },
+  "social": {
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "profileOn": "Eli Saad on {network}",
+    "newTab": "opens in a new tab"
+  },
+  "hero": {
+    "name": "Eli Saad",
+    "role": "Aspiring SOC Analyst | Blue Team & IT Support",
+    "focus": "Cybersecurity · Networking · AI-Assisted Web Development",
+    "status": "Open to work in Northern Israel",
+    "tagline": "Learning to detect threats, investigate incidents and build secure systems, one lab at a time.",
+    "ctaContact": "Contact me",
+    "ctaCertifications": "See my certificates",
+    "portraitAlt": "Portrait of Eli Saad",
+    "socialLabel": "Social profiles"
+  },
+  "homeAbout": {
+    "title": "From the support desk to the SOC",
+    "body": "I started in Tier 1 technical support at Cellcom, troubleshooting connectivity, DNS and Wi-Fi problems with customers in real time. I then completed a Blue Team course on the SOC track, working hands-on with Splunk, QRadar and Wireshark.",
+    "link": "Read my story"
+  },
+  "homeCredentials": {
+    "title": "Credentials",
+    "body": "One EC-Council certification and two Cisco Networking Academy courses, shown as the original certificates.",
+    "link": "View all certificates"
+  },
+  "about": {
+    "title": "About me",
+    "lead": "I’m Eli, an early-career cybersecurity candidate from Northern Israel. I’m building toward a Blue Team role, starting from hands-on support work.",
+    "story1": "My first technical role was Tier 1 support at Cellcom. Every call was a small investigation: check connectivity, rule out DNS, look at the Wi-Fi and the home equipment, then fix it or escalate it with clear notes. Handling a steady volume of these taught me to stay calm under time pressure and to document properly.",
+    "story2": "Those habits are exactly what a SOC runs on, so I went deeper. I completed a Blue Team course on the SOC track at Cyber Gain Center, where I investigated security events in Splunk and QRadar, analysed traffic in Wireshark, worked with FortiGate, and practised Active Directory administration in Windows and Linux labs. I also earned the EC-Council Certified SOC Analyst (C|SA) credential.",
+    "story3": "I’m now looking for an entry-level role in a SOC, help desk, desktop support or NOC team, where I can keep learning on real systems. Alongside security, I build websites using AI-assisted development tools.",
+    "approachTitle": "How I work",
+    "approach": {
+      "troubleshoot": {
+        "title": "Methodical troubleshooting",
+        "body": "Start from the symptom, test one layer at a time, and confirm the fix before closing."
+      },
+      "document": {
+        "title": "Clear documentation and escalation",
+        "body": "Write tickets the next person can act on, and escalate with the evidence already attached."
+      },
+      "learn": {
+        "title": "Learning in labs",
+        "body": "Practise detection and investigation hands-on, and build on what each lab teaches."
+      }
+    },
+    "timelineTitle": "Experience and education",
+    "languagesTitle": "Languages",
+    "languages": {
+      "arabic": "Arabic",
+      "hebrew": "Hebrew",
+      "english": "English",
+      "native": "Native",
+      "veryHigh": "Very high proficiency"
+    }
+  },
+  "timeline": {
+    "toolsLabel": "Tools and topics",
+    "cellcom": {
+      "role": "Technical support representative (Tier 1)",
+      "org": "Cellcom",
+      "p1": "Supported customers with internet, communications and TV services: connectivity checks, TCP/IP and DNS troubleshooting, Wi-Fi and home network equipment.",
+      "p2": "Documented service calls, followed them through to resolution and escalated complex faults to technical teams in a structured way.",
+      "p3": "Worked in a fast multitasking environment under time pressure while keeping service quality high.",
+      "metrics": "Handled about 50 cases per day with a 95% first-contact resolution rate (self-reported)."
+    },
+    "cyberGain": {
+      "role": "Blue Team course, SOC track",
+      "org": "Cyber Gain Center",
+      "p1": "Monitored and investigated security events in SIEM platforms (Splunk, QRadar).",
+      "p2": "Network security with FortiGate and traffic analysis with Wireshark.",
+      "p3": "IT and help desk labs: Active Directory, Windows and Linux, remote support and user management.",
+      "p4": "Python and PowerShell scripts to automate administrative tasks in Windows and Active Directory."
+    },
+    "nationalService": {
+      "role": "National service",
+      "org": "Mol HaNof elderly care home, Yarka",
+      "p1": "Worked with elderly residents and shared responsibility for their day-to-day wellbeing."
+    }
+  },
+  "certifications": {
+    "title": "Certifications",
+    "lead": "These are the original certificates, not recreated badges. Select one to view it full size.",
+    "kind": {
+      "certification": "Certification",
+      "courseCompletion": "Course completion"
+    },
+    "issued": "Issued {date}",
+    "completed": "Completed {date}",
+    "view": "View certificate",
+    "close": "Close",
+    "imageAlt": "{title} certificate awarded to Eli Saad by {issuer}",
+    "verify": "Verify this credential",
+    "description": {
+      "csa": "Awarded after passing the EC-Council exam. Covers SOC workflows, monitoring and analysing security events, SIEM-based detection, and incident triage.",
+      "ciscoEthicalHacker": "Course completed through Cisco Networking Academy. This is a course certificate, not the EC-Council CEH certification.",
+      "ciscoNetworkingBasics": "Course completed through Cisco Networking Academy, covering core networking concepts."
+    },
+    "privacyNote": "Certificate numbers are removed from the public images for privacy. If you need to verify a credential, contact me."
+  },
+  "openToWork": {
+    "title": "Open to work",
+    "lead": "I’m looking for my next role in Northern Israel. If your team is hiring, I’d be glad to talk.",
+    "rolesTitle": "Roles I’m looking for",
+    "roles": {
+      "socTrainee": "Junior SOC Analyst / SOC Trainee",
+      "helpDesk": "Help Desk / IT Support",
+      "desktopSupport": "Desktop Support",
+      "noc": "Junior NOC"
+    },
+    "locationTitle": "Location",
+    "location": "Northern Israel",
+    "cities": {
+      "haifa": "Haifa",
+      "nahariya": "Nahariya",
+      "karmiel": "Karmiel"
+    },
+    "cta": "Message me on LinkedIn",
+    "recruiterNote": "Recruiters: LinkedIn is the fastest way to reach me.",
+    "cvPending": "A downloadable CV will be added here once it’s ready."
+  },
+  "footer": {
+    "tagline": "Aspiring SOC analyst in Northern Israel, learning one lab at a time.",
+    "navTitle": "Pages",
+    "socialTitle": "Find me on",
+    "languageTitle": "Language",
+    "simulatedNote": "Any lab or demo data on this site is simulated for training and is clearly labelled. No real customer or security event data is shown.",
+    "rights": "© {year} Eli Saad"
+  },
+  "notFound": {
+    "title": "This page doesn’t exist",
+    "body": "The link may be old or mistyped. Go back to the home page to find what you need.",
+    "cta": "Go to the home page"
+  }
+}

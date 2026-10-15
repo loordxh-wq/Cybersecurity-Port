@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "siteName": "אילי סעד",
+    "home": {
+      "title": "אילי סעד | אנליסט SOC בתחילת הדרך, Blue Team ותמיכת IT",
+      "description": "תיק העבודות של אילי סעד בתחילת דרכו בסייבר: הסמכת Certified SOC Analyst של EC-Council, הכשרת Blue Team וניסיון בתמיכה טכנית. מחפש עבודה באזור הצפון."
+    },
+    "about": {
+      "title": "על אילי סעד | מתמיכה טכנית אל ה-SOC",
+      "description": "הדרך של אילי סעד מתמיכה טכנית Tier 1 בסלקום להכשרת Blue Team: ניסיון, השכלה ואופן עבודה."
+    },
+    "certifications": {
+      "title": "הסמכות | אילי סעד",
+      "description": "התעודות המקוריות של אילי סעד: Certified SOC Analyst (C|SA) של EC-Council וקורסים שהושלמו ב-Cisco Networking Academy."
+    },
+    "contact": {
+      "title": "פתוח להצעות עבודה | אילי סעד",
+      "description": "אילי סעד מחפש תפקיד ראשון ב-SOC, Help Desk, Desktop Support או NOC באזור הצפון. אפשר ליצור קשר דרך LinkedIn."
+    },
+    "notFound": {
+      "title": "הדף לא נמצא | אילי סעד"
+    }
+  },
+  "nav": {
+    "skip": "דילוג לתוכן הראשי",
+    "primary": "ניווט ראשי",
+    "home": "דף הבית",
+    "about": "עליי",
+    "certifications": "הסמכות",
+    "contact": "פתוח להצעות",
+    "openMenu": "פתיחת התפריט",
+    "closeMenu": "סגירת התפריט",
+    "language": "שפה",
+    "switchTo": "החלפת שפה: {language}"
+  },
+  "localeNames": {
+    "en": "English",
+    "he": "עברית",
+    "ar": "العربية"
+  },
+  "social": {
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "profileOn": "אילי סעד ב-{network}",
+    "newTab": "נפתח בכרטיסייה חדשה"
+  },
+  "hero": {
+    "name": "אילי סעד",
+    "role": "אנליסט SOC בתחילת הדרך | Blue Team ותמיכת IT",
+    "focus": "אבטחת סייבר · רשתות · פיתוח אתרים בעזרת AI",
+    "status": "פתוח להצעות עבודה באזור הצפון",
+    "tagline": "לומד לזהות איומים, לחקור אירועים ולבנות מערכות מאובטחות, מעבדה אחר מעבדה.",
+    "ctaContact": "צרו קשר",
+    "ctaCertifications": "לתעודות שלי",
+    "portraitAlt": "תמונת פורטרט של אילי סעד",
+    "socialLabel": "פרופילים ברשתות"
+  },
+  "homeAbout": {
+    "title": "מעמדת התמיכה אל ה-SOC",
+    "body": "התחלתי בתמיכה טכנית Tier 1 בסלקום, שם פתרתי בזמן אמת תקלות קישוריות, DNS ו-Wi-Fi מול לקוחות. לאחר מכן סיימתי קורס Blue Team במסלול SOC ועבדתי באופן מעשי עם Splunk, QRadar ו-Wireshark.",
+    "link": "לסיפור המלא"
+  },
+  "homeCredentials": {
+    "title": "הסמכות",
+    "body": "הסמכה אחת של EC-Council ושני קורסים של Cisco Networking Academy, מוצגים כתעודות המקוריות.",
+    "link": "לכל התעודות"
+  },
+  "about": {
+    "title": "עליי",
+    "lead": "אני אילי, בתחילת הדרך בעולם הסייבר, מאזור הצפון. אני בונה את הדרך לתפקיד Blue Team, ומתחיל מעבודת תמיכה מעשית.",
+    "story1": "התפקיד הטכני הראשון שלי היה תמיכה Tier 1 בסלקום. כל שיחה הייתה חקירה קטנה: לבדוק קישוריות, לשלול בעיית DNS, לבחון את ה-Wi-Fi ואת הציוד בבית הלקוח, ואז לפתור או להסלים עם תיעוד ברור. העבודה בהיקף שוטף של פניות לימדה אותי לשמור על קור רוח תחת לחץ זמן ולתעד כמו שצריך.",
+    "story2": "אלה בדיוק ההרגלים שעליהם SOC עובד, ולכן העמקתי. סיימתי קורס Blue Team במסלול SOC ב-Cyber Gain Center, שם חקרתי אירועי אבטחה ב-Splunk וב-QRadar, ניתחתי תעבורה ב-Wireshark, עבדתי עם FortiGate ותרגלתי ניהול Active Directory במעבדות Windows ו-Linux. בנוסף קיבלתי את הסמכת Certified SOC Analyst (C|SA) של EC-Council.",
+    "story3": "כעת אני מחפש תפקיד כניסה בצוות SOC, Help Desk, Desktop Support או NOC, שבו אוכל להמשיך ללמוד על מערכות אמיתיות. לצד הסייבר, אני בונה אתרים בעזרת כלי פיתוח מבוססי AI.",
+    "approachTitle": "איך אני עובד",
+    "approach": {
+      "troubleshoot": {
+        "title": "פתרון תקלות שיטתי",
+        "body": "מתחיל מהתסמין, בודק שכבה אחת בכל פעם ומוודא שהתיקון עובד לפני סגירת הקריאה."
+      },
+      "document": {
+        "title": "תיעוד והסלמה ברורים",
+        "body": "כותב קריאות שהאדם הבא יכול לפעול לפיהן, ומסלים כשהראיות כבר מצורפות."
+      },
+      "learn": {
+        "title": "למידה במעבדות",
+        "body": "מתרגל זיהוי וחקירה באופן מעשי, ובונה על מה שכל מעבדה מלמדת."
+      }
+    },
+    "timelineTitle": "ניסיון והשכלה",
+    "languagesTitle": "שפות",
+    "languages": {
+      "arabic": "ערבית",
+      "hebrew": "עברית",
+      "english": "אנגלית",
+      "native": "שפת אם",
+      "veryHigh": "ברמה גבוהה מאוד"
+    }
+  },
+  "timeline": {
+    "toolsLabel": "כלים ונושאים",
+    "cellcom": {
+      "role": "נציג תמיכה טכנית (Tier 1)",
+      "org": "סלקום",
+      "p1": "תמיכה בלקוחות בשירותי אינטרנט, תקשורת וטלוויזיה: בדיקות קישוריות, Troubleshooting של TCP/IP ו-DNS, תקלות Wi-Fi וציוד תקשורת ביתי.",
+      "p2": "תיעוד קריאות שירות, מעקב עד לפתרון והסלמה מובנית של תקלות מורכבות לצוותים הטכניים.",
+      "p3": "עבודה בסביבה מרובת משימות ותחת לחץ זמן, תוך שמירה על רמת שירות גבוהה.",
+      "metrics": "טיפול בכ-50 פניות ביום עם 95% פתרון בפנייה ראשונה (לפי דיווח עצמי)."
+    },
+    "cyberGain": {
+      "role": "קורס Blue Team, מסלול SOC",
+      "org": "Cyber Gain Center",
+      "p1": "ניטור וחקירה של אירועי אבטחה במערכות SIEM (Splunk, QRadar).",
+      "p2": "אבטחת רשת עם FortiGate וניתוח תעבורה ב-Wireshark.",
+      "p3": "מעבדות IT ו-Help Desk: Active Directory, Windows ו-Linux, תמיכה מרחוק וניהול משתמשים.",
+      "p4": "סקריפטים ב-Python וב-PowerShell לאוטומציה של משימות ניהול ב-Windows וב-Active Directory."
+    },
+    "nationalService": {
+      "role": "שירות לאומי",
+      "org": "בית האבות „מול הנוף”, ירכא",
+      "p1": "עבודה עם אוכלוסייה מבוגרת ושותפות באחריות לרווחתם היומיומית של הדיירים."
+    }
+  },
+  "certifications": {
+    "title": "הסמכות",
+    "lead": "אלה התעודות המקוריות, לא תגים משוחזרים. בחרו תעודה כדי לראות אותה בגודל מלא.",
+    "kind": {
+      "certification": "הסמכה",
+      "courseCompletion": "סיום קורס"
+    },
+    "issued": "הונפקה ב-{date}",
+    "completed": "הושלם ב-{date}",
+    "view": "הצגת התעודה",
+    "close": "סגירה",
+    "imageAlt": "תעודת {title} שהוענקה לאילי סעד מטעם {issuer}",
+    "verify": "אימות ההסמכה",
+    "description": {
+      "csa": "הוענקה לאחר מעבר מבחן של EC-Council. עוסקת בתהליכי עבודה ב-SOC, ניטור וניתוח אירועי אבטחה, זיהוי מבוסס SIEM ותעדוף אירועים.",
+      "ciscoEthicalHacker": "קורס שהושלם במסגרת Cisco Networking Academy. זוהי תעודת סיום קורס, ולא הסמכת CEH של EC-Council.",
+      "ciscoNetworkingBasics": "קורס שהושלם במסגרת Cisco Networking Academy, העוסק במושגי יסוד ברשתות."
+    },
+    "privacyNote": "מספרי התעודות הוסרו מהתמונות הציבוריות מטעמי פרטיות. אם צריך לאמת הסמכה, אפשר לפנות אליי."
+  },
+  "openToWork": {
+    "title": "פתוח להצעות עבודה",
+    "lead": "אני מחפש את התפקיד הבא שלי באזור הצפון. אם הצוות שלכם מגייס, אשמח לדבר.",
+    "rolesTitle": "תפקידים שאני מחפש",
+    "roles": {
+      "socTrainee": "Junior SOC Analyst / SOC Trainee",
+      "helpDesk": "Help Desk / IT Support",
+      "desktopSupport": "Desktop Support",
+      "noc": "Junior NOC"
+    },
+    "locationTitle": "מיקום",
+    "location": "אזור הצפון",
+    "cities": {
+      "haifa": "חיפה",
+      "nahariya": "נהריה",
+      "karmiel": "כרמיאל"
+    },
+    "cta": "שלחו לי הודעה ב-LinkedIn",
+    "recruiterNote": "למגייסים: LinkedIn היא הדרך המהירה ביותר להשיג אותי.",
+    "cvPending": "קורות חיים להורדה יתווספו כאן ברגע שיהיו מוכנים."
+  },
+  "footer": {
+    "tagline": "אנליסט SOC בתחילת הדרך מאזור הצפון, לומד מעבדה אחר מעבדה.",
+    "navTitle": "דפים",
+    "socialTitle": "ברשתות",
+    "languageTitle": "שפה",
+    "simulatedNote": "כל נתוני המעבדות וההדגמות באתר הם סימולציה לצורכי לימוד ומסומנים בבירור. לא מוצגים באתר נתונים אמיתיים של לקוחות או של אירועי אבטחה.",
+    "rights": "© {year} אילי סעד"
+  },
+  "notFound": {
+    "title": "הדף הזה לא קיים",
+    "body": "ייתכן שהקישור ישן או שגוי. אפשר לחזור לדף הבית ולמצוא שם את מה שחיפשתם.",
+    "cta": "לדף הבית"
+  }
+}
