@@ -18,13 +18,11 @@ export default async function ContactPage({ params }: LocaleParams) {
   return (
     <div className={`${ui.container} py-12 sm:py-20`}>
       <OpenToWork headingLevel={1} />
-      <section aria-labelledby="profiles-title" className="mt-14">
-        <h2 id="profiles-title" className="text-lg font-semibold">
+      <section aria-labelledby="profiles-title" className="reveal mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <h2 id="profiles-title" className="font-mono text-xs font-medium text-ice">
           {tFooter("socialTitle")}
         </h2>
-        <div className="mt-4">
-          <SocialLinks label={tFooter("socialTitle")} withNames />
-        </div>
+        <SocialLinks label={tFooter("socialTitle")} withNames />
       </section>
     </div>
   );
