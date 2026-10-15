@@ -69,7 +69,7 @@ private/                      Gitignored. Original CV and unredacted images only
   set `cellcomMetrics.approved = true`.
 - Choose which email (if any) to publish, then set `publicEmail`.
 - Approve a redacted public CV, then add it under `public/cv/` and set `publicCv`.
-- Confirm the Hebrew and Arabic spelling of your name and of "Mol HaNof, Yarka".
+- Confirm the Hebrew and Arabic spelling of your name.
 - Send a portrait without the phone covering your face, when you have one.
 - Phase 2: SOC lab demo, projects, journal, roadmap, skills matrix, AI web
   showcase, CV center, per-locale OG images, nonce-based CSP.
