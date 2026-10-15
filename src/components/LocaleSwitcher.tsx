@@ -16,6 +16,7 @@ export function LocaleSwitcher({
   switchLabels,
   compact = false,
   landmark = true,
+  stretch = false,
 }: {
   label: string;
   names: Record<Locale, string>;
@@ -23,6 +24,8 @@ export function LocaleSwitcher({
   compact?: boolean;
   /** False renders a labelled group, so a second copy (footer) doesn't repeat the "Language" landmark. */
   landmark?: boolean;
+  /** Full-width segmented control (mobile menu). */
+  stretch?: boolean;
 }) {
   const current = useLocale();
   const pathname = usePathname();
@@ -47,13 +50,21 @@ export function LocaleSwitcher({
   const Wrapper = landmark ? "nav" : "div";
 
   return (
-    <Wrapper aria-label={label} role={landmark ? undefined : "group"} className="flex items-center gap-1">
-      {!compact ? <GlobeIcon className="me-1 text-fg-muted" /> : null}
-      <ul className="flex items-center gap-1 rounded-xl border border-line p-1">
+    <Wrapper
+      aria-label={label}
+      role={landmark ? undefined : "group"}
+      className={`flex items-center gap-1.5 ${stretch ? "w-full" : ""}`}
+    >
+      {!compact ? <GlobeIcon className="me-1 shrink-0 text-fg-muted" /> : null}
+      <ul
+        className={`flex items-center gap-1 rounded-xl border border-line bg-ink/50 p-1 shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] ${
+          stretch ? "flex-1" : ""
+        }`}
+      >
         {locales.map((l) => {
           const active = l === current;
           return (
-            <li key={l}>
+            <li key={l} className={stretch ? "flex-1" : undefined}>
               <Link
                 href={pathname}
                 locale={l}
@@ -63,8 +74,12 @@ export function LocaleSwitcher({
                 aria-current={active ? "true" : undefined}
                 aria-label={active ? names[l] : switchLabels[l]}
                 onClick={(e) => onSwitch(e, l)}
-                className={`inline-flex min-h-9 min-w-11 items-center justify-center rounded-lg px-2.5 text-sm transition-colors ${
-                  active ? "bg-raised text-fg" : "text-fg-muted hover:text-fg"
+                className={`inline-flex min-h-9 min-w-11 items-center justify-center rounded-lg px-3 text-sm transition-colors ${
+                  stretch ? "min-h-11 w-full" : ""
+                } ${
+                  active
+                    ? "bg-gradient-to-b from-raised to-panel text-fg shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_0_0_1px_rgb(66_213_246/0.35)]"
+                    : "text-fg-muted hover:text-fg"
                 }`}
               >
                 {names[l]}
