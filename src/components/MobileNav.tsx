@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { CloseIcon, MenuIcon } from "./icons";
 import { NavLinks, type NavItem } from "./NavLinks";
@@ -17,7 +17,7 @@ export function MobileNav({
   openLabel: string;
   closeLabel: string;
   navLabel: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
