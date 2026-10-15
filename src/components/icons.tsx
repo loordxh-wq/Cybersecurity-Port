@@ -78,3 +78,58 @@ export function ExpandIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ArrowIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+export function ShieldIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinejoin="round" {...props}>
+      <path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z" />
+      <path d="m8.8 12 2.2 2.2 4.2-4.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function BookIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinejoin="round" {...props}>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z" />
+      <path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20v3H6.5" />
+    </svg>
+  );
+}
+
+export function TerminalIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="m7 9.5 3 2.5-3 2.5M12.5 15H17" />
+    </svg>
+  );
+}
+
+export function HeadsetIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+      <rect x="3.5" y="13.5" width="4" height="6" rx="1.5" />
+      <rect x="16.5" y="13.5" width="4" height="6" rx="1.5" />
+      <path d="M20 19.5c0 1.1-1.8 2-4 2h-2" />
+    </svg>
+  );
+}
+
+export function InfoIcon(props: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 11v5M12 8h.01" />
+    </svg>
+  );
+}
