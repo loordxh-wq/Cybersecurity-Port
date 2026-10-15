@@ -7,9 +7,14 @@ English (`/en`, LTR), Hebrew (`/he`, RTL) and Arabic (`/ar`, RTL).
 
 Phase 1: Home, About, Certifications and Open to Work.
 
-**Not yet built or tested.** The source was written in a sandbox with no internet
-access, so `npm install`, lint, typecheck and build have **not** been run. Run
-`npm run verify` (below) before trusting it. Nothing has been deployed.
+**Verified, not deployed.** `npm run verify` (i18n check, ESLint, TypeScript,
+production build) passes, `npm audit --omit=dev` reports 0 vulnerabilities, and
+all pages were tested in a real browser in English, Hebrew and Arabic at desktop,
+tablet and mobile widths (layout, RTL, navigation, certificate viewer, reduced
+motion, keyboard focus, axe accessibility scan). Nothing has been deployed.
+
+Known dev-only audit finding: `braces` (via `eslint-config-next` → `fast-glob`)
+has no patched release yet. It is only used by the linter and never shipped.
 
 ## Commands
 
