@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20.9" },
+  "engines": {
+    "node": ">=20.9"
+  },
   "scripts": {
     "dev": "next dev",
     "check:i18n": "node scripts/check-messages.mjs",
@@ -18,7 +20,8 @@
     "next": "15.5.28",
     "next-intl": "4.14.9",
     "react": "19.1.10",
-    "react-dom": "19.1.10"
+    "react-dom": "19.1.10",
+    "three": "0.186.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
@@ -26,6 +29,7 @@
     "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
+    "@types/three": "0.186.0",
     "eslint": "9.28.0",
     "eslint-config-next": "15.5.28",
     "tailwindcss": "4.1.8",

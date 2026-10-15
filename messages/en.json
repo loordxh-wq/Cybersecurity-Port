@@ -184,12 +184,14 @@
     "names": {
       "a": "Threat Observatory",
       "b": "Cybernetic Monolith",
-      "c": "Digital Forensics"
+      "c": "Digital Forensics",
+      "v4": "Cyber Command"
     },
     "summaries": {
       "a": "An immersive 3D intelligence core with Eli at its centre.",
       "b": "Editorial black and chrome with a sculptural monolith.",
-      "c": "An investigation case file that traces Eli’s path into the SOC."
+      "c": "An investigation case file that traces Eli’s path into the SOC.",
+      "v4": "A signature intelligence scene, editorial identity and a factual career signal."
     },
     "labels": {
       "credential": "Credential",
@@ -203,6 +205,20 @@
       "status": "Status",
       "trace": "Career trace",
       "next": "Next step"
+    },
+    "v4": {
+      "name": "Cyber Command",
+      "summary": "A signature intelligence scene, editorial identity and a factual career signal.",
+      "simulated": "Simulated topology · demo visual, not live data",
+      "legendNodes": "Nodes",
+      "legendLinks": "Connections",
+      "legendScan": "Scan",
+      "scroll": "Scroll",
+      "menu": "Menu",
+      "chapterMission": "Mission overview",
+      "chapterCareer": "Career evolution",
+      "verified": "Verified credential",
+      "courses": "Course completions"
     }
   }
 }
