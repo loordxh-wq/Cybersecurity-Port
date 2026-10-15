@@ -24,7 +24,7 @@ export default async function HomePage({ params }: LocaleParams) {
       <Hero />
       <HomeAbout />
       <CredentialStrip />
-      <div className={`${ui.container} py-8`}>
+      <div className={`${ui.container} pb-8 pt-6 sm:pb-12`}>
         <OpenToWork />
       </div>
     </>
