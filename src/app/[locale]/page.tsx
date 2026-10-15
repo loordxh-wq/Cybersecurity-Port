@@ -5,19 +5,17 @@ import { Hero } from "@/components/Hero";
 import { HomeAbout } from "@/components/HomeAbout";
 import { OpenToWork } from "@/components/OpenToWork";
 import { PersonJsonLd } from "@/components/PersonJsonLd";
-import type { Locale } from "@/i18n/routing";
+import { resolveLocale, type LocaleParams } from "@/lib/locale";
 import { localizedUrl, pageMetadata } from "@/lib/metadata";
 import { ui } from "@/lib/ui";
 
-type Props = { params: Promise<{ locale: Locale }> };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
+  const locale = await resolveLocale(params);
   return pageMetadata(locale, "home");
 }
 
-export default async function HomePage({ params }: Props) {
-  const { locale } = await params;
+export default async function HomePage({ params }: LocaleParams) {
+  const locale = await resolveLocale(params);
   setRequestLocale(locale);
 
   return (

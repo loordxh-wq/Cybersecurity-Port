@@ -14,7 +14,7 @@ export async function HomeAbout() {
         </h2>
         <div>
           <p className="measure text-lg leading-relaxed text-fg/90">{t("body")}</p>
-          <ul className="mt-6 flex flex-wrap gap-2" dir="ltr" lang="en">
+          <ul className="mt-6 flex flex-wrap gap-2" lang="en">
             {tools.map((tool) => (
               <li key={tool} className="rounded-md border border-line bg-ink/50 px-2.5 py-1 font-mono text-[0.8rem] text-ice-soft">
                 {tool}
