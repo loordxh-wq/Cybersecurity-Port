@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 /** Small fixed label so reviewers always know which prototype they are looking at. */
-export async function PrototypeBadge({ letter }: { letter: "a" | "b" | "c" }) {
+export async function PrototypeBadge({ letter }: { letter: "a" | "b" | "c" | "v4" }) {
   const t = await getTranslations("concepts");
   return (
     <Link

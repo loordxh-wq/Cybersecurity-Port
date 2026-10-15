@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { resolveLocale, type LocaleParams } from "@/lib/locale";
 
-const letters = ["a", "b", "c"] as const;
+const letters = ["v4", "a", "b", "c"] as const;
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
