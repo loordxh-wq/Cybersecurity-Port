@@ -1,10 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { cellcomMetrics, timeline } from "@/content/facts";
 
+// Full keys per entry, so every key is checked against messages/en.json at compile time.
 const pointKeys = {
-  cellcom: ["p1", "p2", "p3"],
-  cyberGain: ["p1", "p2", "p3", "p4"],
-  nationalService: ["p1"],
+  cellcom: ["cellcom.p1", "cellcom.p2", "cellcom.p3"],
+  cyberGain: ["cyberGain.p1", "cyberGain.p2", "cyberGain.p3", "cyberGain.p4"],
+  nationalService: ["nationalService.p1"],
 } as const;
 
 export async function Timeline() {
@@ -27,7 +28,7 @@ export async function Timeline() {
             {pointKeys[entry.id].map((k) => (
               <li key={k} className="flex gap-3 text-fg/90">
                 <span aria-hidden="true" className="mt-[0.7em] h-px w-3 shrink-0 bg-fg-muted" />
-                <span>{t(`${entry.id}.${k}`)}</span>
+                <span>{t(k)}</span>
               </li>
             ))}
             {entry.id === "cellcom" && cellcomMetrics.approved ? (
