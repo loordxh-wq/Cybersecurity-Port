@@ -33,7 +33,7 @@ export async function SiteFooter() {
           </div>
           <div>
             <h2 className="mb-3 text-sm font-semibold text-fg">{t("languageTitle")}</h2>
-            <LocaleSwitcher {...localeLabels} compact />
+            <LocaleSwitcher {...localeLabels} compact landmark={false} />
           </div>
         </div>
       </div>

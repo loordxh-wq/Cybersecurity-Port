@@ -15,11 +15,14 @@ export function LocaleSwitcher({
   names,
   switchLabels,
   compact = false,
+  landmark = true,
 }: {
   label: string;
   names: Record<Locale, string>;
   switchLabels: Record<Locale, string>;
   compact?: boolean;
+  /** False renders a labelled group, so a second copy (footer) doesn't repeat the "Language" landmark. */
+  landmark?: boolean;
 }) {
   const current = useLocale();
   const pathname = usePathname();
@@ -41,8 +44,10 @@ export function LocaleSwitcher({
     router.replace(id ? `${pathname}#${id}` : pathname, { locale: next, scroll: !id });
   }
 
+  const Wrapper = landmark ? "nav" : "div";
+
   return (
-    <nav aria-label={label} className="flex items-center gap-1">
+    <Wrapper aria-label={label} role={landmark ? undefined : "group"} className="flex items-center gap-1">
       {!compact ? <GlobeIcon className="me-1 text-fg-muted" /> : null}
       <ul className="flex items-center gap-1 rounded-xl border border-line p-1">
         {locales.map((l) => {
@@ -68,6 +73,6 @@ export function LocaleSwitcher({
           );
         })}
       </ul>
-    </nav>
+    </Wrapper>
   );
 }

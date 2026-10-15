@@ -10,6 +10,7 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
   const tSocial = await getTranslations("social");
   const tHero = await getTranslations("hero");
   const Heading = headingLevel === 1 ? "h1" : "h2";
+  const SubHeading = headingLevel === 1 ? "h2" : "h3";
   const hasCv = Boolean(publicCv.en || publicCv.he || publicCv.ar);
 
   return (
@@ -47,7 +48,7 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-1">
             <div>
-              <h3 className="text-sm font-semibold text-fg-muted">{t("rolesTitle")}</h3>
+              <SubHeading className="text-sm font-semibold text-fg-muted">{t("rolesTitle")}</SubHeading>
               <ul className="mt-3 space-y-2">
                 {targetRoles.map((role) => (
                   <li key={role} className="flex items-start gap-3 rounded-xl border border-line bg-ink/40 px-4 py-3">
@@ -60,7 +61,7 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-fg-muted">{t("locationTitle")}</h3>
+              <SubHeading className="text-sm font-semibold text-fg-muted">{t("locationTitle")}</SubHeading>
               <p className="mt-3 flex items-center gap-2 text-lg font-medium text-fg">
                 <PinIcon className="text-ice" />
                 {t("location")}
