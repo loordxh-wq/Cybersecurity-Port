@@ -1,0 +1,196 @@
+/* Concept B — Cybernetic Monolith. Scoped by the .mono-* / .cm-* prefixes. */
+
+.cm-chrome {
+  background: linear-gradient(180deg, #fbfcfd 0%, #d5dae1 30%, #7c8592 52%, #3e444d 58%, #c3c9d1 74%, #f0f2f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cm-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(214 219 226 / 0.55);
+}
+
+/* Laser horizon with a travelling pulse */
+.cm-laser {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #2f6bff 18%, #9cc2ff 50%, #2f6bff 82%, transparent);
+  box-shadow: 0 0 14px 1px rgb(47 107 255 / 0.8);
+}
+.cm-laser::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  height: 3px;
+  width: 140px;
+  background: linear-gradient(90deg, transparent, #e0ecff, transparent);
+  filter: blur(1px);
+  animation: cm-pulse 5.5s linear infinite;
+}
+@keyframes cm-pulse {
+  from {
+    left: -10%;
+  }
+  to {
+    left: 110%;
+  }
+}
+
+/* Monolith */
+.mono-scene {
+  --w: 128px;
+  --h: 282px;
+  --d: 36px;
+  width: var(--w);
+  height: var(--h);
+  perspective: 1100px;
+  font-size: 10px;
+  animation: mono-rise 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@media (min-width: 1024px) {
+  .mono-scene {
+    --w: 248px;
+    --h: 540px;
+    --d: 68px;
+    font-size: 16px;
+  }
+}
+@keyframes mono-rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mono-body {
+  --ry: 24deg;
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(5deg + var(--py) * -6deg)) rotateY(calc(var(--ry) + var(--px) * 14deg));
+}
+[dir="rtl"] .mono-body {
+  --ry: -24deg;
+}
+.mono-face {
+  position: absolute;
+  backface-visibility: hidden;
+}
+.mono-front {
+  inset: 0;
+  overflow: hidden;
+  transform: translateZ(calc(var(--d) / 2));
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 0.22), transparent 3%, transparent 97%, rgb(255 255 255 / 0.08)),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 4px),
+    linear-gradient(160deg, #2b3038 0%, #16191e 35%, #0b0c0f 70%, #15181d 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4);
+}
+.mono-side {
+  top: 0;
+  height: 100%;
+  width: var(--d);
+  left: calc(50% - var(--d) / 2);
+  background: linear-gradient(180deg, #20242b, #08090b);
+}
+.mono-side-end {
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+.mono-side-start {
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+.mono-strip {
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 8%;
+  bottom: 8%;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, #4d86ff 20%, #a9c7ff 50%, #4d86ff 80%, transparent);
+  box-shadow: 0 0 10px 1px rgb(47 107 255 / 0.9);
+  animation: mono-breathe 4s ease-in-out infinite;
+}
+@keyframes mono-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+.mono-top {
+  left: 0;
+  width: 100%;
+  height: var(--d);
+  top: calc(50% - var(--d) / 2);
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+  background: linear-gradient(90deg, #c9ced6, #6b7380 40%, #e6e9ee 70%, #8d95a1);
+}
+.mono-window {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 9%;
+  height: 55%;
+  overflow: hidden;
+  background: #050608;
+}
+.mono-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.2),
+    inset 0 16px 26px -10px rgb(0 0 0 / 0.95),
+    inset 0 -1px 0 rgb(255 255 255 / 0.35);
+}
+.mono-engraving {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 70%;
+  color: #7d8794;
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.14),
+    0 -1px 0 rgb(0 0 0 / 0.9);
+}
+.mono-sheen {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.16) 49%, rgb(147 197 253 / 0.12) 52%, transparent 60%);
+  transform: translateX(-70%);
+  animation: mono-sheen 9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.8s infinite;
+  pointer-events: none;
+}
+@keyframes mono-sheen {
+  0% {
+    transform: translateX(-70%);
+  }
+  28%,
+  100% {
+    transform: translateX(70%);
+  }
+}
+
+/* Typographic reveal for the giant name */
+.cm-reveal {
+  animation: cm-reveal 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 120ms + 100ms);
+}
+@keyframes cm-reveal {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.15em);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-laser::after,
+  .mono-sheen,
+  .mono-strip {
+    animation: none;
+  }
+}
