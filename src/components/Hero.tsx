@@ -25,8 +25,12 @@ export async function Hero() {
           <h1 id="hero-title" className="mt-6 text-[clamp(2.6rem,9vw,5.25rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-fg">
             {t("name")}
             {locale !== "en" ? (
-              <span lang="en" dir="ltr" className="mt-2 block text-[0.38em] font-medium leading-tight tracking-normal text-fg-muted">
-                Eli Saad
+              // The block inherits the page direction so it aligns under the name; only the inner text is LTR.
+              // Arabic descenders (the dots under ي) need extra room above the subtitle.
+              <span className={`${locale === "ar" ? "mt-[0.9em]" : "mt-2"} block text-[0.38em] font-medium leading-tight tracking-normal text-fg-muted`}>
+                <span lang="en" dir="ltr">
+                  Eli Saad
+                </span>
               </span>
             ) : null}
           </h1>

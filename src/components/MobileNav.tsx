@@ -63,7 +63,8 @@ export function MobileNav({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
-            className="glass absolute inset-x-3 top-[calc(100%+0.5rem)] rounded-2xl p-3 shadow-2xl"
+            // Opaque instead of .glass: the header's own backdrop-filter stops a nested blur from reaching the page.
+            className="absolute inset-x-3 top-[calc(100%+0.5rem)] rounded-2xl border border-line bg-[linear-gradient(180deg,var(--color-raised),var(--color-deep))] p-3 shadow-2xl"
           >
             <nav aria-label={navLabel}>
               <NavLinks
