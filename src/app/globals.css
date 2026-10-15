@@ -373,3 +373,9 @@
 :lang(ar) .measure {
   max-width: 62ch;
 }
+
+/* The mono face has no Arabic glyphs and fallback monospace fonts break letter joining.
+   Unlayered so it wins over the font-mono utility. */
+:lang(ar) .font-mono {
+  font-family: var(--font-sans);
+}
