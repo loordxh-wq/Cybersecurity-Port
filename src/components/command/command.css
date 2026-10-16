@@ -543,13 +543,15 @@
 
 /* ------------------------------------------------------------------ entrance */
 @media (prefers-reduced-motion: no-preference) {
+  /* Identity content is visible from the first paint: the entrance moves it, never hides it
+     (no opacity or clip), so there is no empty gap while the scene assembles around it. */
   .cc-in {
-    animation: cc-rise 0.9s var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 90ms + 250ms);
+    animation: cc-rise 0.8s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
   }
   .cc-name-line {
-    animation: cc-unmask 1.1s cubic-bezier(0.7, 0, 0.2, 1) both;
-    animation-delay: calc(var(--i, 0) * 120ms + 120ms);
+    animation: cc-settle 1s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
   }
   .cc-horizon {
     animation: cc-draw 1.4s cubic-bezier(0.7, 0, 0.2, 1) 0.5s both;
@@ -563,21 +565,17 @@
 }
 @keyframes cc-rise {
   from {
-    opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }
-@keyframes cc-unmask {
+@keyframes cc-settle {
   from {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(0.25em);
+    transform: translateY(0.12em);
   }
   to {
-    clip-path: inset(0 0 -20% 0);
     transform: none;
   }
 }
