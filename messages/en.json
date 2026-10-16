@@ -19,6 +19,10 @@
     },
     "notFound": {
       "title": "Page not found | Eli Saad"
+    },
+    "recruiter": {
+      "title": "Recruiter brief | Eli Saad, Aspiring SOC Analyst",
+      "description": "One-page summary for recruiters: Tier 1 technical support experience, Blue Team SOC-track training, the EC-Council C|SA certification and skills with their evidence. Open to suitable roles across Israel."
     }
   },
   "nav": {
@@ -32,7 +36,9 @@
     "closeMenu": "Close menu",
     "language": "Language",
     "switchTo": "Switch to {language}",
-    "menu": "Menu"
+    "menu": "Menu",
+    "forRecruiters": "For recruiters",
+    "recruitersShort": "Recruiters"
   },
   "localeNames": {
     "en": "English",
@@ -55,7 +61,8 @@
     "ctaContact": "Contact me",
     "ctaCertifications": "See my certificates",
     "portraitAlt": "Portrait of Eli Saad",
-    "socialLabel": "Social profiles"
+    "socialLabel": "Social profiles",
+    "ctaBrief": "Recruiter brief"
   },
   "homeAbout": {
     "title": "From the support desk to the SOC",
@@ -305,5 +312,61 @@
     "callAria": "Call Eli Saad",
     "smsAria": "Send an SMS to Eli Saad",
     "forRecruiters": "For recruiters"
+  },
+  "recruiter": {
+    "kicker": "Recruiter brief",
+    "intro": "A one-page summary of my experience, training and credentials. Every item is verifiable.",
+    "direction": "Professional direction",
+    "directionBody": "Entry-level roles in security operations and IT support, anywhere in Israel.",
+    "experience": "Work experience",
+    "training": "Cybersecurity training",
+    "credentials": "Credentials",
+    "skills": "Skills by evidence",
+    "skillsNote": "Each skill names where it comes from. No self-rated levels.",
+    "contact": "Contact",
+    "contactNote": "My CV is shared personally on request.",
+    "openToWorkPage": "Open to Work details",
+    "copyLink": "Copy link to this brief",
+    "linkCopied": "Link copied",
+    "linkCopyFailed": "Couldn’t copy the link. Copy it from the address bar.",
+    "print": "Print or save as PDF",
+    "printNote": "Summary from Eli Saad’s portfolio. CV available on request.",
+    "contactBar": "Contact options",
+    "issued": "Issued {date}",
+    "completed": "Completed {date}",
+    "evidence": {
+      "employment": "Employment",
+      "certification": "Certification",
+      "course": "Course training",
+      "project": "Personal project"
+    },
+    "evidenceLegend": "Employment: paid work. Certification: passed an exam. Course training: completed course. Personal project: my own work.",
+    "skill": {
+      "support": {
+        "title": "Technical support",
+        "detail": "Tier 1 support at Cellcom: diagnosing customer issues, documenting cases and escalating with clear notes."
+      },
+      "network": {
+        "title": "Networking and troubleshooting",
+        "detail": "TCP/IP, DNS and Wi-Fi troubleshooting with customers, layer by layer, plus Cisco Networking Basics."
+      },
+      "blueTeam": {
+        "title": "Blue Team and SOC fundamentals",
+        "detail": "Security event monitoring and triage concepts from the SOC-track course and the C|SA exam."
+      },
+      "windowsAd": {
+        "title": "Windows and Active Directory",
+        "detail": "User, group and system administration in course lab environments."
+      },
+      "wiresharkSiem": {
+        "title": "Wireshark and SIEM",
+        "detail": "Traffic analysis in Wireshark and event investigation in Splunk and QRadar, in course training labs."
+      },
+      "aiWeb": {
+        "title": "AI-assisted web development",
+        "detail": "Directed the design and build of this trilingual portfolio using AI-assisted development tools."
+      }
+    },
+    "projects": "Verified projects"
   }
 }
