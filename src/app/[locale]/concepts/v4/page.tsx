@@ -57,7 +57,7 @@ export default async function ConceptV4({ params }: LocaleParams) {
 
       <main id="main" tabIndex={-1} className="relative outline-none">
         <section aria-labelledby="v4-title" className="cc-hero">
-          <CommandScene portrait={person.portrait} alt={d.portraitAlt} simulatedLabel={v4("simulated")} />
+          <CommandScene portrait={person.portrait} alt={d.portraitAlt} sceneLabel={v4("simulated")} />
           <div aria-hidden="true" className="cc-horizon" />
 
           <div className="cc-identity">

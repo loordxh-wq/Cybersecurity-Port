@@ -397,6 +397,10 @@
   border-color: rgb(245 181 68 / 0.5);
   color: #f5c46b;
 }
+.rb-sim.rb-lab {
+  border-color: rgb(127 220 255 / 0.4);
+  color: #93dcf0;
+}
 .rb-skill-detail {
   max-width: 64ch;
   font-size: 0.9375rem;

@@ -8,7 +8,7 @@ interface Props {
   portrait: StaticImageData;
   alt: string;
   /** Text shown with the scene so nobody mistakes it for monitoring. */
-  simulatedLabel: string;
+  sceneLabel: string;
 }
 
 /**
@@ -18,7 +18,7 @@ interface Props {
  * The core's horizontal position comes from the `--cx` custom property, which
  * CSS sets per breakpoint and mirrors for right-to-left languages.
  */
-export function CommandScene({ portrait, alt, simulatedLabel }: Props) {
+export function CommandScene({ portrait, alt, sceneLabel }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [live, setLive] = useState(false);
@@ -103,7 +103,7 @@ export function CommandScene({ portrait, alt, simulatedLabel }: Props) {
       <canvas ref={canvasRef} className="cc-canvas" aria-hidden="true" />
       <p className="cc-sim">
         <span className="cc-sim-tag" aria-hidden="true" />
-        {simulatedLabel}
+        {sceneLabel}
       </p>
     </div>
   );

@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import { hasPublishedProject } from "@/content/projects";
 import { isPreview } from "@/content/stage";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { getLocaleLabels, getNavItems } from "./SiteHeader";
-import { SimTag } from "./cc/SimTag";
 import { TextSocialLinks } from "./site/TextSocialLinks";
 
 /**
@@ -30,10 +30,10 @@ export async function SiteFooter() {
           <div className="space-y-4">
             <p className="text-lg font-semibold text-white">{tHero("name")}</p>
             <p className="max-w-sm text-white/70">{t("tagline")}</p>
-            <p className="flex max-w-md items-start gap-2.5 text-sm leading-relaxed text-white/62">
-              <SimTag className="mt-1.5" />
-              {t("simulatedNote")}
-            </p>
+            {/* Evidence statement: only once reviewed lab work is actually published. */}
+            {hasPublishedProject ? (
+              <p className="site-footer-labnote max-w-md text-sm leading-relaxed text-white/62">{t("labNote")}</p>
+            ) : null}
           </div>
           <div>
             <h2 className="site-footer-title">{t("navTitle")}</h2>

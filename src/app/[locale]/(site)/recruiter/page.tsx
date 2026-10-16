@@ -197,7 +197,11 @@ export default async function RecruiterPage({ params }: LocaleParams) {
                   {approvedProjects.map((pr) => (
                     <li key={pr.id}>
                       <span className="rb-skill-title">{p(`items.${pr.id}.title`)}</span>
-                      {pr.simulated ? <span className="rb-sim">{common("simulatedTraining")}</span> : null}
+                      {pr.simulated ? (
+                        <span className="rb-sim">{common("simulatedTraining")}</span>
+                      ) : pr.kind === "lab" ? (
+                        <span className="rb-sim rb-lab">{common("personalLab")}</span>
+                      ) : null}
                       <span className="rb-skill-detail">{p(`items.${pr.id}.summary`)}</span>
                     </li>
                   ))}

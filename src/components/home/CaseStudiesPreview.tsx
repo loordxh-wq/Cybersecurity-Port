@@ -34,7 +34,13 @@ export async function CaseStudiesPreview({ index }: { index: string }) {
                 summary={p(`items.${proj.id}.summary`)}
                 neededLabel={common("evidenceNeeded")}
                 needed={p(`items.${proj.id}.needed`)}
-                tags={proj.simulated ? <SimLabel>{common("simulatedTraining")}</SimLabel> : null}
+                tags={
+                  proj.simulated ? (
+                    <SimLabel>{common("simulatedTraining")}</SimLabel>
+                  ) : proj.kind === "lab" ? (
+                    <span className="cc-provlabel">{common("personalLab")}</span>
+                  ) : null
+                }
                 glyph={<LatticeGlyph seed={i + 1} />}
               />
             </li>
