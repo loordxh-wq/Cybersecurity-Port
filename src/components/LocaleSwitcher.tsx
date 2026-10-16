@@ -17,6 +17,8 @@ export function LocaleSwitcher({
   compact = false,
   landmark = true,
   stretch = false,
+  appearance = "panel",
+  short = false,
 }: {
   label: string;
   names: Record<Locale, string>;
@@ -26,6 +28,10 @@ export function LocaleSwitcher({
   landmark?: boolean;
   /** Full-width segmented control (mobile menu). */
   stretch?: boolean;
+  /** "command": the Cyber Command header and menu style (hairline, no panel). */
+  appearance?: "panel" | "command";
+  /** Show the language code (EN / HE / AR) instead of the name; the name stays the accessible label. */
+  short?: boolean;
 }) {
   const current = useLocale();
   const pathname = usePathname();
@@ -48,6 +54,35 @@ export function LocaleSwitcher({
   }
 
   const Wrapper = landmark ? "nav" : "div";
+
+  if (appearance === "command") {
+    return (
+      <Wrapper aria-label={label} role={landmark ? undefined : "group"}>
+        <ul className={`flex items-center ${short ? "" : "gap-6"}`}>
+          {locales.map((l) => {
+            const active = l === current;
+            return (
+              <li key={l}>
+                <Link
+                  href={pathname}
+                  locale={l}
+                  lang={l}
+                  dir={directionFor(l)}
+                  hrefLang={l}
+                  aria-current={active ? "true" : undefined}
+                  aria-label={active ? names[l] : switchLabels[l]}
+                  onClick={(e) => onSwitch(e, l)}
+                  className={`cmd-locale ${short ? "cmd-locale--short" : ""}`}
+                >
+                  {short ? <span dir="ltr">{l.toUpperCase()}</span> : names[l]}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper

@@ -1,4 +1,4 @@
-import { IBM_Plex_Sans, IBM_Plex_Sans_Arabic, IBM_Plex_Sans_Hebrew, JetBrains_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Sans, IBM_Plex_Sans_Arabic, IBM_Plex_Sans_Hebrew, JetBrains_Mono } from "next/font/google";
 
 // One type family across all three scripts. next/font self-hosts the files and
 // generates size-adjusted fallbacks, so there is no layout shift or flash.
@@ -33,4 +33,12 @@ export const jetbrains = JetBrains_Mono({
   preload: false,
 });
 
-export const fontVariables = [plex.variable, plexHebrew.variable, plexArabic.variable, jetbrains.variable].join(" ");
+// Cyber Command display face (Latin, variable width). Hebrew and Arabic display text uses IBM Plex.
+export const archivo = Archivo({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
+  variable: "--font-archivo",
+});
+
+export const fontVariables = [plex.variable, plexHebrew.variable, plexArabic.variable, jetbrains.variable, archivo.variable].join(" ");

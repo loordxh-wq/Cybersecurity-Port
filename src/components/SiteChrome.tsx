@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import "./site/site.css";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 
@@ -8,7 +9,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     <>
       <div className="atmosphere" aria-hidden="true" />
       <SiteHeader />
-      <main id="main" tabIndex={-1} className="outline-none">
+      <main id="main" tabIndex={-1} className="site-main outline-none">
         {children}
       </main>
       <SiteFooter />
