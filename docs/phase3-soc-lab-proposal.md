@@ -1,6 +1,6 @@
 # Phase 3: Interactive SOC Investigation Lab — architecture and visual proposal
 
-Status: **proposal for approval. No Phase 3 code has been written.**
+Status: **direction approved (M0). M1 visual mockups in review (§10). No Phase 3 lab code has been written.**
 Branch: `proposal/phase3-soc-lab` (from `feature/case-files-cf01-03` at `94a4ca3`). Phase 1 and Phase 2 code is unchanged.
 Rules carried over:
 - Fully synthetic data. Every IP comes from the documentation ranges, every account and host is fictional, and there are no personal data or credentials.
@@ -134,8 +134,8 @@ Progress is kept in `sessionStorage` (per tab, cleared with "Reset investigation
 | External sources | `203.0.113.0/24` (RFC 5737) |
 | Hosts | `DC01` (198.51.100.2), `JMP01` jump host with RDP published to the internet by mistake (external 192.0.2.10, internal 198.51.100.10), `SRV-FILE01` (198.51.100.21), `SRV-BKP01` (198.51.100.20), workstations `WS-0101`…`WS-0160` (198.51.100.101–160) |
 | Accounts | ~30 fictional users (`first-initial.surname`, generic names), `svc-backup`, `adm-it01`; non-existent names that attackers try: `administrator`, `admin`, `test`, `scanner`, `backup` |
-| Time span | 10 Mar 2026 18:00 → 11 Mar 2026 09:00 UTC (15 h). All times shown in UTC, labelled. |
-| Volume | ≈ 360 events: ≈ 290 background (normal logons, screen unlocks, service logons) and ≈ 70 story events |
+| Time span | 10 Mar 2026 12:00 → 11 Mar 2026 09:00 UTC (21 h), so j.morgan's working-hours baseline on 10 Mar is inside the data. All times shown in UTC, labelled. |
+| Volume | ≈ 480 events: ≈ 410 background (normal logons, screen unlocks, service logons) and ≈ 70 story events |
 
 ### 3.2 The story behind the data
 
@@ -163,6 +163,8 @@ Four threads are interleaved. Only one is an attack.
   - then **4624 logon type 10** (RemoteInteractive) at 02:14:52, an RDP session on `JMP01`.
 - At **02:21:13**, **4624** type 3 NTLM for `j.morgan` on **`SRV-FILE01`** from `198.51.100.10` (JMP01's internal address), workstation `JMP01`. This is access from the jump host to the file server.
 - 02:31–02:34, a second source **`203.0.113.77`** with the **same workstation name `DESKTOP-7Q2M4`** tries 7 more accounts, all failing.
+  - These are **indicators, not proof** of a common actor. The client name is supplied by the connecting device, so it can be a tool default or spoofed. Neighbouring addresses can belong to one hosting provider used by unrelated parties.
+  - The scenario treats .77 as **possibly related (unconfirmed)**: blocked as a precaution, kept out of the confirmed scope.
 - **Alert ALR-0418 (High, 02:15): "Successful logon after multiple failures — j.morgan on JMP01".**
 - **Alert ALR-0419 (Medium, 02:16): "Many accounts failed from one source — 203.0.113.45".**
 - Expected:
@@ -190,13 +192,13 @@ Four threads are interleaved. Only one is an attack.
 
 ### 3.3 The conclusion the evidence supports
 
-> Password spraying from 203.0.113.45 against the internet-exposed jump host JMP01 (18 accounts, one attempt each, 02:10–02:16 UTC) produced one valid credential: **j.morgan**. The attacker opened an RDP session on JMP01 at 02:14 and authenticated from JMP01 to SRV-FILE01 at 02:21. A second source, 203.0.113.77, using the same client name, continued the spray at 02:31 without success. ALR-0418 and ALR-0419 are one incident. ALR-0417 (svc-backup lockout) is an unrelated misconfiguration after a password rotation, and ALR-0420 is a user mistyping their unlock password.
+> Password spraying from 203.0.113.45 against the internet-exposed jump host JMP01 (18 accounts, one attempt each, 02:10–02:16 UTC) produced one valid credential: **j.morgan**. The attacker opened an RDP session on JMP01 at 02:14 and authenticated from JMP01 to SRV-FILE01 at 02:21. A second source, 203.0.113.77, made seven failed attempts from 02:31 with the same client name. This suggests a connection but does not prove a common actor, so it is recorded as possibly related, not confirmed. ALR-0418 and ALR-0419 are one incident. ALR-0417 (svc-backup lockout) is an unrelated misconfiguration after a password rotation, and ALR-0420 is a user mistyping their unlock password.
 >
 > **What these logs cannot show:** what was done on SRV-FILE01 (file access needs 5140/5145 or EDR data), and whether the RDP session is still active (logoff 4634/4647 is not in the dataset). The scope statement must say so.
 
 Expected recommendations:
 1. Disable `j.morgan` and reset the password, terminating the sessions on JMP01 and SRV-FILE01.
-2. Block 203.0.113.45 and 203.0.113.77, and consider the /24.
+2. Block 203.0.113.45. Block 203.0.113.77 as a precaution, recorded as unconfirmed.
 3. Remove the RDP exposure on JMP01 or put it behind a VPN or gateway with MFA.
 4. Review SRV-FILE01 access by `j.morgan` from 02:21 onward with file-audit or EDR data.
 5. Check the other 17 sprayed accounts for success elsewhere. There is none in this dataset.
@@ -211,7 +213,9 @@ Over-reactions the debrief flags, without penalty, as unnecessary:
 **What is scored.**
 - **Dispositions:** each alert's disposition is compared with the scenario key.
 - **Incident grouping:** ALR-0418 and ALR-0419 linked into one incident, and ALR-0417 and ALR-0420 kept out.
-- **Claims:** each claim the visitor asserts needs at least one pinned event that satisfies its evidence predicate. A claim without supporting evidence is reported as "asserted, not supported".
+- **Observed facts vs analytical conclusions.** The verdict keeps two kinds of statement apart, and so do the timeline and the report.
+  - **Observed facts** are things the logs record, such as "203.0.113.77 made 7 failed attempts with client name DESKTOP-7Q2M4". Each needs at least one pinned event that satisfies its evidence predicate. A fact without supporting evidence is reported as "asserted, not supported".
+  - **Analytical conclusions** are hypotheses with a status the visitor chooses: *supported*, *unconfirmed* or *not determinable from these logs*. They are judged on whether the chosen status matches the evidence. A conclusion marked stronger than the evidence allows (for example "203.0.113.77 is the same actor: confirmed") is reported as **overstated**.
 
 | Claim (visitor selects) | Supported by pinned events matching |
 | --- | --- |
@@ -220,16 +224,22 @@ Over-reactions the debrief flags, without penalty, as unnecessary:
 | The successful logon is anomalous for this user | the 02:14 `4624`, plus any baseline `4624` for `j.morgan` from `WS-0142` |
 | The attacker obtained an interactive session | `4624` with `logonType=10` on `JMP01` |
 | The account was used to reach another host | `4624` on `SRV-FILE01` with `ip=198.51.100.10` |
-| A second source belongs to the same activity | any `4625` from `203.0.113.77` (shared workstation `DESKTOP-7Q2M4`) |
+| A second source made failed attempts with the same client name *(observed fact)* | any `4625` from `203.0.113.77` |
 | The svc-backup lockout follows a password change | `4740` for `svc-backup`, plus any batch `4625` from `SRV-BKP01` |
 | The n.katz failures are user error | `4625` type 7 from `WS-0117`, plus the `4624` type 7 that follows |
 
+| Analytical conclusion | Expected status, and why |
+| --- | --- |
+| H1 j.morgan's password was guessed during the spray | *Supported*: failures across 18 accounts, then a success for j.morgan from the same source in the same window |
+| H2 203.0.113.77 is operated by the same actor as 203.0.113.45 | *Unconfirmed*: shared client name, same /24, same target and pattern are indicators only. "Confirmed" is overstated. |
+| H3 Files on SRV-FILE01 were accessed with j.morgan's account | *Not determinable*: the dataset holds authentication only (no 5140/5145 or endpoint data) |
+
 **Scope and actions.**
-- Affected accounts, sources and hosts are compared as sets.
+- Affected accounts, sources and hosts are compared as sets, in two groups: **confirmed** and **possibly related (unconfirmed)**. 203.0.113.77 belongs in the second group.
 - Recommended actions are matched against expected, optional and unnecessary lists.
 
 **Feedback, not a grade.**
-- The debrief shows a checklist: correct / partly supported / missed.
+- The debrief shows a checklist: supported / partly supported / missed / overstated.
 - One summary line, e.g. "6 of 8 findings supported by evidence".
 - The visitor can revise and resubmit any number of times.
 
@@ -295,7 +305,7 @@ Sample (story events):
 ├──────────────┬────────────────────────────────────────────────┬───────────────────────┤
 │ ALERT QUEUE  │ LOG EXPLORER                                   │ EVENT INSPECTOR       │
 │ ■ High       │ [ ip:203.0.113.45 event:4625              ⌕ ]  │ 4625 · Failed logon   │
-│ ALR-0418     │ Facets: event 4625 ×24 · 4624 ×2 │ user (19) … │ 02:14:21.090 UTC      │
+│ ALR-0418     │ Facets: event 4625 ×17 · 4624 ×2 │ user (18) … │ 02:14:21.090 UTC      │
 │ j.morgan     │ ▁▁▁▂▁▁▁▁▁▁▁▃█▅▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▂▃  (histogram,   │ ── Fields ─ Raw ─ ↔ ─ │
 │ 02:15 · New  │                                    brushable)  │ Account   l.ortiz     │
 │──────────────│ Time (UTC)    ID   User      Source IP    Type │ Source    203.0.113.45│
@@ -304,7 +314,7 @@ Sample (story events):
 │ 203.0.113.45 │ 02:14:37.4   4624 j.morgan  203.0.113.45  3   │ Auth      NTLM        │
 │──────────────│ 02:14:52.7   4624 j.morgan  203.0.113.45  10  │ SubStatus 0xC000006A  │
 │ ■ Med  0417  │ …                                              │  bad password         │
-│ □ Low  0420  │ 26 of 361 events · sorted by time ▲            │ [Pin to timeline  P]  │
+│ □ Low  0420  │ 19 of 482 events · sorted by time ▲            │ [Pin to timeline  P]  │
 ├──────────────┴────────────────────────────────────────────────┴───────────────────────┤
 │ TIMELINE (pinned)  02:10 ●──●───●●──────●──── 02:21 ●   02:31 ●     [Entities][MITRE] │
 └───────────────────────────────────────────────────────────────────────────────────────┘
@@ -354,9 +364,9 @@ Not the desktop panels shrunk. One task per screen, a persistent progress bar an
 
 ```
 ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐
-│ ▢ Training simulation│ │ ‹ ALR-0418     ⋯     │ │ ‹ Logs  26 of 361    │ │ Event 4624           │
+│ ▢ Training simulation│ │ ‹ ALR-0418     ⋯     │ │ ‹ Logs  19 of 482    │ │ Event 4624           │
 │ SOC-01               │ │ ■ High · j.morgan    │ │ [ip:203.0.113.45   ⌕]│ │ Successful logon     │
-│ Suspicious Windows   │ │ Successful logon     │ │ ⟨4625 ×24⟩⟨4624 ×2⟩ →│ │ 02:14:37.412 UTC     │
+│ Suspicious Windows   │ │ Successful logon     │ │ ⟨4625 ×17⟩⟨4624 ×2⟩ →│ │ 02:14:37.412 UTC     │
 │ Login Activity       │ │ after failures       │ │ ▁▂▁▁▃█▅▁▂▁  (brush)  │ │ ──────────────────── │
 │                      │ │ Fired 02:15 UTC      │ │ ┌──────────────────┐ │ │ Account  j.morgan    │
 │ 4 alerts overnight   │ │ Rule: ≥3 failures    │ │ │02:14:21  4625    │ │ │ Source   203.0.113.45│
@@ -365,7 +375,7 @@ Not the desktop panels shrunk. One task per screen, a persistent progress bar an
 │ │j.morgan · 02:15  │ │ │ Start with:          │ │ ├──────────────────┤ │ │ Workst.  DESKTOP-7Q2M4│
 │ ├──────────────────┤ │ │ [Logs for this alert]│ │ │02:14:37  4624 ✓  │ │ │ ──────────────────── │
 │ │■ Med   ALR-0419  │ │ │ [Entities involved ] │ │ │j.morgan          │ │ │ Related              │
-│ │203.0.113.45      │ │ │ [Context: rule, CHG] │ │ │203.0.113.45 · T3 │ │ │ › Same IP (25)       │
+│ │203.0.113.45      │ │ │ [Context: rule, CHG] │ │ │203.0.113.45 · T3 │ │ │ › Same IP (19)       │
 │ ├──────────────────┤ │ │                      │ │ └──────────────────┘ │ │ › j.morgan logons    │
 │ │□ Low   ALR-0420  │ │ │                      │ │                      │ │                      │
 │ └──────────────────┘ │ │                      │ │                      │ │ [ Pin as evidence ]  │
@@ -436,7 +446,7 @@ src/components/lab/
   lab.css
 src/content/lab/
   labs.json                      { id, status, approvedOn } (publication gate)
-  soc-01/events.json             generated, committed (≈ 360 events)
+  soc-01/events.json             generated, committed (≈ 480 events)
   soc-01/scenario.json           org facts, alerts, enrichment, MITRE ids, claims (ids only)
   soc-01/key.json                expected dispositions, predicates, actions (lazy-loaded at submit)
 scripts/soc-lab/generate-soc01.mjs
@@ -489,7 +499,7 @@ value := word | "quoted text" | range
 **Execution:**
 - At load, build inverted indexes (`Map<field, Map<value, Set<idx>>>`) and a time-sorted array.
 - Filter by intersecting the index sets, then apply residual predicates.
-- With ≈ 360 events every interaction is well under 5 ms; the design holds to about 50k events if later scenarios grow.
+- With ≈ 480 events every interaction is well under 5 ms; the design holds to about 50k events if later scenarios grow.
 
 **Correlation:**
 - `correlate(events)` yields nodes (IP / user / host) with counts and first/last seen, and edges (IP→user, user→host) with success and failure counts.
@@ -514,7 +524,7 @@ They point; the visitor decides.
   - `G` then `A` / `L` / `E` / `T` / `M` / `V` jumps between modules;
   - `?` opens the shortcuts dialog.
 - **Shortcut safety:** single-key shortcuts are active only when focus is in the workspace and not in a text field, and can be turned off in the shortcuts dialog (WCAG 2.1.4). Everything is also reachable without shortcuts.
-- **Announcements:** filter results are announced in a polite live region ("26 of 361 events"). Pin and unpin confirmations are announced too.
+- **Announcements:** filter results are announced in a polite live region ("19 of 482 events"). Pin and unpin confirmations are announced too.
 - **Charts:**
   - the histogram has a text summary and keyboard brush (arrows move, Shift + arrows resize);
   - the entity graph has the equivalent sortable table (default on mobile).
@@ -629,13 +639,29 @@ Rough effort: M1 about 1 session; M2 1–2; M3 2; M4 2; M5 1–2; M6 1.
 
 ## 9. Decisions for Eli
 
-| # | Decision | Recommendation |
-| --- | --- | --- |
-| D1 | Route name | `/{locale}/lab` and `/{locale}/lab/soc-01` (as reserved in the Phase 2 plan) |
-| D2 | Debrief style | Claim-by-claim checklist with a "6 of 8 supported" line, no percentage score |
-| D3 | Model analyst notes in the debrief | Yes, written from §3.3 and approved by Eli in all three languages |
-| D4 | Fictional names | Generic fictional names (§3.1) on `northwind.example`; Eli can veto any name |
-| D5 | Display time zone | UTC everywhere, labelled (the SOC convention) |
-| D6 | Home and recruiter links after approval | The home card "SOC investigation lab" links to the lab; the recruiter brief adds one "Personal project" line |
-| D7 | Workspace header | Keep the compact site header (identity, language switch, recruiter button) above the workspace |
-| D8 | Mockups (M1) | A static concept route on this proposal branch, shown in a protected Preview after your approval to deploy |
+| # | Decision | Recommendation | Status |
+| --- | --- | --- | --- |
+| D1 | Route name | `/{locale}/lab` and `/{locale}/lab/soc-01` (as reserved in the Phase 2 plan) | **Approved** |
+| D2 | Debrief style | Claim-by-claim checklist with a "6 of 8 supported" line, no percentage score | **Approved** |
+| D3 | Model analyst notes in the debrief | Yes, written from §3.3 and approved by Eli in all three languages | Open |
+| D4 | Fictional names | Generic fictional names (§3.1) on `northwind.example`; Eli can veto any name | Open |
+| D5 | Display time zone | UTC everywhere, labelled (the SOC convention) | **Approved** |
+| D6 | Home and recruiter links after approval | The home card "SOC investigation lab" links to the lab; the recruiter brief adds one "Personal project" line | Open |
+| D7 | Workspace header | Keep the compact site header (identity, language switch, recruiter button) above the workspace | **Approved** |
+| D8 | Mockups (M1) | A static concept route on this proposal branch, shown in a protected Preview after your approval to deploy | Mockups **approved and built** (§10). Protected Preview deployment: open, needs a separate approval |
+
+---
+
+## 10. M1 visual mockups
+
+Built on `proposal/phase3-soc-lab` only. Phase 1 and Phase 2 files are unchanged.
+
+- **Routes:** `/{locale}/lab` (lab index) and `/{locale}/lab/soc-01?view=…`, inside the site layout, so the real header is kept.
+  - Preview build only: a public build returns 404 for both.
+  - Always noindex; not in the navigation or the sitemap.
+- **Views:**
+  - desktop: `logs` (queue, explorer, inspector, timeline dock), `timeline` (observed evidence and hypotheses), `verdict` and `debrief`;
+  - mobile: `queue`, `logs`, `event` (bottom sheet), `timeline`, `verdict` (stepper) and `debrief`.
+- **Static:** server-rendered with sample data from §3 (`src/components/lab-mockup/data.ts`). There is no query engine, state or interactivity; links only switch views.
+- **Copy:** EN/HE/AR kept in `src/components/lab-mockup/copy.ts`. The real lab moves it to a `lab` message namespace.
+- **Not mocked yet:** the Entities and MITRE views (tabs shown, disabled) and the tablet layout; they come in M4 and M5.
