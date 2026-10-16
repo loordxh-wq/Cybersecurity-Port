@@ -412,25 +412,26 @@
       "contents": "בעמוד זה",
       "previous": "התיק הקודם",
       "next": "התיק הבא",
-      "plannedStep": "שלב מתוכנן",
       "technical": "פירוט טכני",
       "whatIDid": "מה עשיתי",
       "whatItShows": "מה זה מראה",
       "skills": "מיומנויות",
-      "slotNote": "נכתב רק מתוך ראיות אמיתיות",
       "evidenceSlot": "ממתין לצילום מסך",
       "figure": "איור",
       "viewFull": "תצוגה בגודל מלא",
       "close": "סגירה",
       "findingRef": "ראיה",
-      "videoMeta": "כתוביות באנגלית, בעברית ובערבית · מתנגן רק לפי בקשה"
+      "videoMeta": "כתוביות באנגלית, בעברית ובערבית · מתנגן רק לפי בקשה",
+      "planned": "מתוכנן"
     },
     "notice": "התיק הזה מתוכנן. ממצאים, צילומי מסך ווידאו יתווספו רק מתוך העבודה שלי במעבדה, אחרי בדיקה.",
     "section": {
       "summary": "תקציר למגייסים",
       "objective": "מטרה",
       "environment": "סביבת המעבדה והכלים",
+      "workflow": "תהליך העבודה",
       "steps": "שלבי החקירה",
+      "checks": "מה אני בודק",
       "findings": "ממצאים ותצפיות",
       "evidence": "גלריית ראיות",
       "video": "סרטון הדרכה",
@@ -448,20 +449,122 @@
     "items": {
       "wireshark": {
         "title": "חקירת תעבורת רשת",
-        "objective": "מתוכנן: מעקב אחר שאילתות DNS, לחיצת היד של TCP וההבדל בין HTTP ל-TLS, בתעבורה שאני מייצר במעבדה שלי.",
+        "objective": "מעקב אחר בקשת דף דרך DNS, לחיצת היד של TCP ו-HTTP מול TLS, בתעבורה שנוצרת במעבדה שלי.",
         "environment": "שתי מכונות וירטואליות ברשת host-only מבודדת: אחת מגישה דף בדיקה והשנייה מקליטה.",
+        "workflow": {
+          "capture": "לכידה",
+          "filter": "סינון",
+          "inspect": "בדיקה",
+          "follow": "מעקב",
+          "summarise": "סיכום"
+        },
+        "diagram": {
+          "caption": "כך עוברת בקשה לדף: שאילתת DNS, לחיצת היד המשולשת של TCP, ואז HTTP בטקסט גלוי או TLS מוצפן.",
+          "client": "לקוח",
+          "resolver": "שרת DNS",
+          "server": "שרת אינטרנט",
+          "query": "שאילתת DNS",
+          "response": "תשובת DNS"
+        },
+        "checks": {
+          "dns": "DNS: השם שנשאל והכתובת שהוחזרה, שאליה הלקוח מתחבר אחר כך.",
+          "tcp": "TCP: לחיצת היד המשולשת (SYN, ‏SYN-ACK, ‏ACK), וכל איפוס או שידור חוזר.",
+          "http": "HTTP: שיטת הבקשה, המארח וקוד הסטטוס, קריאים בטקסט גלוי.",
+          "tls": "TLS: לחיצת היד ושם השרת (SNI) גלויים; התוכן עצמו מוצפן."
+        },
         "steps": {
           "capture": {
             "title": "הקלטת תעבורה בממשק המעבדה",
-            "detail": "ממשק: מתאם ה-host-only. התעבורה נוצרת מבקשת HTTP אחת למכונה השנייה."
+            "detail": "ממשק: מתאם ה-host-only. התעבורה נוצרת משאילתת DNS אחת ובקשת HTTP אחת למכונה השנייה."
           },
-          "filter": {
-            "title": "סינון לשיחה אחת",
-            "detail": "מסנני תצוגה כמו dns, ‏tcp.flags.syn == 1 ו-ip.addr == <מכונת המעבדה>."
+          "dns": {
+            "title": "בידוד שאילתת ה-DNS",
+            "detail": "מסנן תצוגה dns; השוואה בין השאילתה לתשובה."
+          },
+          "handshake": {
+            "title": "קריאת לחיצת היד של TCP",
+            "detail": "מסנן תצוגה tcp.flags.syn == 1; מעקב אחר SYN, ‏SYN-ACK ו-ACK."
           },
           "stream": {
             "title": "מעקב אחר הזרם והשוואת HTTP ל-TLS",
             "detail": "Follow → TCP Stream, ואחר כך Statistics → Conversations."
+          }
+        }
+      },
+      "splunk": {
+        "title": "חקירת התראת SOC",
+        "objective": "טיפול בהתראת אימות ב-Splunk, מהחיפוש הראשון ועד הכרעה כתובה, על בסיס לוגים שנוצרים במעבדה שלי.",
+        "environment": "Splunk Enterprise (רישיון חינמי) על מכונת מעבדה, עם לוגי אימות ממכונות הבדיקה שלי.",
+        "workflow": {
+          "alert": "התראה",
+          "scope": "היקף",
+          "pivot": "הצלבה",
+          "timeline": "ציר זמן",
+          "verdict": "הכרעה"
+        },
+        "diagram": {
+          "caption": "הטיפול בהתראה מצמצם אירועים רבים למעטים שחשובים, ובוחן אותם על ציר זמן לפני הכרעה."
+        },
+        "checks": {
+          "scope": "אילו חשבונות ומקורות מעורבים בהתראה, ובאיזה חלון זמן.",
+          "sequence": "האם אחרי ניסיונות התחברות כושלים מגיעה התחברות מוצלחת מאותו מקור.",
+          "rhythm": "איך הפעילות מתפזרת לאורך זמן: פרץ קצר או דפוס קבוע.",
+          "verdict": "מה תומך במסקנה, ומה יצדיק הסלמה."
+        },
+        "steps": {
+          "ingest": {
+            "title": "קליטת לוגי אימות מהמעבדה",
+            "detail": "Settings → Add Data, ‏sourcetype linux_secure, ‏index main."
+          },
+          "search": {
+            "title": "חיפוש וצמצום האירועים",
+            "detail": "חיפושים כמו \"Failed password\", מוגבלים לחלון הזמן של ההתראה."
+          },
+          "pivot": {
+            "title": "הצלבה לפי חשבונות ומקורות",
+            "detail": "stats count by user, src, ואחר כך חיפוש התחברויות מוצלחות מאותם מקורות."
+          },
+          "timeline": {
+            "title": "בניית ציר זמן וכתיבת המסקנה",
+            "detail": "timechart span=1m count, ואחר כך דוח שמור."
+          }
+        }
+      },
+      "ad": {
+        "title": "תפעול Active Directory",
+        "objective": "הקמה וניהול של דומיין מעבדה (משתמשים, קבוצות, OUs ו-Group Policy) ומיפוי אירועי Windows ש-SOC עוקב אחריהם.",
+        "environment": "מכונת Windows Server בגרסת הערכה כבקר הדומיין של lab.local, עם מכונת לקוח Windows שמצורפת לדומיין.",
+        "workflow": {
+          "promote": "קידום",
+          "structure": "מבנה",
+          "accounts": "חשבונות",
+          "policy": "מדיניות",
+          "verify": "אימות"
+        },
+        "diagram": {
+          "caption": "דומיין מעבדה: יחידות ארגוניות מכילות משתמשים, קבוצות ומחשבים, ואובייקט Group Policy מקושר ליחידה אחת."
+        },
+        "checks": {
+          "placement": "החשבונות נמצאים ביחידה הארגונית הנכונה, וההרשאות מגיעות מחברות בקבוצות ולא מהרשאות ישירות.",
+          "policy": "ה-Group Policy מקושר ליחידה הנכונה ואכן מוחל (gpresult).",
+          "audit": "יומן ה-Security מתעד את השינויים: 4720 (יצירת חשבון), 4728 (הוספה לקבוצת אבטחה גלובלית), 4625 (התחברות כושלת) ו-4740 (נעילת חשבון)."
+        },
+        "steps": {
+          "promote": {
+            "title": "קידום בקר דומיין עבור lab.local",
+            "detail": "Server Manager → Active Directory Domain Services → Promote."
+          },
+          "structure": {
+            "title": "יצירת OUs, משתמשים וקבוצת אבטחה",
+            "detail": "Active Directory Users and Computers, עם אימות באמצעות Get-ADGroupMember."
+          },
+          "policy": {
+            "title": "קישור Group Policy ל-OU של המעבדה",
+            "detail": "Group Policy Management → Create a GPO in this domain, and Link it here."
+          },
+          "verify": {
+            "title": "אימות המדיניות ואירועי הביקורת",
+            "detail": "gpresult /r במחשב הלקוח במעבדה, ואחר כך מזהי האירועים המתאימים ביומן Security."
           }
         }
       }

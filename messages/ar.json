@@ -412,25 +412,26 @@
       "contents": "في هذه الصفحة",
       "previous": "الملف السابق",
       "next": "الملف التالي",
-      "plannedStep": "خطوة مخطّطة",
       "technical": "تفاصيل تقنية",
       "whatIDid": "ما الذي فعلته",
       "whatItShows": "ما الذي يُظهره",
       "skills": "المهارات المستخدمة",
-      "slotNote": "يُكتب فقط من أدلة حقيقية",
       "evidenceSlot": "بانتظار لقطة الشاشة",
       "figure": "شكل",
       "viewFull": "عرض بالحجم الكامل",
       "close": "إغلاق",
       "findingRef": "دليل",
-      "videoMeta": "ترجمة بالإنجليزية والعبرية والعربية · لا يعمل إلا عند الطلب"
+      "videoMeta": "ترجمة بالإنجليزية والعبرية والعربية · لا يعمل إلا عند الطلب",
+      "planned": "مخطّط"
     },
     "notice": "هذا الملف مخطّط له. ستُضاف النتائج ولقطات الشاشة والفيديو فقط من عملي في المختبر، بعد المراجعة.",
     "section": {
       "summary": "ملخص لمسؤولي التوظيف",
       "objective": "الهدف",
       "environment": "بيئة المختبر والأدوات",
+      "workflow": "سير العمل",
       "steps": "خطوات التحقيق",
+      "checks": "ما الذي أتحقق منه",
       "findings": "النتائج والملاحظات",
       "evidence": "معرض الأدلة",
       "video": "فيديو الشرح",
@@ -448,20 +449,122 @@
     "items": {
       "wireshark": {
         "title": "التحقيق في حركة الشبكة",
-        "objective": "مخطّط: تتبّع استعلامات DNS ومصافحة TCP والفرق بين HTTP وTLS، في حركة أُنشئها في مختبري.",
+        "objective": "تتبّع طلب صفحة عبر DNS ومصافحة TCP وHTTP مقابل TLS، في حركة تُنشأ في مختبري.",
         "environment": "جهازان افتراضيان على شبكة host-only معزولة: أحدهما يقدّم صفحة اختبار والآخر يلتقط الحركة.",
+        "workflow": {
+          "capture": "التقاط",
+          "filter": "تصفية",
+          "inspect": "فحص",
+          "follow": "تتبّع",
+          "summarise": "تلخيص"
+        },
+        "diagram": {
+          "caption": "هكذا ينتقل طلب الصفحة: استعلام DNS، ثم مصافحة TCP الثلاثية، ثم HTTP كنص واضح أو TLS مشفّر.",
+          "client": "العميل",
+          "resolver": "خادم DNS",
+          "server": "خادم الويب",
+          "query": "استعلام DNS",
+          "response": "رد DNS"
+        },
+        "checks": {
+          "dns": "DNS: الاسم المستعلَم عنه والعنوان المُعاد، الذي يتصل به العميل بعد ذلك.",
+          "tcp": "TCP: المصافحة الثلاثية (SYN وSYN-ACK وACK)، وأي إعادة ضبط أو إعادة إرسال.",
+          "http": "HTTP: طريقة الطلب والمضيف ورمز الحالة، مقروءة كنص واضح.",
+          "tls": "TLS: المصافحة واسم الخادم (SNI) ظاهران؛ أما المحتوى فمشفّر."
+        },
         "steps": {
           "capture": {
             "title": "التقاط الحركة على واجهة المختبر",
-            "detail": "الواجهة: محوّل host-only. تُنشأ الحركة بطلب HTTP واحد إلى الجهاز الثاني."
+            "detail": "الواجهة: محوّل host-only. تُنشأ الحركة باستعلام DNS واحد وطلب HTTP واحد إلى الجهاز الثاني."
           },
-          "filter": {
-            "title": "التصفية إلى محادثة واحدة",
-            "detail": "مرشّحات عرض مثل dns و tcp.flags.syn == 1 و ip.addr == <جهاز المختبر>."
+          "dns": {
+            "title": "عزل استعلام DNS",
+            "detail": "مرشّح العرض dns؛ مقارنة الاستعلام بالرد."
+          },
+          "handshake": {
+            "title": "قراءة مصافحة TCP",
+            "detail": "مرشّح العرض tcp.flags.syn == 1؛ تتبّع SYN وSYN-ACK وACK."
           },
           "stream": {
             "title": "تتبّع التدفق ومقارنة HTTP مع TLS",
             "detail": "Follow → TCP Stream، ثم Statistics → Conversations."
+          }
+        }
+      },
+      "splunk": {
+        "title": "التحقيق في تنبيه SOC",
+        "objective": "فرز تنبيه مصادقة في Splunk، من أول بحث حتى حكم مكتوب، باستخدام سجلات تُنشأ في مختبري.",
+        "environment": "Splunk Enterprise (ترخيص مجاني) على جهاز مختبر، مع سجلات المصادقة من أجهزة الاختبار الخاصة بي.",
+        "workflow": {
+          "alert": "التنبيه",
+          "scope": "النطاق",
+          "pivot": "الربط",
+          "timeline": "الخط الزمني",
+          "verdict": "الحكم"
+        },
+        "diagram": {
+          "caption": "يضيّق الفرز أحداثًا كثيرة إلى القليل المهم منها، ثم يختبرها على خط زمني قبل إصدار الحكم."
+        },
+        "checks": {
+          "scope": "ما الحسابات والمصادر التي يشملها التنبيه، وفي أي نافذة زمنية.",
+          "sequence": "هل تتبع محاولاتِ الدخول الفاشلة عمليةُ دخول ناجحة من المصدر نفسه.",
+          "rhythm": "كيف يتوزع النشاط عبر الزمن: دفعة قصيرة أم نمط ثابت.",
+          "verdict": "ما الذي يدعم الخلاصة، وما الذي يبرّر تصعيدها."
+        },
+        "steps": {
+          "ingest": {
+            "title": "إدخال سجلات المصادقة من المختبر",
+            "detail": "Settings → Add Data، ‏sourcetype linux_secure، ‏index main."
+          },
+          "search": {
+            "title": "البحث وتضييق الأحداث",
+            "detail": "عمليات بحث مثل \"Failed password\"، مقيّدة بالنافذة الزمنية للتنبيه."
+          },
+          "pivot": {
+            "title": "الربط حسب الحسابات والمصادر",
+            "detail": "stats count by user, src، ثم البحث عن عمليات دخول ناجحة من المصادر نفسها."
+          },
+          "timeline": {
+            "title": "بناء خط زمني وكتابة الخلاصة",
+            "detail": "timechart span=1m count، ثم تقرير محفوظ."
+          }
+        }
+      },
+      "ad": {
+        "title": "عمليات Active Directory",
+        "objective": "إنشاء نطاق مختبر وإدارته (المستخدمون والمجموعات وOUs وGroup Policy) ورسم خريطة لأحداث Windows التي يراقبها SOC.",
+        "environment": "جهاز Windows Server بإصدار تقييمي كوحدة تحكّم بنطاق lab.local، مع جهاز عميل Windows منضمّ إلى النطاق.",
+        "workflow": {
+          "promote": "الترقية",
+          "structure": "الهيكلة",
+          "accounts": "الحسابات",
+          "policy": "السياسة",
+          "verify": "التحقق"
+        },
+        "diagram": {
+          "caption": "نطاق مختبر: تضم الوحدات التنظيمية المستخدمين والمجموعات والأجهزة، وكائن Group Policy مرتبط بوحدة واحدة."
+        },
+        "checks": {
+          "placement": "تقع الحسابات في الوحدة التنظيمية الصحيحة، وتأتي الصلاحيات من عضوية المجموعات لا من أذونات مباشرة.",
+          "policy": "تُربط Group Policy بالوحدة المقصودة وتُطبَّق فعلًا (gpresult).",
+          "audit": "يسجّل سجل Security التغييرات: 4720 (إنشاء حساب)، و4728 (إضافة عضو إلى مجموعة أمان عامة)، و4625 (فشل تسجيل الدخول)، و4740 (قفل الحساب)."
+        },
+        "steps": {
+          "promote": {
+            "title": "ترقية وحدة تحكّم بالنطاق لـ lab.local",
+            "detail": "Server Manager → Active Directory Domain Services → Promote."
+          },
+          "structure": {
+            "title": "إنشاء OUs ومستخدمين ومجموعة أمان",
+            "detail": "Active Directory Users and Computers، مع التحقق عبر Get-ADGroupMember."
+          },
+          "policy": {
+            "title": "ربط Group Policy بالوحدة التنظيمية للمختبر",
+            "detail": "Group Policy Management → Create a GPO in this domain, and Link it here."
+          },
+          "verify": {
+            "title": "التحقق من السياسة وأحداث التدقيق",
+            "detail": "gpresult /r على جهاز العميل في المختبر، ثم معرّفات الأحداث المطابقة في سجل Security."
           }
         }
       }

@@ -1,5 +1,5 @@
 {
-  "$comment": "Case files (Phase 2). Structure only; all wording lives in messages under caseFiles.items.<id>. Only status \"approved\" renders publicly. An approved case needs: evidence files sanitized and approved in src/assets/evidence/manifest.json and registered in src/content/evidence-images.ts, at least one finding tied to its evidence, every message in en/he/ar, updatedOn and approvedOn. Provenance is always personal-lab. Video is optional and must be an own recording with captions in all three languages. Run npm run check:content.",
+  "$comment": "Case files (Phase 2). Structure only; all wording lives in messages under caseFiles.items.<id>. Only status \"approved\" renders publicly. An approved case needs: evidence files sanitized and approved in src/assets/evidence/manifest.json and registered in src/content/evidence-images.ts, at least one finding tied to its evidence, every message in en/he/ar, updatedOn and approvedOn. Provenance is always personal-lab. Video is optional and must be an own recording with captions in all three languages. Each case also lists its workflow stages and checks (keys under caseFiles.items.<id>.workflow / .checks), which describe the method, never results. Run npm run check:content.",
   "cases": [
     {
       "id": "wireshark",
@@ -8,9 +8,118 @@
       "category": "network",
       "status": "placeholder",
       "provenance": "personal-lab",
-      "tools": ["Wireshark", "Kali Linux", "VirtualBox"],
-      "skills": ["wiresharkSiem", "network"],
-      "steps": ["capture", "filter", "stream"],
+      "tools": [
+        "Wireshark",
+        "Kali Linux",
+        "VirtualBox"
+      ],
+      "skills": [
+        "wiresharkSiem",
+        "network"
+      ],
+      "steps": [
+        "capture",
+        "dns",
+        "handshake",
+        "stream"
+      ],
+      "workflow": [
+        "capture",
+        "filter",
+        "inspect",
+        "follow",
+        "summarise"
+      ],
+      "checks": [
+        "dns",
+        "tcp",
+        "http",
+        "tls"
+      ],
+      "evidencePlanned": 3,
+      "evidence": [],
+      "findings": [],
+      "video": null,
+      "updatedOn": null,
+      "approvedOn": null
+    },
+    {
+      "id": "splunk",
+      "number": "CF-02",
+      "slug": "soc-alert-investigation",
+      "category": "siem",
+      "status": "placeholder",
+      "provenance": "personal-lab",
+      "tools": [
+        "Splunk Enterprise",
+        "Linux",
+        "VMware"
+      ],
+      "skills": [
+        "wiresharkSiem",
+        "blueTeam"
+      ],
+      "steps": [
+        "ingest",
+        "search",
+        "pivot",
+        "timeline"
+      ],
+      "workflow": [
+        "alert",
+        "scope",
+        "pivot",
+        "timeline",
+        "verdict"
+      ],
+      "checks": [
+        "scope",
+        "sequence",
+        "rhythm",
+        "verdict"
+      ],
+      "evidencePlanned": 3,
+      "evidence": [],
+      "findings": [],
+      "video": null,
+      "updatedOn": null,
+      "approvedOn": null
+    },
+    {
+      "id": "ad",
+      "number": "CF-03",
+      "slug": "active-directory-operations",
+      "category": "identity",
+      "status": "placeholder",
+      "provenance": "personal-lab",
+      "tools": [
+        "Windows Server",
+        "Active Directory",
+        "PowerShell",
+        "Group Policy"
+      ],
+      "skills": [
+        "windowsAd",
+        "support"
+      ],
+      "steps": [
+        "promote",
+        "structure",
+        "policy",
+        "verify"
+      ],
+      "workflow": [
+        "promote",
+        "structure",
+        "accounts",
+        "policy",
+        "verify"
+      ],
+      "checks": [
+        "placement",
+        "policy",
+        "audit"
+      ],
       "evidencePlanned": 3,
       "evidence": [],
       "findings": [],

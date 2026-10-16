@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import "@/components/case-files/case-files.css";
 import { approvedEvidence, caseMetadata, sanitizedOn } from "@/components/case-files/data";
+import { CaseDiagram } from "@/components/case-files/CaseDiagram";
 import { EvidenceGallery } from "@/components/case-files/EvidenceGallery";
 import { CasePlate, CaseStatus, EvidenceMeter, Facts, Slot, Tools } from "@/components/case-files/parts";
 import { caseBySlug, statusKey, visibleCases } from "@/content/case-files";
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return caseMetadata(locale, `/case-files/${c.slug}`, `${c.number} · ${t(`items.${c.id}.title`)} | ${meta("siteName")}`, t(`items.${c.id}.objective`), c.status === "approved");
 }
 
-const sections = ["summary", "objective", "environment", "steps", "findings", "evidence", "video", "lessons", "skills"] as const;
+const sections = ["summary", "objective", "environment", "workflow", "steps", "checks", "findings", "evidence", "video", "lessons", "skills"] as const;
 
 /**
  * One case file. Every section of the approved template is present. Where content can
@@ -139,11 +140,11 @@ export default async function CaseFilePage({ params }: Params) {
               <dl className="cf-summary">
                 <div>
                   <dt>{t("label.whatIDid")}</dt>
-                  <dd>{has("summary.did") ? <p className="cf-text cf-text--strong">{text("summary.did")}</p> : <Slot note={t("label.slotNote")}>{t("slot.whatIDid")}</Slot>}</dd>
+                  <dd>{has("summary.did") ? <p className="cf-text cf-text--strong">{text("summary.did")}</p> : <Slot>{t("slot.whatIDid")}</Slot>}</dd>
                 </div>
                 <div>
                   <dt>{t("label.whatItShows")}</dt>
-                  <dd>{has("summary.shows") ? <p className="cf-text cf-text--strong">{text("summary.shows")}</p> : <Slot note={t("label.slotNote")}>{t("slot.whatItShows")}</Slot>}</dd>
+                  <dd>{has("summary.shows") ? <p className="cf-text cf-text--strong">{text("summary.shows")}</p> : <Slot>{t("slot.whatItShows")}</Slot>}</dd>
                 </div>
                 <div>
                   <dt>{t("label.skills")}</dt>
@@ -167,7 +168,21 @@ export default async function CaseFilePage({ params }: Params) {
               <Tools tools={c.tools} />
             </Section>
 
-            <Section id="steps" n={no("steps")} title={t("section.steps")}>
+            <Section id="workflow" n={no("workflow")} title={t("section.workflow")}>
+              <CaseDiagram
+                id={c.id}
+                category={c.category}
+                caption={text("diagram.caption")}
+                stages={c.workflow.map((w) => ({ key: w, label: text(`workflow.${w}`) }))}
+                lanes={
+                  c.category === "network"
+                    ? { client: text("diagram.client"), resolver: text("diagram.resolver"), server: text("diagram.server"), query: text("diagram.query"), response: text("diagram.response") }
+                    : undefined
+                }
+              />
+            </Section>
+
+            <Section id="steps" n={no("steps")} title={t("section.steps")} tag={planned ? t("label.planned") : undefined}>
               <ol className="cf-steps">
                 {c.steps.map((step, i) => (
                   <li key={step} className="cf-step">
@@ -175,7 +190,6 @@ export default async function CaseFilePage({ params }: Params) {
                       S{i + 1}
                     </span>
                     <div className="cf-step-body">
-                      {planned ? <p className="cf-step-tag">{t("label.plannedStep")}</p> : null}
                       <h3 className="cf-step-title">{text(`steps.${step}.title`)}</h3>
                       <details className="cf-detail">
                         <summary>{t("label.technical")}</summary>
@@ -185,6 +199,14 @@ export default async function CaseFilePage({ params }: Params) {
                   </li>
                 ))}
               </ol>
+            </Section>
+
+            <Section id="checks" n={no("checks")} title={t("section.checks")}>
+              <ul className="cf-checks">
+                {c.checks.map((key) => (
+                  <li key={key}>{text(`checks.${key}`)}</li>
+                ))}
+              </ul>
             </Section>
 
             <Section id="findings" n={no("findings")} title={t("section.findings")}>
@@ -205,7 +227,7 @@ export default async function CaseFilePage({ params }: Params) {
                   ))}
                 </ol>
               ) : (
-                <Slot note={t("label.slotNote")}>{t("slot.findings")}</Slot>
+                <Slot>{t("slot.findings")}</Slot>
               )}
             </Section>
 
@@ -227,7 +249,7 @@ export default async function CaseFilePage({ params }: Params) {
             ) : null}
 
             <Section id="lessons" n={no("lessons")} title={t("section.lessons")}>
-              {has("lessons") ? <p className="cf-text cf-text--strong">{text("lessons")}</p> : <Slot note={t("label.slotNote")}>{t("slot.lessons")}</Slot>}
+              {has("lessons") ? <p className="cf-text cf-text--strong">{text("lessons")}</p> : <Slot>{t("slot.lessons")}</Slot>}
             </Section>
 
             <Section id="skills" n={no("skills")} title={t("section.skills")}>
@@ -275,7 +297,7 @@ export default async function CaseFilePage({ params }: Params) {
   );
 }
 
-function Section({ id, n, title, children }: { id: string; n: string; title: string; children: ReactNode }) {
+function Section({ id, n, title, tag, children }: { id: string; n: string; title: string; tag?: string; children: ReactNode }) {
   return (
     <section id={`cf-${id}`} aria-labelledby={`cf-${id}-h`} className="cf-section">
       <h2 id={`cf-${id}-h`} className="cf-section-title">
@@ -283,6 +305,7 @@ function Section({ id, n, title, children }: { id: string; n: string; title: str
           {n}
         </span>
         {title}
+        {tag ? <span className="cf-section-tag">{tag}</span> : null}
       </h2>
       {children}
     </section>

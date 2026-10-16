@@ -70,7 +70,18 @@ for (const c of cases) {
   if (!statuses.has(c.status)) fail(`${name}: unknown status "${c.status}"`);
   if (c.provenance !== "personal-lab") fail(`${name}: provenance must be "personal-lab"`);
   const base = `caseFiles.items.${c.id}`;
-  const required = ["title", "objective", "environment", ...c.steps.flatMap((s) => [`steps.${s}.title`, `steps.${s}.detail`])];
+  const required = [
+    "title",
+    "objective",
+    "environment",
+    "diagram.caption",
+    ...(c.category === "network" ? ["diagram.client", "diagram.resolver", "diagram.server", "diagram.query", "diagram.response"] : []),
+    ...c.steps.flatMap((s) => [`steps.${s}.title`, `steps.${s}.detail`]),
+    ...c.workflow.map((w) => `workflow.${w}`),
+    ...c.checks.map((k) => `checks.${k}`),
+  ];
+  if (!Array.isArray(c.workflow) || c.workflow.length !== 5) fail(`${name}: workflow must list exactly five stages`);
+  if (!Array.isArray(c.checks) || !c.checks.length) fail(`${name}: checks must list at least one technical checkpoint`);
   for (const l of locales) {
     for (const key of required) {
       const v = get(messages[l], `${base}.${key}`);

@@ -11,7 +11,7 @@ test.use(viewports.mobile);
 
 for (const locale of locales) {
   test(`${locale}: no Case Files page, link or sitemap entry while nothing is documented`, async ({ page, request }) => {
-    for (const path of ["/case-files", "/case-files/network-traffic-investigation"]) {
+    for (const path of ["/case-files", "/case-files/network-traffic-investigation", "/case-files/soc-alert-investigation", "/case-files/active-directory-operations"]) {
       const res = await request.get(`/${locale}${path}`);
       expect(res.status(), path).toBe(404);
     }

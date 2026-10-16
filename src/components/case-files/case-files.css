@@ -542,18 +542,6 @@
   border: 1px dashed rgb(148 180 220 / 0.32);
   background: repeating-linear-gradient(135deg, transparent 0 10px, rgb(148 180 220 / 0.035) 10px 11px);
 }
-.cf-slot-note {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: rgb(245 196 107 / 0.9);
-}
-:lang(he) .cf-slot-note,
-:lang(ar) .cf-slot-note {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  letter-spacing: 0;
-}
 .cf-slot-text {
   font-size: 0.9375rem;
   line-height: 1.6;
@@ -587,16 +575,6 @@
   display: grid;
   gap: 0.35rem;
   min-width: 0;
-}
-.cf-step-tag {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: rgb(245 196 107 / 0.9);
-}
-:lang(he) .cf-step-tag,
-:lang(ar) .cf-step-tag {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
 }
 .cf-step-title {
   font-size: 1.0625rem;
@@ -636,7 +614,6 @@
   font-size: 0.9375rem;
   line-height: 1.65;
   color: var(--cf-muted);
-  unicode-bidi: plaintext;
 }
 
 /* Evidence plates */
@@ -1083,4 +1060,236 @@
   aspect-ratio: 16 / 9;
   border: 1px solid var(--cf-rule);
   background: #05080f;
+}
+
+/* ------------------------------------------------------------------ workflow & checks */
+.cf-section-tag {
+  margin-inline-start: auto;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid rgb(245 196 107 / 0.55);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: var(--cf-awaiting);
+  white-space: nowrap;
+}
+:lang(he) .cf-section-tag,
+:lang(ar) .cf-section-tag {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+
+.cf-diagram {
+  display: grid;
+  gap: 0.85rem;
+}
+.cf-diagram-plate {
+  position: relative;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--cf-rule);
+  background:
+    linear-gradient(rgb(148 180 220 / 0.045) 1px, transparent 1px) 0 0 / 100% 16px,
+    linear-gradient(90deg, rgb(148 180 220 / 0.045) 1px, transparent 1px) 0 0 / 16px 100%,
+    rgb(6 10 18 / 0.75);
+}
+@media (min-width: 640px) {
+  .cf-diagram-plate {
+    padding: 1.5rem 2rem;
+  }
+}
+.cf-diagram-svg {
+  display: block;
+  width: 100%;
+  max-width: 34rem;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+}
+.cf-diagram-caption {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cf-muted);
+}
+.cf-d-rail,
+.cf-d-msg line,
+.cf-d-msg polyline,
+.cf-d-msg-line,
+.cf-d-node,
+.cf-d-bracket,
+.cf-d-link {
+  fill: none;
+  stroke: rgb(148 180 220 / 0.55);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.cf-d-rail {
+  stroke: rgb(148 180 220 / 0.32);
+  stroke-dasharray: 2 4;
+}
+.cf-d-node {
+  stroke: rgb(201 211 225 / 0.75);
+}
+.cf-d-bracket {
+  stroke: rgb(148 180 220 / 0.4);
+}
+.cf-d-bracket--accent {
+  stroke: rgb(66 213 246 / 0.6);
+}
+.cf-d-link {
+  stroke: var(--cc-cyan);
+  stroke-dasharray: 5 4;
+}
+.cf-d-accent,
+.cf-d-accent line,
+.cf-d-accent polyline {
+  fill: none;
+  stroke: var(--cc-cyan);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+.cf-d-dot {
+  fill: rgb(148 180 220 / 0.5);
+}
+.cf-d-accent-fill {
+  fill: var(--cc-cyan);
+}
+.cf-d-label,
+.cf-d-token,
+.cf-d-lane {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: rgb(232 238 246 / 0.78);
+}
+.cf-d-lane {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  fill: #e8eef6;
+}
+.cf-d-label--accent,
+.cf-d-token--accent {
+  fill: var(--cc-cyan-hi);
+}
+
+/* Stage flow: ordered, follows the reading direction; a hairline joins the stages. */
+.cf-flow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  counter-reset: none;
+}
+.cf-flow > li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.25rem 0;
+  text-align: center;
+}
+.cf-flow > li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--cf-rule-strong);
+}
+.cf-flow > li:first-child::before {
+  inset-inline-start: 50%;
+}
+.cf-flow > li:last-child::before {
+  inset-inline-end: 50%;
+}
+.cf-flow > li::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--cc-cyan);
+  background: var(--cc-bg);
+}
+.cf-flow-no {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--cf-label);
+}
+.cf-flow-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 479.98px) {
+  /* Narrow phones: a vertical flow keeps every label on one line. */
+  .cf-flow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-inline-start: 0.4rem;
+  }
+  .cf-flow > li {
+    display: flex;
+    justify-items: start;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.4rem 0 0.4rem 1rem;
+    text-align: start;
+  }
+  [dir="rtl"] .cf-flow > li {
+    padding: 0.4rem 1rem 0.4rem 0;
+  }
+  .cf-flow > li::before,
+  .cf-flow > li:first-child::before,
+  .cf-flow > li:last-child::before {
+    top: 0;
+    bottom: 0;
+    inset-inline: 0 auto;
+    width: 1px;
+    height: auto;
+  }
+  .cf-flow > li:first-child::before {
+    top: 50%;
+  }
+  .cf-flow > li:last-child::before {
+    bottom: 50%;
+  }
+  .cf-flow > li::after {
+    top: calc(50% - 3px);
+    inset-inline-start: -3px;
+  }
+  .cf-flow-no {
+    margin-top: 0;
+  }
+}
+@media (min-width: 480px) {
+  .cf-flow > li::after {
+    inset-inline-start: calc(50% - 3px);
+  }
+}
+
+/* Checks: what the investigation looks at, as a ruled list. */
+.cf-checks {
+  display: grid;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-checks > li {
+  position: relative;
+  padding: 0.8rem 0;
+  padding-inline-start: 1.4rem;
+  border-bottom: 1px solid var(--cf-rule);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.cf-checks > li::before {
+  content: "";
+  position: absolute;
+  top: 1.45rem;
+  inset-inline-start: 0.1rem;
+  width: 0.55rem;
+  height: 1px;
+  background: var(--cc-cyan);
 }

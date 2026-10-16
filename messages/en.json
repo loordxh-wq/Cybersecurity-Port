@@ -412,25 +412,26 @@
       "contents": "On this page",
       "previous": "Previous case",
       "next": "Next case",
-      "plannedStep": "Planned step",
       "technical": "Technical detail",
       "whatIDid": "What I did",
       "whatItShows": "What it shows",
       "skills": "Skills used",
-      "slotNote": "Written only from real evidence",
       "evidenceSlot": "Awaiting screenshot",
       "figure": "Figure",
       "viewFull": "View full size",
       "close": "Close",
       "findingRef": "Evidence",
-      "videoMeta": "Captions in English, Hebrew and Arabic · plays only on request"
+      "videoMeta": "Captions in English, Hebrew and Arabic · plays only on request",
+      "planned": "Planned"
     },
     "notice": "This case is planned. Findings, screenshots and video will be added only from my own lab work, after review.",
     "section": {
       "summary": "Recruiter summary",
       "objective": "Objective",
       "environment": "Lab environment and tools",
+      "workflow": "Workflow",
       "steps": "Investigation steps",
+      "checks": "What I check",
       "findings": "Findings and observations",
       "evidence": "Evidence gallery",
       "video": "Walkthrough video",
@@ -448,20 +449,122 @@
     "items": {
       "wireshark": {
         "title": "Network Traffic Investigation",
-        "objective": "Planned: follow DNS lookups, the TCP handshake and the difference between HTTP and TLS in traffic I generate in my own lab.",
+        "objective": "Trace a page request through DNS, the TCP handshake and HTTP versus TLS, in traffic generated in my own lab.",
         "environment": "Two virtual machines on an isolated host-only network, one serving a test page and one capturing.",
+        "workflow": {
+          "capture": "Capture",
+          "filter": "Filter",
+          "inspect": "Inspect",
+          "follow": "Follow",
+          "summarise": "Summarise"
+        },
+        "diagram": {
+          "caption": "How a page request travels: a DNS lookup, the TCP three-way handshake, then HTTP in clear text or TLS encrypted.",
+          "client": "Client",
+          "resolver": "DNS resolver",
+          "server": "Web server",
+          "query": "DNS query",
+          "response": "DNS response"
+        },
+        "checks": {
+          "dns": "DNS: the name queried and the address returned, which the client then connects to.",
+          "tcp": "TCP: the three-way handshake (SYN, SYN-ACK, ACK), plus any resets or retransmissions.",
+          "http": "HTTP: method, host and status code, readable in clear text.",
+          "tls": "TLS: the handshake and the server name (SNI) are visible; the content is encrypted."
+        },
         "steps": {
           "capture": {
             "title": "Capture traffic on the lab interface",
-            "detail": "Interface: the host-only adapter. Traffic generated with a single HTTP request to the second VM."
+            "detail": "Interface: the host-only adapter. Traffic generated with one DNS lookup and one HTTP request to the second VM."
           },
-          "filter": {
-            "title": "Filter to one conversation",
-            "detail": "Display filters such as dns, tcp.flags.syn == 1 and ip.addr == <lab VM>."
+          "dns": {
+            "title": "Isolate the DNS lookup",
+            "detail": "Display filter dns; compare the query with the response."
+          },
+          "handshake": {
+            "title": "Read the TCP handshake",
+            "detail": "Display filter tcp.flags.syn == 1; follow the SYN, SYN-ACK and ACK."
           },
           "stream": {
             "title": "Follow the stream and compare HTTP with TLS",
             "detail": "Follow → TCP Stream, then Statistics → Conversations."
+          }
+        }
+      },
+      "splunk": {
+        "title": "SOC Alert Investigation",
+        "objective": "Triage an authentication alert in Splunk, from the first search to a written verdict, using logs generated in my own lab.",
+        "environment": "Splunk Enterprise (free licence) on a lab VM, with authentication logs from my own test machines.",
+        "workflow": {
+          "alert": "Alert",
+          "scope": "Scope",
+          "pivot": "Pivot",
+          "timeline": "Timeline",
+          "verdict": "Verdict"
+        },
+        "diagram": {
+          "caption": "Triage narrows many events to the few that matter, then tests them against a timeline before a verdict."
+        },
+        "checks": {
+          "scope": "Which accounts and sources the alert involves, and over what time window.",
+          "sequence": "Whether failed logins are followed by a success from the same source.",
+          "rhythm": "How the activity is spread over time: a short burst or a steady pattern.",
+          "verdict": "What supports the conclusion, and what would justify escalating it."
+        },
+        "steps": {
+          "ingest": {
+            "title": "Ingest lab authentication logs",
+            "detail": "Settings → Add Data, sourcetype linux_secure, index main."
+          },
+          "search": {
+            "title": "Search and narrow the events",
+            "detail": "Searches such as \"Failed password\", limited to the alert's time window."
+          },
+          "pivot": {
+            "title": "Pivot on accounts and sources",
+            "detail": "stats count by user, src, then a search for successful logins from the same sources."
+          },
+          "timeline": {
+            "title": "Build a timeline and write the conclusion",
+            "detail": "timechart span=1m count, then a saved report."
+          }
+        }
+      },
+      "ad": {
+        "title": "Active Directory Operations",
+        "objective": "Build and administer a lab domain (users, groups, OUs and Group Policy) and map the Windows events a SOC watches.",
+        "environment": "A Windows Server evaluation VM as the domain controller for lab.local, with a Windows client VM joined to the domain.",
+        "workflow": {
+          "promote": "Promote",
+          "structure": "Structure",
+          "accounts": "Accounts",
+          "policy": "Policy",
+          "verify": "Verify"
+        },
+        "diagram": {
+          "caption": "A lab domain: organizational units hold users, groups and computers, and a Group Policy object is linked to one unit."
+        },
+        "checks": {
+          "placement": "Accounts sit in the right organizational unit, and access comes from group membership rather than direct permissions.",
+          "policy": "Group Policy is linked to the intended unit and actually applies (gpresult).",
+          "audit": "The Security log records the changes: 4720 (account created), 4728 (member added to a global security group), 4625 (failed logon) and 4740 (lockout)."
+        },
+        "steps": {
+          "promote": {
+            "title": "Promote a domain controller for lab.local",
+            "detail": "Server Manager → Active Directory Domain Services → Promote."
+          },
+          "structure": {
+            "title": "Create OUs, users and a security group",
+            "detail": "Active Directory Users and Computers, verified with Get-ADGroupMember."
+          },
+          "policy": {
+            "title": "Link a Group Policy to the lab OU",
+            "detail": "Group Policy Management → Create a GPO in this domain, and Link it here."
+          },
+          "verify": {
+            "title": "Verify the policy and the audit events",
+            "detail": "gpresult /r on the lab client, then the matching Security log event IDs."
           }
         }
       }

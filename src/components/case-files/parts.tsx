@@ -27,11 +27,14 @@ export function EvidenceMeter({ approved, planned, label }: { approved: number; 
   );
 }
 
-/** Content slot for text that does not exist yet: says what will go here, never pretends to be it. */
-export function Slot({ note, children }: { note: string; children: ReactNode }) {
+/**
+ * Content slot for text that does not exist yet: a dashed box that says what will go
+ * here, never pretends to be it. One notice at the top of the case explains why; the
+ * slots themselves stay quiet.
+ */
+export function Slot({ children }: { children: ReactNode }) {
   return (
     <div className="cf-slot">
-      <p className="cf-slot-note">{note}</p>
       <p className="cf-slot-text">{children}</p>
     </div>
   );

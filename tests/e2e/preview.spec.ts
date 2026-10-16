@@ -17,31 +17,49 @@ test("case studies in preparation are visible and marked as pending", async ({ p
   await expect(page.locator("footer")).toContainText("Protected preview build");
 });
 
+const cases = [
+  { slug: "network-traffic-investigation", stages: 5, steps: 4, checks: 4, category: "network" },
+  { slug: "soc-alert-investigation", stages: 5, steps: 4, checks: 4, category: "siem" },
+  { slug: "active-directory-operations", stages: 5, steps: 4, checks: 3, category: "identity" },
+] as const;
+
 test.describe("case files in the protected preview", () => {
   for (const vpName of ["mobile360", "desktop"] as const) {
     test.describe(vpName, () => {
       test.use(viewports[vpName]);
       for (const locale of locales) {
-        test(`${locale}: CF-01 is visible, marked awaiting evidence, invents nothing`, async ({ page }) => {
+        test(`${locale}: CF-01 to CF-03 are visible, awaiting evidence, and invent nothing`, async ({ page }) => {
           await page.goto(`/${locale}/case-files`);
           await expect(page.locator("html")).toHaveAttribute("dir", dirOf(locale));
           await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-          await expect(page.locator(".cf-card")).toHaveCount(1);
-          await expect(page.locator(".cf-card .cf-status[data-status=awaiting]")).toHaveCount(1);
+          await expect(page.locator(".cf-card")).toHaveCount(3);
+          await expect(page.locator(".cf-card .cf-status[data-status=awaiting]")).toHaveCount(3);
           await expect(page.locator(".cf-meter-cell[data-filled]")).toHaveCount(0);
           expect(await axe(page)).toEqual([]);
 
-          await page.locator(".cf-card-link").click();
-          await page.waitForURL(`**/${locale}/case-files/network-traffic-investigation`);
-          await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-          await expect(page.locator(".cf-notice")).toBeVisible();
-          await expect(page.locator(".cf-step-tag")).toHaveCount(3);
-          await expect(page.locator("#cf-findings .cf-slot, #cf-lessons .cf-slot")).toHaveCount(2);
-          await expect(page.locator(".cf-gallery img, video, #cf-video")).toHaveCount(0);
-          await expect(page.locator(".cf-figure-empty")).toHaveCount(3);
-          const width = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
-          expect(width.sw).toBeLessThanOrEqual(width.cw);
-          expect(await axe(page)).toEqual([]);
+          for (const c of cases) {
+            await page.goto(`/${locale}/case-files/${c.slug}`);
+            await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+            // One notice at the top; one "Planned" marker on the steps heading; quiet slots.
+            await expect(page.locator(".cf-notice")).toHaveCount(1);
+            await expect(page.locator(".cf-section-tag")).toHaveCount(1);
+            await expect(page.locator("#cf-steps .cf-section-tag")).toHaveCount(1);
+            await expect(page.locator(".cf-step")).toHaveCount(c.steps);
+            // Method content: diagram described by its caption, five stages, technical checks.
+            const svg = page.locator(`.cf-diagram-svg[data-category=${c.category}]`);
+            await expect(svg).toHaveAttribute("role", "img");
+            const captionId = await svg.getAttribute("aria-labelledby");
+            await expect(page.locator(`#${captionId}`)).not.toBeEmpty();
+            await expect(page.locator(".cf-flow > li")).toHaveCount(c.stages);
+            await expect(page.locator(".cf-checks > li")).toHaveCount(c.checks);
+            // No results claimed: findings and lessons are slots, no screenshots, no video.
+            await expect(page.locator("#cf-findings .cf-slot, #cf-lessons .cf-slot")).toHaveCount(2);
+            await expect(page.locator(".cf-gallery img, video, #cf-video, .cf-findings")).toHaveCount(0);
+            await expect(page.locator(".cf-figure-empty")).toHaveCount(3);
+            const width = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+            expect(width.sw, c.slug).toBeLessThanOrEqual(width.cw);
+            expect(await axe(page), c.slug).toEqual([]);
+          }
         });
       }
     });
@@ -52,5 +70,18 @@ test.describe("case files in the protected preview", () => {
     await expect(page.locator(".cf-dossier .cf-card-prov")).toHaveText("Personal Lab");
     await expect(page.locator('header nav a[href="/en/case-files"]')).toHaveCount(0);
     await expect(page.locator("footer .site-footer-labnote")).toHaveCount(0);
+  });
+
+  test("keyboard: the stage flow and contents work in RTL; technical detail opens", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/he/case-files/soc-alert-investigation");
+    const first = page.locator(".cf-flow > li").first();
+    const last = page.locator(".cf-flow > li").last();
+    // Vertical on phones: stage 01 is above stage 05.
+    expect((await first.boundingBox())!.y).toBeLessThan((await last.boundingBox())!.y);
+    const detail = page.locator(".cf-detail").first();
+    await detail.locator("summary").focus();
+    await page.keyboard.press("Enter");
+    await expect(detail).toHaveAttribute("open", "");
   });
 });

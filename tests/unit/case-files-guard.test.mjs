@@ -63,7 +63,7 @@ function documented(dir, { file = "cf01-e01.png", body = png } = {}) {
 test("the current project passes (CF-01 awaiting evidence, preview only)", () => {
   const r = sandbox();
   assert.equal(r.ok, true, r.out);
-  assert.match(r.out, /1 case files \(0 public, 1 preview-only\)/);
+  assert.match(r.out, /3 case files \(0 public, 3 preview-only\)/);
 });
 
 test("a fully documented case with reviewed evidence passes", () => {
@@ -147,4 +147,16 @@ test("video files are never committed to Git", () => {
   });
   assert.equal(r.ok, false);
   assert.match(r.out, /video files are hosted outside Git/);
+});
+
+test("every case needs its method content (five workflow stages, checks, diagram caption) in all languages", () => {
+  const stages = sandbox((d) => editCase(d, (c) => (c.workflow = c.workflow.slice(0, 3))));
+  assert.match(stages.out, /workflow must list exactly five stages/);
+  const caption = sandbox((d) => {
+    const m = json(d, "messages/he.json");
+    delete m.caseFiles.items.wireshark.diagram.caption;
+    save(d, "messages/he.json", m);
+  });
+  assert.equal(caption.ok, false);
+  assert.match(caption.out, /missing he message caseFiles\.items\.wireshark\.diagram\.caption/);
 });

@@ -27,7 +27,7 @@ export interface CaseVideo {
 }
 
 export interface CaseFile {
-  id: "wireshark";
+  id: "wireshark" | "splunk" | "ad";
   number: string;
   slug: string;
   category: CaseCategory;
@@ -38,6 +38,10 @@ export interface CaseFile {
   skills: SkillId[];
   /** Step keys under caseFiles.items.<id>.steps; planned until the case is documented. */
   steps: string[];
+  /** Workflow stage keys (the method, shown as a flow): caseFiles.items.<id>.workflow.<key>. */
+  workflow: string[];
+  /** Technical checkpoints (what the investigation looks at): caseFiles.items.<id>.checks.<key>. */
+  checks: string[];
   /** Evidence slots the write-up plans for (shown as empty frames while awaiting evidence). */
   evidencePlanned: number;
   evidence: CaseEvidence[];
