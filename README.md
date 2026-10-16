@@ -27,9 +27,20 @@ npm run dev          # http://localhost:3000 → redirects to /en
 npm run check:i18n   # fails if any language is missing a string
 npm run lint         # i18n check + ESLint (zero warnings allowed)
 npm run typecheck    # tsc --noEmit
-npm run build        # i18n check + production build
+npm run check:content # fails if unapproved or untranslated portfolio content could go public
+npm run build        # i18n + content checks + production build
 npm run verify       # all of the above, in order
+npm run test:e2e     # Playwright + axe: every page × EN/HE/AR × 4 viewports, navigation,
+                     # certificate viewer, home chapters, motion and reduced motion
 ```
+
+**Public vs protected preview.** Every build is public unless it is made with
+`SITE_STAGE=preview npm run build`; the stage is fixed at build time. Only a preview
+build shows drafts and "Evidence pending" placeholders (`npm run test:e2e:preview`
+checks that build). Content status lives in `src/content/projects.json`
+(`placeholder` → `draft` → `approved`); only `approved` items with sanitized,
+recorded evidence (`src/assets/evidence/manifest.json`) can render publicly.
+Never deploy a preview build without access protection.
 
 Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) so canonical, hreflang and sitemap
 URLs point at the real domain.

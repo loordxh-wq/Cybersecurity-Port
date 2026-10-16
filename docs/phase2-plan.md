@@ -206,3 +206,22 @@ A CI check fails the build if:
 - **D4:** Approve the wording of the AI-assisted development case study.
 - **D5:** Who reviews the Hebrew and Arabic copy?
 - **Evidence:** Wireshark and AD screenshots or notes (unsanitized originals stay private; I sanitize copies), CV PDFs per language, public email, C|SA verification URL if one exists, roadmap goals, journal entries, a decision on the Cellcom figures.
+
+---
+
+## Progress
+
+### Milestone 2.0: foundation (branch `feature/phase2-m2.0-foundation`, awaiting review)
+- **V4.1 is the real home page.** Chapters: Identity (hero) → Mission → Career trajectory (interactive signal line) → Credentials exhibition → Open to Work band. A case-studies chapter appears in protected preview builds only.
+- **Cyber Command chrome on every page.**
+  - Fixed graphite header: numbered destinations; the language switcher keeps the reader's section.
+  - Full-screen index menu below 1024 px.
+  - Closing footer with the horizon rule and an outline name.
+- **Primitives:** ChapterRule, SignalLine (WAI-ARIA tabs, RTL-aware arrow keys), EvidencePlate, PendingSlot, SimTag/SimLabel, LatticeGlyph, readouts, buttons. Desktop chapter rail.
+- **Evidence model (D1):**
+  - `placeholder` / `draft` / `approved`, with the stage fixed at build time.
+  - `check:content` enforces translations, simulated labels and recorded evidence for anything approved.
+  - Messages are no longer serialized to the browser, so wording for unpublished items never appears in public page source.
+- **Contact (D2):** LinkedIn only; no email, no form.
+- **Tests:** the Playwright + axe suite now lives in `tests/e2e` (71 tests on the public build plus a preview-build test).
+- **Not in 2.0:** About, Certifications and Contact pages keep their Phase 1.5 content styling inside the new chrome. They are redesigned in milestones 2.1–2.2.
