@@ -50,7 +50,9 @@ export default async function LocaleLayout({
           {t("skip")}
         </a>
         {/* Site chrome (header, footer, atmosphere) lives in (site)/layout.tsx, so design prototypes can render their own. */}
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        {/* No client component reads messages, so none are serialized into the page:
+            wording for unpublished content never reaches the browser. */}
+        <NextIntlClientProvider messages={{}}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

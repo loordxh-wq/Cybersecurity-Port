@@ -1,0 +1,4 @@
+{
+  "$comment": "Sanitized evidence files only (no public IPs, MACs, hostnames, usernames, emails, serials or certificate IDs; metadata stripped). One entry per file: { file, source, sanitizedOn, approvedOn }.",
+  "files": []
+}

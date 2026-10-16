@@ -19,6 +19,9 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // The build decides the stage once ("public" unless SITE_STAGE=preview at build time),
+  // so a running server can never switch a public build into showing drafts.
+  env: { SITE_STAGE: process.env.SITE_STAGE === "preview" ? "preview" : "public" },
   poweredByHeader: false,
   reactStrictMode: true,
   images: { formats: ["image/avif", "image/webp"] },
