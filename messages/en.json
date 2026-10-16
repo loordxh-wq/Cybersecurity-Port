@@ -374,22 +374,22 @@
   "caseFiles": {
     "meta": {
       "title": "Case Files | Eli Saad",
-      "description": "Technical investigations from Eli Saad's personal lab, documented step by step with reviewed evidence."
+      "description": "Investigations from Eli Saad's personal lab: the objective, workflow and checks behind each one, with reviewed evidence once a case is documented."
     },
     "kicker": "Case files",
     "title": "Technical case files",
-    "lead": "Hands-on investigations from my own home lab, documented step by step and backed by evidence.",
+    "lead": "Investigations from my own home lab, each with its objective, workflow and checks. A case is marked Documented only after my own screenshots and findings are reviewed.",
     "legendTitle": "Case status",
     "verifyTitle": "How evidence is verified",
     "verifyNote": "Every screenshot comes from my own lab and is sanitized before review: no personal data, internal IPs, credentials or identifiers.",
     "publicNote": "On the public site, a case appears only after it is documented and approved.",
     "status": {
-      "awaiting": "Awaiting evidence",
+      "awaiting": "Planned",
       "inProgress": "In progress",
       "documented": "Documented"
     },
     "statusHelp": {
-      "awaiting": "Planned. No screenshots or findings yet.",
+      "awaiting": "Objective, workflow and checks are published; screenshots and findings follow from my own lab.",
       "inProgress": "Evidence collected, write-up under review.",
       "documented": "Evidence and write-up approved."
     },
@@ -422,7 +422,8 @@
       "close": "Close",
       "findingRef": "Evidence",
       "videoMeta": "Captions in English, Hebrew and Arabic · plays only on request",
-      "planned": "Planned"
+      "planned": "Planned",
+      "evidenceItems": "{count, plural, one {# evidence item} other {# evidence items}}"
     },
     "notice": "This case is planned. Findings, screenshots and video will be added only from my own lab work, after review.",
     "evidencePending": "Screenshots, findings and lessons learned are added here once the lab evidence is reviewed.",
@@ -569,6 +570,11 @@
           }
         }
       }
+    },
+    "count": {
+      "awaiting": "{count, plural, one {# planned investigation} other {# planned investigations}}",
+      "inProgress": "{count, plural, one {# case in progress} other {# cases in progress}}",
+      "documented": "{count, plural, one {# documented case} other {# documented cases}}"
     }
   }
 }

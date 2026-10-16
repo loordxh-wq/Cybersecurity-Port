@@ -3,10 +3,13 @@ import type { EvidenceStatus } from "@/content/evidence";
 import { statusKey, type CaseCategory } from "@/content/case-files";
 import { CaseGlyph } from "./glyphs";
 
-/** Status pill: the same three states everywhere (awaiting evidence, in progress, documented). */
-export function CaseStatus({ status, label }: { status: EvidenceStatus; label: string }) {
+/**
+ * Status pill: the same three states everywhere (planned, in progress, documented).
+ * `quiet` drops the frame, for lists where the state repeats on every item.
+ */
+export function CaseStatus({ status, label, quiet = false }: { status: EvidenceStatus; label: string; quiet?: boolean }) {
   return (
-    <span className="cf-status" data-status={statusKey[status]}>
+    <span className={quiet ? "cf-status cf-status--quiet" : "cf-status"} data-status={statusKey[status]}>
       <span aria-hidden="true" className="cf-status-mark" />
       {label}
     </span>

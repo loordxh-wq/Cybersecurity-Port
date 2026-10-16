@@ -29,6 +29,11 @@ export default async function CaseFilesPage({ params }: LocaleParams) {
   setRequestLocale(locale);
   if (!visibleCases.length) notFound();
   const t = await getTranslations("caseFiles");
+  // What this build actually holds, e.g. "3 planned investigations" or
+  // "1 documented case · 2 planned investigations"; empty states are left out.
+  const counts = (["documented", "inProgress", "awaiting"] as const)
+    .map((s) => ({ s, n: visibleCases.filter((c) => c.status === statusOf[s]).length }))
+    .filter(({ n }) => n > 0);
 
   return (
     <div className="cf">
@@ -41,6 +46,14 @@ export default async function CaseFilesPage({ params }: LocaleParams) {
           <p className="cf-index-lead">{t("lead")}</p>
 
           <div className="cf-legend">
+            <p className="cf-tally">
+              {counts.map(({ s, n }, i) => (
+                <span key={s}>
+                  {i > 0 ? <span aria-hidden="true"> · </span> : null}
+                  {t(`count.${s}`, { count: n })}
+                </span>
+              ))}
+            </p>
             <ul className="cf-legend-row" aria-label={t("legendTitle")}>
               {statuses.map((s) => (
                 <li key={s}>
@@ -71,7 +84,7 @@ export default async function CaseFilesPage({ params }: LocaleParams) {
               <li key={c.id}>
                 <article className="cf-card" aria-labelledby={`cf-${c.id}-title`}>
                   <span aria-hidden="true" className="cf-card-ticks" />
-                  <CasePlate number={c.number} category={c.category} status={<CaseStatus status={c.status} label={t(`status.${statusKey[c.status]}`)} />} />
+                  <CasePlate number={c.number} category={c.category} status={<CaseStatus status={c.status} label={t(`status.${statusKey[c.status]}`)} quiet={c.status === "placeholder"} />} />
                   <p className="cf-card-cat">{t(`category.${c.category}`)}</p>
                   <h2 id={`cf-${c.id}-title`} className="cf-card-title">
                     <Link href={`/case-files/${c.slug}`} className="cf-card-link">
@@ -82,7 +95,7 @@ export default async function CaseFilesPage({ params }: LocaleParams) {
                   <div className="cf-card-meta">
                     <p className="cf-card-prov">{t("provenance")}</p>
                     <Tools tools={c.tools} />
-                    <EvidenceMeter approved={approved} planned={Math.max(c.evidencePlanned, approved)} label={t("label.evidenceCount", { approved, planned: Math.max(c.evidencePlanned, approved) })} />
+                    {approved > 0 ? <EvidenceMeter approved={approved} planned={approved} label={t("label.evidenceItems", { count: approved })} /> : null}
                   </div>
                   <p aria-hidden="true" className="cf-card-open">
                     {t("label.open")}
