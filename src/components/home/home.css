@@ -1,0 +1,421 @@
+/*
+ * Home: chapter layouts around the approved V4.1 hero.
+ * Rhythm alternates editorial columns with full-bleed bands, so no two card grids
+ * ever sit back to back.
+ */
+
+/* The hero opts back under the fixed header. */
+.home-hero {
+  --hh: max(100svh, 640px);
+  margin-top: -4rem;
+}
+@media (min-width: 1024px) {
+  .home-hero {
+    margin-top: -5rem;
+  }
+}
+
+.home-chapter {
+  position: relative;
+  padding-block: 4rem;
+}
+@media (min-width: 1024px) {
+  .home-chapter {
+    padding-block: 6rem;
+  }
+}
+.home-head {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.25rem;
+  margin-bottom: 2.75rem;
+}
+@media (min-width: 1024px) {
+  .home-head {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    align-items: end;
+    gap: 4rem;
+    margin-bottom: 4rem;
+  }
+}
+
+/* ------------------------------------------------------------------ mission */
+.home-mission {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2.25rem;
+}
+@media (min-width: 1024px) {
+  .home-mission {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 6rem;
+    margin-top: 3.5rem;
+  }
+}
+.home-mission-title {
+  max-width: 15ch;
+}
+
+/* ------------------------------------------------------------------ career stages */
+.home-career {
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 60%, rgb(29 58 138 / 0.18), transparent 70%),
+    linear-gradient(180deg, transparent, rgb(8 18 38 / 0.35) 50%, transparent);
+}
+[dir="rtl"] .home-career {
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 60%, rgb(29 58 138 / 0.18), transparent 70%),
+    linear-gradient(180deg, transparent, rgb(8 18 38 / 0.35) 50%, transparent);
+}
+.home-stage {
+  display: grid;
+  gap: 1.75rem;
+}
+@media (min-width: 1024px) {
+  .home-stage {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr) minmax(0, 0.8fr);
+    gap: 3.5rem;
+  }
+}
+.home-stage-kind {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(165 240 255 / 0.82);
+}
+.home-stage-title {
+  margin-top: 0.6rem;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: #fff;
+}
+.home-stage-org {
+  margin-top: 0.45rem;
+  font-size: 0.9375rem;
+  color: rgb(255 255 255 / 0.64);
+}
+.home-stage-points li {
+  position: relative;
+  padding-inline-start: 1.4rem;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 0.8);
+}
+.home-stage-points li + li {
+  margin-top: 0.85rem;
+}
+.home-stage-points li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.8em;
+  width: 0.65rem;
+  height: 1px;
+  background: var(--cc-cyan);
+}
+.home-stage-text {
+  line-height: 1.65;
+  color: rgb(255 255 255 / 0.8);
+}
+.home-stage-tools ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+}
+.home-stage-tools li {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--cc-hair-strong);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(255 255 255 / 0.82);
+}
+.home-stage-roles {
+  margin-top: 1rem;
+}
+.home-stage-roles li {
+  padding-block: 0.6rem;
+  border-top: 1px solid var(--cc-hair);
+  font-weight: 500;
+  color: #fff;
+}
+:lang(ar) .home-stage-kind {
+  font-family: var(--font-sans);
+}
+
+/* ------------------------------------------------------------------ exhibition */
+.home-exhibit {
+  overflow: clip; /* the featured plate's light must not widen the page on phones */
+}
+.home-exhibit-head {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2.25rem;
+}
+@media (min-width: 640px) {
+  .home-exhibit-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+}
+.home-exhibit-grid {
+  display: grid;
+  gap: 2.25rem;
+  margin-top: 2.75rem;
+}
+.home-exhibit-featured {
+  position: relative;
+}
+.home-exhibit-featured::before {
+  /* The exhibition's one light: a cobalt wash behind the certification. */
+  content: "";
+  position: absolute;
+  inset: -12% -8%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(47 107 255 / 0.2), transparent);
+  pointer-events: none;
+}
+/* Phones: course plates hang as compact rows beside their caption. */
+@media (max-width: 639.98px) {
+  .home-exhibit-side .cc-plate {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  .home-exhibit-side .cc-plate-mount {
+    width: 44%;
+    flex: none;
+    padding: 0.5rem;
+  }
+  .home-exhibit-side .cc-plate-title {
+    font-size: 1rem;
+  }
+  .home-exhibit-side .cc-plate-row {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+}
+@media (min-width: 640px) {
+  .home-exhibit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 2rem;
+  }
+  .home-exhibit-featured {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1024px) {
+  .home-exhibit-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2.75rem 3.5rem;
+    margin-top: 4rem;
+  }
+  .home-exhibit-featured {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* ------------------------------------------------------------------ case studies (preview) */
+.home-work-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .home-work-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.home-work-grid > li {
+  display: flex;
+}
+.home-work-grid > li > * {
+  flex: 1;
+}
+
+/* ------------------------------------------------------------------ open to work band */
+.home-band {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: 5rem 6rem;
+  background: linear-gradient(180deg, var(--cc-bg), #050c1c 55%, #04060b);
+}
+@media (min-width: 1024px) {
+  .home-band {
+    padding-block: 8rem 9rem;
+  }
+}
+.home-band-floor {
+  position: absolute;
+  z-index: -1;
+  inset-inline: -25%;
+  bottom: -10%;
+  height: 70%;
+  background-image:
+    linear-gradient(to right, rgb(66 213 246 / 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(66 213 246 / 0.16) 1px, transparent 1px);
+  background-size: 72px 72px;
+  transform: perspective(520px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+  mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+}
+.home-band-horizon {
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  top: 46%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(66 213 246 / 0.45) 20%, rgb(139 124 255 / 0.35) 80%, transparent);
+  box-shadow: 0 0 40px 6px rgb(47 107 255 / 0.18);
+}
+.home-band-horizon > span {
+  position: absolute;
+  top: -1px;
+  inset-inline-start: 0;
+  width: 10%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, #fff);
+  opacity: 0;
+}
+[dir="rtl"] .home-band-horizon > span {
+  background: linear-gradient(270deg, transparent, #fff);
+}
+.home-band-grid {
+  display: grid;
+  gap: 3rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 1024px) {
+  .home-band-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    align-items: end;
+    gap: 6rem;
+    margin-top: 3.5rem;
+  }
+}
+.home-band-statement {
+  max-width: 20ch;
+  font-size: clamp(1.9rem, 4.2vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.02;
+  color: #fff;
+}
+:lang(he) .home-band-statement,
+:lang(ar) .home-band-statement {
+  line-height: 1.28;
+}
+.home-band-cta {
+  min-height: 3.5rem;
+  padding-inline: 1.6rem;
+}
+.home-band-readouts {
+  background: linear-gradient(180deg, rgb(4 6 11 / 0.82), rgb(4 6 11 / 0.65));
+}
+.home-band-roles li + li {
+  margin-top: 0.3rem;
+}
+
+/* ------------------------------------------------------------------ chapter rail (desktop) */
+.home-rail {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .home-rail {
+    position: fixed;
+    z-index: 30;
+    top: 50%;
+    inset-inline-end: 0.6rem;
+    display: block;
+    transform: translateY(-50%);
+  }
+}
+.home-rail ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.home-rail-link {
+  position: relative;
+  display: flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+.home-rail-tick {
+  width: 0.6rem;
+  height: 1px;
+  background: rgb(255 255 255 / 0.45);
+  transition:
+    width 0.3s var(--cc-ease),
+    background 0.3s;
+}
+.home-rail-link:hover .home-rail-tick {
+  width: 0.95rem;
+  background: #fff;
+}
+.home-rail-link[aria-current="true"] .home-rail-tick {
+  width: 1.4rem;
+  background: var(--cc-cyan);
+  box-shadow: 0 0 8px rgb(66 213 246 / 0.7);
+}
+.home-rail-index {
+  display: none;
+}
+.home-rail-label {
+  position: absolute;
+  inset-inline-end: calc(100% + 0.5rem);
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+  border: 1px solid var(--cc-hair-strong);
+  background: rgb(4 6 11 / 0.94);
+  font-size: 0.75rem;
+  color: #fff;
+  opacity: 0;
+  transform: translateX(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+[dir="rtl"] .home-rail-label {
+  transform: translateX(-4px);
+}
+.home-rail-link:hover .home-rail-label,
+.home-rail-link:focus-visible .home-rail-label {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ motion */
+@media (prefers-reduced-motion: no-preference) {
+  .home-band-floor {
+    animation: home-floor 7s linear infinite;
+  }
+  .home-band-horizon > span {
+    animation: cx-pulse 6s linear infinite;
+  }
+  .home-band-horizon > span:nth-child(2) {
+    animation-delay: 2s;
+  }
+  .home-band-horizon > span:nth-child(3) {
+    animation-delay: 4s;
+  }
+}
+@keyframes home-floor {
+  to {
+    background-position: 0 72px;
+  }
+}
+/* Phones: text stacks over the band's horizon, so only the floor remains. */
+@media (max-width: 1023.98px) {
+  .home-band-horizon {
+    display: none;
+  }
+}

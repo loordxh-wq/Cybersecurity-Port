@@ -146,18 +146,18 @@ export default async function ConceptV4({ params }: LocaleParams) {
         </section>
 
         {/* Next chapter: how the story continues once the scene recedes. */}
-        <section aria-labelledby="v4-mission-title" className="cc-next">
+        <section aria-labelledby="v4-mission-title" className="v4-next">
           <div className="mx-auto max-w-[90rem]">
-            <p className="cc-chapter">
+            <p className="v4-chapter">
               <span aria-hidden="true">02</span>
               <span>{v4("chapterMission")}</span>
-              <span aria-hidden="true" className="cc-chapter-rule" />
+              <span aria-hidden="true" className="v4-chapter-rule" />
             </p>
-            <div className="cc-next-grid cc-next-reveal">
-              <h2 id="v4-mission-title" className="cc-next-title cc-display">
+            <div className="v4-next-grid v4-next-reveal">
+              <h2 id="v4-mission-title" className="v4-next-title cc-display">
                 {about("title")}
               </h2>
-              <div className="cc-next-body">
+              <div className="v4-next-body">
                 <p className="measure text-[1.0625rem] leading-relaxed text-white/72">{about("body")}</p>
                 <Link href="/about" className="cc-link mt-6">
                   {about("link")}
@@ -165,15 +165,15 @@ export default async function ConceptV4({ params }: LocaleParams) {
               </div>
             </div>
 
-            <h3 className="cc-chapter mt-16 lg:mt-24">
+            <h3 className="v4-chapter mt-16 lg:mt-24">
               <span aria-hidden="true">03</span>
               <span>{v4("chapterCareer")}</span>
-              <span aria-hidden="true" className="cc-chapter-rule" />
+              <span aria-hidden="true" className="v4-chapter-rule" />
             </h3>
-            <ol className="cc-signal">
+            <ol className="v4-signal">
               {stops.map((s) => (
-                <li key={s.kind} className="cc-stop" data-kind={s.kind}>
-                  <p className="cc-stop-label">{s.label}</p>
+                <li key={s.kind} className="v4-stop" data-kind={s.kind}>
+                  <p className="v4-stop-label">{s.label}</p>
                   <p className="mt-2 font-semibold leading-snug text-white">
                     <bdi>{s.role}</bdi>
                   </p>
