@@ -11,10 +11,13 @@ import { resolveLocale } from "@/lib/locale";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ view?: string }> };
 
-const desktopViews: View[] = ["logs", "timeline", "verdict", "debrief"];
-const mobileViews: MobileView[] = ["queue", "logs", "event", "timeline", "verdict", "debrief"];
+const desktopViews: View[] = ["briefing", "logs", "entities", "timeline", "verdict", "debrief"];
+const mobileViews: MobileView[] = ["briefing", "queue", "logs", "filters", "event", "entities", "entity", "evidence", "verdict", "findings", "debrief"];
 
-// Phase 3 M1 mockup (proposal branch only): static sample data, protected preview, never indexed.
+const deskAlias: Record<string, View> = { queue: "logs", filters: "logs", event: "logs", entity: "entities", evidence: "timeline", findings: "verdict" };
+const mobileAlias: Record<string, MobileView> = { timeline: "evidence" };
+
+// Phase 3 M1.1 mockup (proposal branch only): static sample data, protected preview, never indexed.
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = (await resolveLocale(params)) as Locale;
   return { title: `${copyFor[locale].scenario} | Eli Saad`, robots: { index: false, follow: false } };
@@ -26,8 +29,9 @@ export default async function Soc01Mockup({ params, searchParams }: Props) {
   if (!isPreview) notFound();
   const t = copyFor[locale];
   const requested = (await searchParams).view ?? "";
-  const desk = desktopViews.find((v) => v === requested) ?? "logs";
-  const mobile = mobileViews.find((v) => v === requested) ?? "queue";
+  // Each layout maps the requested screen to its own closest view; a first visit opens the briefing.
+  const desk = desktopViews.find((v) => v === requested) ?? deskAlias[requested] ?? "briefing";
+  const mobile = mobileViews.find((v) => v === requested) ?? mobileAlias[requested] ?? "briefing";
   return (
     <div className="lm">
       <p className="lm-review lm-review--ws">{t.review}</p>

@@ -1,6 +1,6 @@
 # Phase 3: Interactive SOC Investigation Lab — architecture and visual proposal
 
-Status: **direction approved (M0). M1 visual mockups in review (§10). No Phase 3 lab code has been written.**
+Status: **direction approved (M0); M1 approved as a foundation; M1.1 refinement in review (§11–§13). No interactive lab logic has been written.**
 Branch: `proposal/phase3-soc-lab` (from `feature/case-files-cf01-03` at `94a4ca3`). Phase 1 and Phase 2 code is unchanged.
 Rules carried over:
 - Fully synthetic data. Every IP comes from the documentation ranges, every account and host is fictional, and there are no personal data or credentials.
@@ -17,6 +17,10 @@ Contents:
 7. Milestones and acceptance criteria
 8. Risks and limitations
 9. Decisions for Eli
+10. M1 visual mockups
+11. Technical accuracy audit (M1.1)
+12. M1.1 change log
+13. Interaction specification for M2/M3
 
 ---
 
@@ -133,7 +137,7 @@ Progress is kept in `sessionStorage` (per tab, cleared with "Reset investigation
 | Internal network | `198.51.100.0/24` (RFC 5737 documentation range, used as the "internal" subnet in the story) |
 | External sources | `203.0.113.0/24` (RFC 5737) |
 | Hosts | `DC01` (198.51.100.2), `JMP01` jump host with RDP published to the internet by mistake (external 192.0.2.10, internal 198.51.100.10), `SRV-FILE01` (198.51.100.21), `SRV-BKP01` (198.51.100.20), workstations `WS-0101`…`WS-0160` (198.51.100.101–160) |
-| Accounts | ~30 fictional users (`first-initial.surname`, generic names), `svc-backup`, `adm-it01`; non-existent names that attackers try: `administrator`, `admin`, `test`, `scanner`, `backup` |
+| Accounts | ~30 fictional users (`first-initial.surname`, generic names), `svc-backup`, `adm-it01`; non-existent names that attackers try: `administrator` (the built-in Administrator account is renamed per Northwind's hardening policy, so the name does not exist), `admin`, `test`, `scanner`, `backup`. Lockout policy: 5 failures within 30 minutes. |
 | Time span | 10 Mar 2026 12:00 → 11 Mar 2026 09:00 UTC (21 h), so j.morgan's working-hours baseline on 10 Mar is inside the data. All times shown in UTC, labelled. |
 | Volume | ≈ 480 events: ≈ 410 background (normal logons, screen unlocks, service logons) and ≈ 70 story events |
 
@@ -146,7 +150,7 @@ Four threads are interleaved. Only one is an attack.
 - From 18:00, `SRV-BKP01`'s scheduled job logs **4625**:
   - logon type 4 (batch), `Status 0xC000006D`, `SubStatus 0xC000006A` (bad password);
   - three attempts at each hourly run.
-- At the 00:00 run, the job's retry policy fires six attempts within 40 s. **4740** "account locked out" on `DC01` at 00:00:41.
+- At the 00:00 run, the job's retry policy fires six attempts within 40 s. The fifth failure reaches the threshold: **4740** "A user account was locked out" on `DC01` at 00:00:33, with Caller Computer Name `SRV-BKP01`.
 - Later attempts fail with `Status 0xC0000234` (account locked out; SubStatus `0x0`).
 - **Alert ALR-0417 (Medium, 00:01): "Account lockout — svc-backup".**
 - Expected disposition: *Benign — misconfiguration*.
@@ -160,8 +164,8 @@ Four threads are interleaved. Only one is an attack.
   - workstation name **`DESKTOP-7Q2M4`**, which doesn't follow Northwind's `WS-` naming.
 - At **02:14:37** the attempt against `j.morgan` **succeeds**:
   - **4624** logon type 3, NTLM, from 203.0.113.45;
-  - then **4624 logon type 10** (RemoteInteractive) at 02:14:52, an RDP session on `JMP01`.
-- At **02:21:13**, **4624** type 3 NTLM for `j.morgan` on **`SRV-FILE01`** from `198.51.100.10` (JMP01's internal address), workstation `JMP01`. This is access from the jump host to the file server.
+  - then **4624 logon type 10** (RemoteInteractive) at 02:14:52, an RDP session on `JMP01`. It is recorded with authentication package `Negotiate` and logon process `User32`, unlike the NLA network logon before it (`NTLM` / `NtLmSsp`).
+- At **02:21:13**, **4624** type 3 **Kerberos** for `j.morgan` on **`SRV-FILE01`** from `198.51.100.10`. That is JMP01's internal address per the scenario's asset inventory; Kerberos network logons record no workstation name. This is access from the jump host to the file server.
 - 02:31–02:34, a second source **`203.0.113.77`** with the **same workstation name `DESKTOP-7Q2M4`** tries 7 more accounts, all failing.
   - These are **indicators, not proof** of a common actor. The client name is supplied by the connecting device, so it can be a tool default or spoofed. Neighbouring addresses can belong to one hosting provider used by unrelated parties.
   - The scenario treats .77 as **possibly related (unconfirmed)**: blocked as a precaution, kept out of the confirmed scope.
@@ -182,7 +186,7 @@ Four threads are interleaved. Only one is an attack.
 
 **Thread D — a mistyped unlock (benign: expected activity).**
 - 08:41–08:42, `n.katz` on `WS-0117` logs four **4625** failures:
-  - logon type 7 (unlock), `SubStatus 0xC000006A`, local source;
+  - logon type 7 (unlock; Microsoft: "This workstation was unlocked"), `Status 0xC000006D`, `SubStatus 0xC000006A`, no remote source address (`-`); see §11 for the stated environment;
   - then **4624** type 7 at 08:42:30.
 - **Alert ALR-0420 (Low, 08:43): "Repeated failed logons — n.katz".**
 - Expected disposition: *Benign — expected activity* (user error at their own workstation).
@@ -670,3 +674,142 @@ Built on `proposal/phase3-soc-lab` only. Phase 1 and Phase 2 files are unchanged
 - **Static:** server-rendered with sample data from §3 (`src/components/lab-mockup/data.ts`). There is no query engine, state or interactivity; links only switch views.
 - **Copy:** EN/HE/AR kept in `src/components/lab-mockup/copy.ts`. The real lab moves it to a `lab` message namespace.
 - **Not mocked yet:** the Entities and MITRE views (tabs shown, disabled) and the tablet layout; they come in M4 and M5.
+
+---
+
+## 11. Technical accuracy audit (M1.1)
+
+The sample data was checked against Windows Security auditing behaviour before any interactive logic is built. Four corrections were made; the remaining uncertainties are listed rather than hidden. `tests/unit/lab-mockup-data.test.mjs` enforces the rules marked ✓.
+
+| Item | Rule applied | Status |
+| --- | --- | --- |
+| 4625 bad password | `Status 0xC000006D`, `SubStatus 0xC000006A`, Failure Reason "Unknown user name or bad password." | ✓ tested |
+| 4625 unknown account | `Status 0xC000006D`, `SubStatus 0xC0000064` | ✓ tested |
+| 4625 locked-out account | `Status 0xC0000234`, `SubStatus 0x0` | ✓ tested |
+| 4740 lockout | Logged on the domain controller (PDC emulator role), names the account and the Caller Computer Name | Data corrected: threshold reached on the 5th failure at 00:00:33 |
+| RDP with NLA, failed | 4625 **logon type 3** on the target host (credentials are checked before the session starts) | ✓ |
+| RDP with NLA, successful | 4624 type 3 (`NTLM`/`NtLmSsp`) followed by 4624 **type 10** recorded with `Negotiate`/`User32` | **Corrected** (M1 showed NTLM for type 10); ✓ tested |
+| NTLM from the internet client | A non-domain client with no route to a KDC negotiates NTLM during NLA | Plausible, stated as scenario design |
+| JMP01 → SRV-FILE01 | After an interactive logon on a domain-joined host, network access to another domain server uses **Kerberos**; Kerberos network logons record no workstation name | **Corrected** (M1 showed NTLM with workstation JMP01); ✓ tested |
+| Built-in `administrator` returning "no such user" | True only if the account was renamed | **Made explicit** as Northwind's hardening policy (§3.1) |
+| Batch job failures | 4625 logon type 4 on the host running the task; no source address | ✓ tested |
+| Internal host names | Names for internal addresses come from the scenario's asset inventory, not from event fields | Shown as "Asset inventory" in Entities |
+
+**Uncertainties to resolve before M2:**
+1. **Failed screen unlock (ALR-0420): resolved, no data change.**
+   - **Microsoft's documentation** defines logon type 7 as "Unlock — This workstation was unlocked" and applies the same logon-type table to the Logon Type field of 4625. It does not document failed unlocks being recorded as type 2. The M1.1 suggestion to use type 2 was therefore withdrawn as unsupported.
+   - **Fictional environment, stated in the scenario:**
+     - Windows 11 workstations joined to the NORTHWIND domain;
+     - password sign-in (the default password credential provider);
+     - "Audit Logon" enabled for success and failure;
+     - no smart cards or Windows Hello in this scenario.
+   - **Event semantics used:**
+     - four 4625 events on WS-0117, logon type 7, `Status 0xC000006D`, `SubStatus 0xC000006A`, Account `n.katz`, no remote source address (recorded as `-`);
+     - then 4624 logon type 7 on WS-0117.
+   - **Stated limitation:** real telemetry can vary with Windows version, credential provider and sign-in method. The lab models this one documented behaviour and does not claim it is universal.
+   - **Not modelled:** 4800/4801 (workstation locked/unlocked, *Audit Other Logon/Logoff Events*), stated in "what these logs cannot show".
+   - **Research note:** the Microsoft Learn pages could not be fetched from the build container (network policy), so they were consulted through search results. Eli or a reviewer should confirm against the live 4624 and 4625 pages before M2 freezes the dataset.
+2. **Exact field set per event.** Fields such as `LmPackageName`, `KeyLength`, `TransmittedServices` and `ImpersonationLevel` are not modelled. The inspector shows only the fields listed in §3.5. A "Raw" view must not invent values for omitted fields.
+3. **Domain controller events not modelled.** 4776 (NTLM validation) and 4768/4769/4771 (Kerberos) would also exist on DC01. Their absence is a deliberate scope limit and is stated in the debrief's "what these logs cannot show".
+4. **Timing realism.** Spray cadence (about 20–24 s) and the 15 s gap before the RDP session are plausible for tooling, but are scenario choices, not measurements.
+
+**Incident conclusions re-checked:**
+- H1 (password guessed during the spray) is supported by the events.
+- H2 (same actor behind .77) stays **unconfirmed**: only client-supplied and network-neighbour indicators link the sources.
+- H3 (files accessed) is **not determinable** from authentication logs.
+- No conclusion depends on a field the dataset does not contain.
+
+---
+
+## 12. M1.1 change log (prioritized)
+
+| Priority | Change | Why |
+| --- | --- | --- |
+| P0 | **Answer gating.** The answer key, model analyst notes and debrief render only on the submitted screen. Hypotheses before submission show only the claim, the visitor's working status and the evidence they linked; lab-written rationale moved to the debrief. Tested: no debrief text on any other screen, in any language or layout. | Independent investigation first. M1's timeline showed lab-written "evidence for" and "limits" text that hinted at the answer. |
+| P0 | **Technical corrections** (§11): type 10 → Negotiate/User32; JMP01 → SRV-FILE01 → Kerberos with no workstation name; renamed built-in administrator; lockout timing and policy. | Credibility with SOC reviewers. |
+| P0 | **Unanswered verdict.** The five-step verdict starts with nothing selected ("0 of 4 alerts classified"). *Submit* stays disabled until all steps are complete. | Required by the review. |
+| P1 | **Entities view** (desktop and mobile): a relationship map drawn only from window events; entity table; selected-entity detail. Every relationship cites its supporting events. Shared attributes are dashed, labelled "indicator only", with an explicit no-attribution note. Asset-inventory links are labelled as such. | Missing in M1. |
+| P1 | **Evidence workflow**: pin and unpin in the inspector; pinned markers in the log table; an evidence manager with notes, "Supports F1…" links and "Not linked yet" states; findings show their linked events. The count derives from pins and starts at 0. | Shows how evidence connects to findings. |
+| P1 | **Investigation briefing** screen: mission, objectives, controls, data in scope, and the answer-gate notice. It reveals no entities or scope. It is the default first screen. | Onboarding. |
+| P1 | **Debrief categories**: observed facts (supported / partly supported / missed); supported hypothesis; unconfirmed claim; not determinable; "overstated" when a status claims more than the evidence allows; model analyst notes (D3). | Required by the review. |
+| P1 | **Log Explorer filters**: structured chips (IP, event ID, time) with remove buttons, account selector, a result segmented control, a generated query, a prominent "Selected range" bar under the histogram, and a mobile filter sheet with typed fields. | Filter usability and a clear selected range. |
+| P2 | **iPhone layer**: a sticky workspace bar under the fixed site header with a pin counter; bottom tab bar (Alerts · Logs · Entities · Evidence · Verdict) with safe-area padding; denser two-level log cards; 44 px targets; sheets inside safe areas; a sticky step bar for the verdict; no overflow at 360 px. | Purpose-built mobile experience. |
+| P2 | **Accessibility**: one `h1` per layout, correct heading order, focusable scroll regions, real buttons for filter removal, radios and checkboxes with states. | axe clean on every screen. |
+
+**Mockup screens** (`/{locale}/lab/soc-01?view=…`):
+- desktop: `briefing`, `logs`, `entities`, `timeline`, `verdict`, `debrief`;
+- mobile: `briefing`, `queue`, `logs`, `filters`, `event`, `entities`, `entity`, `evidence`, `verdict` (step 1, unanswered), `findings` (step 3, in progress), `debrief`.
+
+---
+
+## 13. Interaction specification for M2/M3
+
+**State is the single source of truth** (§6.3), extended with:
+- `pins: Record<EventId, { note; links: FindingId[]; pinnedAt }>`;
+- `hypotheses: Record<HypId, Status | null>`;
+- `filters: { ip?, account?, eventIds: Set, result: "all" | "failure" | "success", range?: [from, to] }`.
+
+Every counter shown (pinned, linked, classified, steps complete) is a selector over this state. Nothing is hard-coded.
+
+**Filtering**
+- Structured filters and the query bar are two views of one filter model; editing either updates the other.
+- Filters combine with AND; event IDs are OR within the field.
+- The histogram brush sets `range`, shown in the "Selected range" bar with *Clear range*. Keyboard: arrows move the range, Shift + arrows resize it.
+- Facet counts reflect the current result set. Removing a chip announces the new count in a polite live region.
+- On mobile, the filter sheet edits a draft: *Show N events* applies it, and closing without applying discards it.
+
+**Inspecting and pinning**
+- Selecting a row (click, Enter, or tapping a card) opens the inspector, or the bottom sheet on mobile, and keeps the row selected.
+- *Pin as evidence* (or `P`) toggles the pin. The counter, the table marker and the evidence list update together, and an announcement says "Pinned e-0193 · 7 pinned".
+- *Unpin* removes the pin and its finding links, after a confirmation if the pin has links.
+
+**Evidence and findings**
+- In the evidence manager each pin has a note (local text) and *Link to finding*. The finding picker lists F1–F8 with their text.
+- A finding shows "N linked" with the event chips. A finding without links can still be asserted; it is then reported as "asserted, not supported".
+
+**Entities**
+- Built from the current time window (not the text filters), so relationships stay complete.
+- Selecting a node or row shows its relationships.
+- *Show in Log explorer* applies the matching filters (e.g. `ip` + `account`) and switches to Logs.
+- Indicator relationships have no "show events as proof" action; they list the events in which each shared attribute appears.
+
+**Verdict and submission**
+- Five steps, each validated: every alert classified; at least one alert per incident group; at least one finding asserted; every hypothesis given a status; reasoning optional.
+- *Next* is enabled when the step is valid. *Submit* is enabled when all five are.
+- On submit:
+  1. the visitor's state is frozen into `submitted`;
+  2. `key.json` and the model notes are fetched (code-split chunk);
+  3. the evaluation runs (§3.4) and the debrief opens.
+- Before submit, `?view=debrief` or `?view=report` falls back to the verdict.
+- *Revise investigation* returns to the workspace with the state kept; resubmitting re-evaluates.
+
+**Navigation, scroll and focus**
+- Mobile tabs and sheets are URL states (`?view=`), so the iOS back gesture closes a sheet before leaving a view.
+- Scroll position is stored per view and restored on return; opening a sheet never scrolls the list beneath it.
+- Sheets trap focus, return focus to the triggering row or button, and close on swipe-down or Esc.
+- Shortcuts follow §6.5 and are disabled while typing.
+
+**Acceptance (M2/M3)**
+- Unit tests cover every selector and the evaluation.
+- E2E tests cover: pinning changes the count everywhere; unpinning removes links; the verdict cannot be submitted incomplete; no debrief text or key request before submission; the debrief appears after submission; back gesture and scroll restoration on mobile.
+- axe passes on every state, in three languages and two layouts.
+
+---
+
+## 14. Answer delivery: verification and limitations
+
+**M1.1 mockup (verified by `tests/e2e/lab-mockup.spec.ts`).** The lab is made of React Server Components only. Its copy, including the debrief and the model analyst notes, never reaches a client bundle. The test checks four channels before submission, in all three languages:
+
+| Channel | Check | Result |
+| --- | --- | --- |
+| Client bundles | Every file under `.next/static` (all JavaScript, CSS and JSON a browser can download) is scanned for answer text | None found (lab copy appears only in server output) |
+| Page HTML and server payloads | HTML and the React Server Components payload (`RSC: 1`) of every pre-submission screen are scanned | None found; the debrief screen contains the text (positive control) |
+| Prefetching | Every visible link on the landing page and on four workspace screens is hovered at desktop and phone sizes. Responses are scanned, and no request may target `view=debrief` or `view=report`. | No answer text delivered, no debrief or report request. Workspace links are plain anchors, so Next.js does not prefetch them; the only prefetched link (landing → SOC-01) loads the briefing. |
+| Requests during navigation | All text, JavaScript, JSON and RSC responses while moving between screens are scanned | None found |
+
+**Limitations of the mockup.** The debrief is a separate server-rendered screen, reachable by typing `?view=debrief`. That is deliberate for design review and is not how the real lab will gate it.
+
+**Real lab (M2/M3), and its unavoidable limits:**
+- The answer key and model notes become a code-split chunk loaded with a dynamic `import()` only inside the submit handler. There are no prefetch or preload hints, the key is not in the message bundle, and the debrief/report views render only from submitted state. The same four-channel test will run against the interactive build and fail if the chunk is requested before submission.
+- **Unavoidable without a server:** once built, the chunk is a static file. Its name is listed in the build manifest, so a determined visitor could fetch it directly, outside the interface.
+- Closing that gap would need a server-side evaluation endpoint, which keeps the key on the server and returns only the debrief for a submitted verdict. That adds a backend and personal-data considerations the lab currently avoids. Recommendation: accept the limit for a training simulation and say so in "About this simulation".
