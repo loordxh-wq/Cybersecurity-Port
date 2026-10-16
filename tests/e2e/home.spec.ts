@@ -20,10 +20,19 @@ test.describe("home, desktop", () => {
     expect(hidden).toEqual([]);
   });
 
-  test("scene goes live and is always labelled as simulated", async ({ page }) => {
+  test("scene is labelled as a network visualization and nothing around it claims live monitoring", async ({ page }) => {
+    const labels = { en: "Network Visualization", he: "ויזואליזציה של רשת", ar: "عرض مرئي للشبكة" } as const;
+    for (const locale of ["en", "he", "ar"] as const) {
+      await page.goto(`/${locale}`);
+      await expect(page.locator(".cc-scene")).toHaveAttribute("data-live", "true", { timeout: 20_000 });
+      await expect(page.locator(".cc-sim")).toHaveText(labels[locale]);
+      // The indicator uses the V4.1 cyan accent (#42d5f6), not the amber pending mark.
+      await expect(page.locator(".cc-sim-tag")).toHaveCSS("background-color", "rgb(66, 213, 246)");
+    }
+    // English wording check of the hero: no live, monitoring, scanning or real-time claims.
     await page.goto("/en");
-    await expect(page.locator(".cc-scene")).toHaveAttribute("data-live", "true", { timeout: 20_000 });
-    await expect(page.locator(".cc-sim")).toContainText("Simulated");
+    const hero = await page.locator("#identity").innerText();
+    expect(hero).not.toMatch(/\blive\b|monitor|scan|real[- ]time|telemetry|feed/i);
   });
 
   test("career line: tabs switch by click and arrow keys", async ({ page }) => {

@@ -171,7 +171,7 @@
     "navTitle": "Pages",
     "socialTitle": "Find me on",
     "languageTitle": "Language",
-    "simulatedNote": "Any lab or demo data on this site is simulated for training and is clearly labelled. No real customer or security event data is shown.",
+    "labNote": "Technical investigations and hands-on projects are documented using personal lab environments. Evidence is reviewed before publication.",
     "rights": "© {year} Eli Saad"
   },
   "notFound": {
@@ -227,6 +227,7 @@
   },
   "common": {
     "simulatedTraining": "Simulated training lab",
+    "personalLab": "Personal Lab",
     "pending": "Evidence pending",
     "draft": "Draft",
     "previewOnly": "Protected preview only",
@@ -260,11 +261,11 @@
       "lead": "Each one reaches the public site only after its evidence is complete and approved."
     },
     "scroll": "Scroll",
-    "sceneSimulated": "Simulated topology · demo visual, not live data",
+    "sceneLabel": "Network Visualization",
     "legend": {
       "nodes": "Nodes",
       "links": "Connections",
-      "scan": "Scan"
+      "scan": "Motion"
     }
   },
   "projects": {

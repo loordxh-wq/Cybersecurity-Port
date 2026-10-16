@@ -29,7 +29,7 @@ export async function CommandHero() {
 
   return (
     <section id="identity" data-section aria-labelledby="hero-title" className="cc-hero home-hero">
-      <CommandScene portrait={person.portrait} alt={t("portraitAlt")} simulatedLabel={h("sceneSimulated")} />
+      <CommandScene portrait={person.portrait} alt={t("portraitAlt")} sceneLabel={h("sceneLabel")} />
       <div aria-hidden="true" className="cc-horizon" />
 
       <div className="cc-identity">
@@ -84,7 +84,7 @@ export async function CommandHero() {
         </div>
       </div>
 
-      <ul className="cc-legend" aria-label={h("sceneSimulated")}>
+      <ul className="cc-legend" aria-label={h("sceneLabel")}>
         <li>
           <span aria-hidden="true" className="cc-glyph-node" />
           {h("legend.nodes")}

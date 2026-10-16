@@ -467,6 +467,29 @@ body {
   font-family: var(--font-sans);
   text-transform: none;
 }
+/* Provenance of authentic work ("Personal Lab"): the label family, in the cyan label colour. */
+.cc-provlabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #93dcf0;
+}
+.cc-provlabel::before {
+  content: "";
+  width: 0.5rem;
+  height: 1px;
+  background: currentColor;
+}
+:lang(he) .cc-provlabel,
+:lang(ar) .cc-provlabel {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
 
 .cc-chapter {
   display: flex;
