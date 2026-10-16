@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { ChapterRule } from "@/components/cc/ChapterRule";
-import { linkedin } from "@/content/facts";
 import "./cv.css";
 import { CvRequestDialog } from "./CvRequestDialog";
 import { DocumentLock } from "./DocumentLock";
+import { getCvDialogLabels } from "./labels";
 import { LockIcon } from "./icons";
 
 /**
@@ -12,8 +12,6 @@ import { LockIcon } from "./icons";
  */
 export async function CvRequest({ index }: { index?: string }) {
   const cv = await getTranslations("cv");
-  const hero = await getTranslations("hero");
-  const social = await getTranslations("social");
 
   return (
     <section id="cv" data-section aria-labelledby="cv-title" className="cv-section">
@@ -31,31 +29,7 @@ export async function CvRequest({ index }: { index?: string }) {
             </p>
             <p className="cc-lead mt-5">{cv("body")}</p>
             <div className="mt-8">
-              <CvRequestDialog
-                labels={{
-                  cta: cv("cta"),
-                  kicker: cv("title"),
-                  title: cv("dialogTitle"),
-                  lead: cv("dialogLead"),
-                  name: hero("name"),
-                  role: hero("role"),
-                  phone: cv("phone"),
-                  international: cv("international"),
-                  call: cv("call"),
-                  callAria: cv("callAria"),
-                  sms: cv("sms"),
-                  smsAria: cv("smsAria"),
-                  smsBody: cv("smsBody"),
-                  copy: cv("copy"),
-                  copied: cv("copied"),
-                  copyFailed: cv("copyFailed"),
-                  close: cv("close"),
-                  privacy: cv("privacy"),
-                  linkedin: cv("linkedin"),
-                  linkedinHref: linkedin.href,
-                  newTab: social("newTab"),
-                }}
-              />
+              <CvRequestDialog labels={await getCvDialogLabels()} />
             </div>
             <p className="cv-privacy">{cv("privacy")}</p>
           </div>

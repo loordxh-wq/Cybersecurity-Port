@@ -37,7 +37,7 @@ export async function SiteHeader() {
       name={tHero("name")}
       localName={locale === "en" ? null : tHero("name")}
       items={items}
-      labels={{ primary: t("primary"), menu: t("menu"), close: t("closeMenu") }}
+      labels={{ primary: t("primary"), menu: t("menu"), close: t("closeMenu"), forRecruiters: t("forRecruiters"), recruitersShort: t("recruitersShort") }}
       localeBar={<LocaleSwitcher {...localeLabels} appearance="command" short />}
       localeMenu={<LocaleSwitcher {...localeLabels} appearance="command" landmark={false} />}
       social={<TextSocialLinks label={tHero("socialLabel")} />}

@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { CommandScene } from "@/components/command/CommandScene";
+import { CvRequestDialog } from "@/components/cv/CvRequestDialog";
+import { getCvDialogLabels } from "@/components/cv/labels";
 import { TextSocialLinks } from "@/components/site/TextSocialLinks";
 import { person } from "@/content/facts";
 import { Link } from "@/i18n/navigation";
@@ -65,17 +67,20 @@ export async function CommandHero() {
             {t("tagline")}
           </p>
           <div className="cc-actions cc-in" style={step(5)}>
-            <Link href="/contact" className="cc-cta">
-              <span>{t("ctaContact")}</span>
-              <span aria-hidden="true" className="cc-cta-arrow">
+            <CvRequestDialog labels={await getCvDialogLabels()} triggerClassName="cc-cta hero-cv-trigger" showArrow={false} />
+            <Link href="/recruiter" className="cc-link">
+              {t("ctaBrief")}
+              <span aria-hidden="true" className="cc-arrow ms-2">
                 →
               </span>
             </Link>
-            <Link href="/certifications" className="cc-link">
+          </div>
+          <div className="cc-socials hero-links">
+            <Link href="/certifications" className="hero-cert-link">
               {t("ctaCertifications")}
             </Link>
+            <TextSocialLinks label={t("socialLabel")} />
           </div>
-          <TextSocialLinks label={t("socialLabel")} className="cc-socials" />
         </div>
       </div>
 

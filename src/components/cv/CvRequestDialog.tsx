@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import "./cv.css";
 import { getPhone } from "./contact-phone";
 import { CheckIcon, CloseIcon, CopyIcon, LockIcon, MessageIcon, PhoneIcon } from "./icons";
 
@@ -34,7 +35,16 @@ export interface CvDialogLabels {
  * The phone number exists only while the dialog is open: it is not in the
  * server-rendered page. The CV itself is never on the site; Eli sends it personally.
  */
-export function CvRequestDialog({ labels }: { labels: CvDialogLabels }) {
+export function CvRequestDialog({
+  labels,
+  triggerClassName = "cc-btn cv-trigger",
+  showArrow = true,
+}: {
+  labels: CvDialogLabels;
+  /** Lets each placement style its trigger (hero CTA, brief, CV chapter). */
+  triggerClassName?: string;
+  showArrow?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -89,12 +99,14 @@ export function CvRequestDialog({ labels }: { labels: CvDialogLabels }) {
 
   return (
     <>
-      <button ref={triggerRef} type="button" aria-haspopup="dialog" onClick={() => setOpen(true)} className="cc-btn cv-trigger">
+      <button ref={triggerRef} type="button" aria-haspopup="dialog" onClick={() => setOpen(true)} className={triggerClassName}>
         <LockIcon />
         <span>{labels.cta}</span>
-        <span aria-hidden="true" className="cc-arrow">
-          →
-        </span>
+        {showArrow ? (
+          <span aria-hidden="true" className="cc-arrow">
+            →
+          </span>
+        ) : null}
       </button>
 
       <dialog

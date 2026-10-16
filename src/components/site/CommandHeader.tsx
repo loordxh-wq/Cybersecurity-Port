@@ -12,7 +12,7 @@ interface Props {
   /** Localized name shown beside the mark in Hebrew and Arabic (null in English). */
   localName: string | null;
   items: readonly NavItem[];
-  labels: { primary: string; menu: string; close: string };
+  labels: { primary: string; menu: string; close: string; forRecruiters: string; recruitersShort: string };
   localeBar: ReactNode;
   localeMenu: ReactNode;
   social: ReactNode;
@@ -79,8 +79,12 @@ export function CommandHeader({ name, localName, items, labels, localeBar, local
           </ul>
         </nav>
 
-        <div className="relative z-50 flex items-center gap-2">
+        <div className="relative z-50 flex items-center gap-2 lg:gap-4">
           <div className="hidden lg:block">{localeBar}</div>
+          <Link href="/recruiter" aria-current={pathname === "/recruiter" ? "page" : undefined} className="site-recruiter">
+            <span className="max-lg:hidden">{labels.forRecruiters}</span>
+            <span className="lg:hidden">{labels.recruitersShort}</span>
+          </Link>
           <button
             ref={buttonRef}
             type="button"
@@ -133,6 +137,12 @@ export function CommandHeader({ name, localName, items, labels, localeBar, local
               </ul>
             </nav>
             <div className="relative mt-8 flex flex-col gap-4">
+              <Link href="/recruiter" onClick={() => setOpen(false)} className="cc-btn site-menu-recruiter">
+                <span>{labels.forRecruiters}</span>
+                <span aria-hidden="true" className="cc-arrow">
+                  →
+                </span>
+              </Link>
               {localeMenu}
               {social}
             </div>
