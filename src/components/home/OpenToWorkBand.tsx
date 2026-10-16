@@ -43,7 +43,7 @@ export async function OpenToWorkBand({ index }: { index: string }) {
                 </span>
               </a>
             </div>
-            <p className="mt-5 max-w-md text-sm leading-relaxed text-white/68">
+            <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-white/72">
               {t("recruiterNote")}
             </p>
           </div>
@@ -62,7 +62,7 @@ export async function OpenToWorkBand({ index }: { index: string }) {
               <dt>{t("locationTitle")}</dt>
               <dd>
                 {t("location")}
-                <span className="block text-sm text-white/62">{t("locationDetail")}</span>
+                <span className="block text-[0.9375rem] text-white/68">{t("locationDetail")}</span>
               </dd>
             </div>
             <div>

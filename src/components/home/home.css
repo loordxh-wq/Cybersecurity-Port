@@ -241,34 +241,35 @@
   position: relative;
   isolation: isolate;
   overflow: clip;
-  padding-block: 5rem 6rem;
+  padding-block: 5rem 10rem;
   background: linear-gradient(180deg, var(--cc-bg), #050c1c 55%, #04060b);
 }
 @media (min-width: 1024px) {
   .home-band {
-    padding-block: 8rem 9rem;
+    padding-block: 7rem 12rem;
   }
 }
 .home-band-floor {
   position: absolute;
   z-index: -1;
   inset-inline: -25%;
-  bottom: -10%;
-  height: 70%;
+  bottom: -2rem;
+  /* A closing horizon beneath the content, never behind the text. */
+  height: 11rem;
   background-image:
     linear-gradient(to right, rgb(66 213 246 / 0.16) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(66 213 246 / 0.16) 1px, transparent 1px);
   background-size: 72px 72px;
   transform: perspective(520px) rotateX(64deg);
   transform-origin: 50% 100%;
-  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 75%);
-  mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+  -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 95%);
+  mask-image: linear-gradient(to top, #000 20%, transparent 95%);
 }
 .home-band-horizon {
   position: absolute;
   z-index: -1;
   inset-inline: 0;
-  top: 46%;
+  bottom: 9rem; /* the floor's horizon, below the content */
   height: 1px;
   background: linear-gradient(90deg, transparent, rgb(66 213 246 / 0.45) 20%, rgb(139 124 255 / 0.35) 80%, transparent);
   box-shadow: 0 0 40px 6px rgb(47 107 255 / 0.18);

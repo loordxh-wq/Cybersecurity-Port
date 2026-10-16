@@ -126,7 +126,8 @@
   isolation: isolate;
   overflow: clip;
   min-height: 100svh;
-  padding: calc(56svh - 6.25rem) 1.25rem 3rem;
+  /* Text starts below the scene's fade, so nothing animates behind the status, name or actions. */
+  padding: calc(56svh - 4rem) 1.25rem 3rem;
 }
 .cc-hero::before {
   /* Deep navy light behind the core, graphite falloff everywhere else. */
@@ -166,8 +167,8 @@
   inset-inline: 0;
   top: 0;
   height: 56svh;
-  -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 98%);
-  mask-image: linear-gradient(to bottom, #000 74%, transparent 98%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 83%);
+  mask-image: linear-gradient(to bottom, #000 68%, transparent 83%);
 }
 [dir="rtl"] .cc-scene {
   --cx: 0.4;

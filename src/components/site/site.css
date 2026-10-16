@@ -1044,3 +1044,116 @@ body {
 [dir="rtl"] .site-footer-giant {
   text-align: right;
 }
+
+/* ------------------------------------------------------------------ recruiter entry points */
+.site-recruiter {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  padding-inline: 0.9rem;
+  border: 1px solid rgb(127 220 255 / 0.55);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e8f7ff;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.site-recruiter:hover,
+.site-recruiter[aria-current="page"] {
+  border-color: var(--cc-cyan);
+  background: rgb(66 213 246 / 0.12);
+}
+@media (min-width: 1024px) {
+  .site-recruiter {
+    padding-inline: 1.1rem;
+  }
+}
+.site-menu-recruiter {
+  justify-content: space-between;
+  min-height: 3.5rem;
+}
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1.5rem;
+}
+.hero-links .cmd-socials {
+  gap: 0 1.5rem;
+}
+.hero-cert-link {
+  text-decoration: underline;
+  text-decoration-color: rgb(127 220 255 / 0.5);
+  text-underline-offset: 6px;
+}
+.hero-cv-trigger svg {
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ comfort (site-wide)
+   Headings in soft white rather than pure white; content text never below 15 px
+   (12 px stays for mono micro-labels only); reading widths for long text. */
+:root {
+  --cc-head: #f2f5fa;
+  --cc-text: #e8eef6;
+}
+body {
+  color: var(--cc-text);
+}
+.cc-title,
+.home-band-statement,
+.cv-title,
+.home-stage-title,
+.cc-plate-title,
+.cc-pending-title,
+.site-menu-label {
+  color: var(--cc-head);
+}
+.cc-plate-meta,
+.cc-signal-org,
+.cc-pending-needed,
+.site-footer-base,
+.cv-privacy,
+.cv-dlg-privacy,
+.cmd-socials,
+.home-stage-tools li {
+  font-size: 0.9375rem;
+}
+.home-stage-tools li {
+  font-family: var(--font-sans);
+}
+.cc-lead,
+.home-stage-text,
+.home-stage-points li {
+  max-width: 68ch;
+}
+:lang(ar) .cc-lead,
+:lang(ar) .home-stage-text,
+:lang(ar) .home-stage-points li {
+  max-width: 62ch;
+}
+
+/* Narrow phones: keep the brand on one line next to the recruiter pill. The menu
+   button shows only its icon; its label stays available to screen readers. */
+.site-brand-latin,
+.site-brand-local {
+  white-space: nowrap;
+}
+@media (max-width: 419.98px) {
+  .site-menu-button > span:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .site-menu-button {
+    padding-inline-start: 0;
+  }
+  .site-recruiter {
+    padding-inline: 0.75rem;
+  }
+}

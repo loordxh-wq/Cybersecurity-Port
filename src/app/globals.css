@@ -43,7 +43,7 @@
     color: var(--color-fg);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.65;
+    line-height: 1.7;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -51,14 +51,14 @@
   /* Arabic needs taller lines and must never be letter-spaced (it breaks joining). */
   :lang(ar) body,
   body:lang(ar) {
-    line-height: 1.8;
+    line-height: 1.85;
   }
   :lang(ar) * {
     letter-spacing: 0 !important;
   }
   :lang(he) body,
   body:lang(he) {
-    line-height: 1.7;
+    line-height: 1.75;
   }
 
   ::selection {
