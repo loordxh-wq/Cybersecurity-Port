@@ -31,7 +31,8 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "language": "Language",
-    "switchTo": "Switch to {language}"
+    "switchTo": "Switch to {language}",
+    "menu": "Menu"
   },
   "localeNames": {
     "en": "English",
@@ -219,6 +220,71 @@
       "chapterCareer": "Career evolution",
       "verified": "Verified credential",
       "courses": "Course completions"
+    }
+  },
+  "common": {
+    "simulatedTraining": "Simulated training lab",
+    "pending": "Evidence pending",
+    "draft": "Draft",
+    "previewOnly": "Protected preview only",
+    "previewBuild": "Protected preview build. Drafts and case studies in preparation are visible here only, never on the public site.",
+    "evidenceNeeded": "Evidence needed"
+  },
+  "home": {
+    "chapters": {
+      "label": "On this page",
+      "identity": "Identity",
+      "mission": "Mission",
+      "career": "Career trajectory",
+      "work": "Case studies"
+    },
+    "career": {
+      "title": "From IT support toward the SOC",
+      "lead": "Every stage on this line is real and verifiable. Select one to see what it involved.",
+      "stagesLabel": "Career stages",
+      "progress": "Stage {current} of {total}",
+      "kind": {
+        "experience": "Experience",
+        "training": "Training",
+        "certification": "Certification",
+        "next": "Next step"
+      },
+      "nextBody": "I’m applying for entry-level roles where I can keep learning on real systems."
+    },
+    "work": {
+      "title": "Case studies in preparation",
+      "lead": "Each one reaches the public site only after its evidence is complete and approved."
+    },
+    "scroll": "Scroll",
+    "sceneSimulated": "Simulated topology · demo visual, not live data",
+    "legend": {
+      "nodes": "Nodes",
+      "links": "Connections",
+      "scan": "Scan"
+    }
+  },
+  "projects": {
+    "items": {
+      "socLab": {
+        "title": "SOC investigation lab",
+        "summary": "An interactive investigation of a fictional authentication incident: repeated failed logins followed by a successful one.",
+        "needed": "Scenario dataset and guided walkthrough, built in milestone 2.4."
+      },
+      "wireshark": {
+        "title": "Wireshark traffic analysis",
+        "summary": "Packet-level analysis from my own lab captures: DNS, the TCP handshake, HTTP versus TLS.",
+        "needed": "Sanitized screenshots or exports from my own captures."
+      },
+      "activeDirectory": {
+        "title": "Active Directory administration",
+        "summary": "Users, groups, OUs and policies in a lab domain, with the event IDs that matter to a SOC.",
+        "needed": "Sanitized screenshots and notes from my lab domain."
+      },
+      "aiPortfolio": {
+        "title": "AI-assisted portfolio build",
+        "summary": "How I directed the design and development of this site with AI-assisted tools, and which parts the AI generated.",
+        "needed": "Approved case-study wording and screenshots from the design reviews."
+      }
     }
   }
 }
