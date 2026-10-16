@@ -25,3 +25,5 @@ export const skills: readonly { id: "support" | "network" | "blueTeam" | "window
   { id: "wiresharkSiem", evidence: ["course"] },
   { id: "aiWeb", evidence: ["project"] },
 ];
+
+export type SkillId = (typeof skills)[number]["id"];

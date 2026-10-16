@@ -40,7 +40,8 @@ test("approved wording in every language", () => {
 
 test("the footer shows the statement only when a project is approved", () => {
   const footer = readFileSync(join(repo, "src/components/SiteFooter.tsx"), "utf8");
-  assert.match(footer, /hasPublishedProject \? \(\s*<p className="site-footer-labnote[^>]*>\{t\("labNote"\)\}<\/p>\s*\) : null/);
-  const projects = readFileSync(join(repo, "src/content/projects.ts"), "utf8");
-  assert.match(projects, /hasPublishedProject = projects\.some\(\(p\) => p\.status === "approved"\)/);
+  assert.match(footer, /hasPublishedWork \? \(\s*<p className="site-footer-labnote[^>]*>\{t\("labNote"\)\}<\/p>\s*\) : null/);
+  const cases = readFileSync(join(repo, "src/content/case-files.ts"), "utf8");
+  assert.match(cases, /publishedCases = caseFiles\.filter\(\(c\) => c\.status === "approved"\)/);
+  assert.match(cases, /hasPublishedWork = publishedCases\.length > 0 \|\| projects\.some\(\(p\) => p\.status === "approved"\)/);
 });

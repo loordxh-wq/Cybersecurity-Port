@@ -1,5 +1,6 @@
 // Content integrity: fails the build if portfolio content could reach the public
-// site without its evidence, its translations or its simulated-data label.
+// site without its evidence, its translations or its simulated-data label, or if a
+// case file could be published without reviewed evidence.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(`../${p}`, import.meta.url), "utf8"));
@@ -39,6 +40,76 @@ for (const p of projects) {
 }
 for (const l of locales) {
   if (!get(messages[l], "common.simulatedTraining")) fail(`missing ${l} message common.simulatedTraining`);
+}
+
+// ---------------------------------------------------------------- case files (Phase 2)
+// A case reaches the public site only when it is approved, and approval needs real,
+// reviewed evidence: sanitized and approved files, registered for rendering, findings
+// tied to that evidence, every message in en/he/ar and approval dates. Provenance is
+// always a personal lab. Video is optional; when present it must be an own recording
+// with captions in all three languages. Case text never carries real addresses or
+// identifiers (only RFC 5737 documentation IPs and lab.local are allowed).
+const { cases } = read("src/content/case-files.json");
+const registry = readFileSync(new URL("../src/content/evidence-images.ts", import.meta.url), "utf8");
+const ipv4 = /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g;
+const docIp = /^(192\.0\.2|198\.51\.100|203\.0\.113)\./;
+const mac = /\b[0-9a-f]{2}(?:[:-][0-9a-f]{2}){5}\b/i;
+const email = /[\w.+-]+@[\w-]+\.[\w.-]+/;
+const strings = (o) => (typeof o === "string" ? [o] : o && typeof o === "object" ? Object.values(o).flatMap(strings) : []);
+const hasMetadata = (buf, file) => {
+  const hay = buf.toString("latin1");
+  if (/\.jpe?g$/i.test(file)) return hay.includes("Exif\0\0") || hay.includes("http://ns.adobe.com/xap/");
+  if (/\.png$/i.test(file)) return /eXIf|tEXt|iTXt|zTXt/.test(hay);
+  return hay.includes("Exif") || hay.includes("http://ns.adobe.com/xap/");
+};
+const caseIds = new Set();
+for (const c of cases) {
+  const name = c.number || c.id;
+  if (caseIds.has(c.id)) fail(`duplicate case id: ${c.id}`);
+  caseIds.add(c.id);
+  if (!statuses.has(c.status)) fail(`${name}: unknown status "${c.status}"`);
+  if (c.provenance !== "personal-lab") fail(`${name}: provenance must be "personal-lab"`);
+  const base = `caseFiles.items.${c.id}`;
+  const required = ["title", "objective", "environment", ...c.steps.flatMap((s) => [`steps.${s}.title`, `steps.${s}.detail`])];
+  for (const l of locales) {
+    for (const key of required) {
+      const v = get(messages[l], `${base}.${key}`);
+      if (typeof v !== "string" || !v.trim()) fail(`${name}: missing ${l} message ${base}.${key}`);
+    }
+    for (const text of strings(get(messages[l], base))) {
+      for (const ip of text.match(ipv4) ?? []) if (!docIp.test(ip)) fail(`${name}: ${l} text contains a real IP address (${ip}); use an RFC 5737 example or redact it`);
+      if (mac.test(text)) fail(`${name}: ${l} text contains a MAC address`);
+      if (email.test(text)) fail(`${name}: ${l} text contains an email address`);
+    }
+  }
+  if (c.video) {
+    if (c.video.provenance !== "own-recording") fail(`${name}: video must be an own recording`);
+    for (const l of locales) if (!c.video.captions?.[l]) fail(`${name}: video needs ${l} captions`);
+  }
+  const evidenceIds = new Set(c.evidence.map((e) => e.id));
+  for (const f of c.findings) for (const id of f.evidence) if (!evidenceIds.has(id)) fail(`${name}: finding ${f.key} cites unknown evidence ${id}`);
+  if (c.status === "approved") {
+    if (!c.evidence.length) fail(`${name}: approved without evidence files`);
+    if (!c.findings.length) fail(`${name}: approved without findings tied to evidence`);
+    if (!c.updatedOn || !c.approvedOn) fail(`${name}: approved without updatedOn and approvedOn`);
+    for (const l of locales) {
+      for (const key of ["summary.did", "summary.shows", "lessons", ...c.findings.map((f) => `findings.${f.key}`), ...c.evidence.flatMap((e) => [`evidence.${e.id}.alt`, `evidence.${e.id}.caption`])]) {
+        const v = get(messages[l], `${base}.${key}`);
+        if (typeof v !== "string" || !v.trim()) fail(`${name}: missing ${l} message ${base}.${key}`);
+      }
+    }
+    for (const e of c.evidence) {
+      const url = new URL(`../src/assets/evidence/${e.file}`, import.meta.url);
+      if (!existsSync(url)) {
+        fail(`${name}: evidence file not found: ${e.file}`);
+        continue;
+      }
+      const entry = manifest.files.find((f) => f.file === e.file);
+      if (!entry?.sanitizedOn || !entry?.approvedOn) fail(`${name}: ${e.file} is not recorded as sanitized and approved in the manifest`);
+      if (!registry.includes(`"${e.file}"`)) fail(`${name}: ${e.file} is not registered in src/content/evidence-images.ts`);
+      if (hasMetadata(readFileSync(url), e.file)) fail(`${name}: ${e.file} still carries EXIF/XMP/text metadata; strip it before publishing`);
+    }
+  }
 }
 
 // ---------------------------------------------------------------- documents, CV and secrets
@@ -96,6 +167,7 @@ function walk(dir, rel = "") {
     else if (docExt.test(name) && !approvedDocs.some((d) => d.path === r)) fail(`document not approved for publication (list a sanitized copy in src/content/public-documents.json): ${r}`);
     if (r.startsWith("src/app/") && /(^|\/)(cv|resume|curriculum)(\.|\/|$)/i.test(r)) fail(`no CV route may exist: ${r}`);
     if (secretFile.test(r) && !allowedSecretLike.has(name) && ships(r)) fail(`secret or key file must not be committed: ${r}`);
+    if (/\.(mp4|webm|mov|mkv|m4v)$/i.test(name) && ships(r)) fail(`video files are hosted outside Git, never committed: ${r}`);
     if (textExt.test(name) && ships(r) && statSync(url).size < 2_000_000) {
       const text = readFileSync(url, "utf8");
       for (const [re, label] of secretText) if (re.test(text)) fail(`${label} found in ${r}`);
@@ -110,4 +182,5 @@ if (errors) {
   process.exit(1);
 }
 const pub = projects.filter((p) => p.status === "approved").length;
-console.log(`content check passed: ${projects.length} projects (${pub} public, ${projects.length - pub} preview-only).`);
+const pubCases = cases.filter((c) => c.status === "approved").length;
+console.log(`content check passed: ${projects.length} projects (${pub} public), ${cases.length} case files (${pubCases} public, ${cases.length - pubCases} preview-only).`);

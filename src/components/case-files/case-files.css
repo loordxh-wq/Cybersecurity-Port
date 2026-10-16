@@ -1,0 +1,1086 @@
+/*
+ * Case Files, "Dark Forensic Editorial" (approved Phase 2 design).
+ * Cyber Command's palette, type and hairlines, set like a case dossier: mono catalogue
+ * numbers, ruled metadata, evidence plates with registration ticks. One accent per
+ * status, no glow, no motion beyond focus and hover. Body text ≥ 15 px at AAA contrast.
+ */
+.cf {
+  --cf-text: #e8eef6;
+  --cf-muted: rgb(232 238 246 / 0.76);
+  --cf-label: #93dcf0;
+  --cf-rule: rgb(148 180 220 / 0.16);
+  --cf-rule-strong: rgb(148 180 220 / 0.28);
+  --cf-panel: rgb(10 16 28 / 0.62);
+  --cf-awaiting: #f5c46b;
+  --cf-progress: #7fdcff;
+  --cf-documented: #6ee7a0;
+  position: relative;
+  padding-bottom: 4rem;
+  background: linear-gradient(180deg, rgb(8 18 38 / 0.5), transparent 26rem), var(--cc-bg);
+  color: var(--cf-text);
+}
+
+/* ------------------------------------------------------------------ shared atoms */
+.cf-status {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  line-height: 1.35;
+  gap: 0.45rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.cf-status[data-status="awaiting"] {
+  color: var(--cf-awaiting);
+}
+.cf-status[data-status="inProgress"] {
+  color: var(--cf-progress);
+}
+.cf-status[data-status="documented"] {
+  color: var(--cf-documented);
+}
+.cf-status-mark {
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid currentColor;
+}
+.cf-status[data-status="inProgress"] .cf-status-mark {
+  background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+}
+[dir="rtl"] .cf-status[data-status="inProgress"] .cf-status-mark {
+  background: linear-gradient(270deg, currentColor 50%, transparent 50%);
+}
+.cf-status[data-status="documented"] .cf-status-mark {
+  background: currentColor;
+}
+:lang(he) .cf-status,
+:lang(ar) .cf-status {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+
+.cf-card-ticks {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  --t: rgb(127 220 255 / 0.6);
+  background:
+    linear-gradient(var(--t), var(--t)) top left / 12px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top left / 1px 12px no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / 12px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / 1px 12px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / 12px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / 1px 12px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / 12px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / 1px 12px no-repeat;
+}
+
+.cf-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.cf-tools li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--cf-rule-strong);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #d5e3f1;
+}
+
+.cf-meter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.cf-meter-cells {
+  display: inline-flex;
+  gap: 3px;
+}
+.cf-meter-cell {
+  width: 1.1rem;
+  height: 0.45rem;
+  border: 1px solid var(--cf-rule-strong);
+}
+.cf-meter-cell[data-filled] {
+  border-color: var(--cf-documented);
+  background: var(--cf-documented);
+}
+.cf-meter-label {
+  font-size: 0.9375rem;
+  color: var(--cf-muted);
+}
+
+.cf-card-cat {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cf-label);
+}
+:lang(he) .cf-card-cat,
+:lang(ar) .cf-card-cat {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.cf-card-prov {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--cf-muted);
+}
+.cf-card-prov::before {
+  content: "";
+  width: 0.5rem;
+  height: 1px;
+  background: var(--cf-label);
+}
+
+/* ------------------------------------------------------------------ index */
+.cf-index {
+  padding-top: 2.5rem;
+}
+@media (min-width: 1024px) {
+  .cf-index {
+    padding-top: 4.5rem;
+  }
+}
+.cf-index-head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 62rem;
+}
+.cf-index-title {
+  font-size: clamp(2.2rem, 6.5vw, 4.25rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cc-head, #f2f5fa);
+}
+:lang(he) .cf-index-title,
+:lang(ar) .cf-index-title {
+  line-height: 1.2;
+}
+.cf-index-lead {
+  max-width: 44rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--cf-muted);
+}
+.cf-legend {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 760px) {
+  .cf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1180px) {
+  .cf-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+}
+.cf-grid > li {
+  display: flex;
+}
+
+/* Case card: a dossier folder. The whole card is the link (stretched), the title is its name. */
+.cf-card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.35rem 1.25rem 1.25rem;
+  border: 1px solid var(--cf-rule);
+  border-inline-start: 2px solid var(--cf-awaiting);
+  background: linear-gradient(180deg, rgb(12 20 36 / 0.72), rgb(5 8 15 / 0.5));
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.cf-card:has(.cf-status[data-status="inProgress"]) {
+  border-inline-start-color: var(--cf-progress);
+}
+.cf-card:has(.cf-status[data-status="documented"]) {
+  border-inline-start-color: var(--cf-documented);
+}
+.cf-card:hover {
+  border-color: var(--cf-rule-strong);
+  background: linear-gradient(180deg, rgb(14 24 42 / 0.82), rgb(6 10 18 / 0.6));
+}
+.cf-card:focus-within {
+  outline: 2px solid var(--cc-cyan);
+  outline-offset: 3px;
+}
+.cf-card-title {
+  font-size: 1.375rem;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--cc-head, #f2f5fa);
+}
+.cf-card-link {
+  outline: none;
+}
+.cf-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.cf-card-objective {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--cf-muted);
+}
+.cf-card-meta {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-card-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #c9eef9;
+}
+.cf-arrow {
+  transition: transform 0.2s var(--cc-ease);
+}
+[dir="rtl"] .cf-arrow {
+  transform: scaleX(-1);
+}
+.cf-card:hover .cf-arrow {
+  transform: translateX(3px);
+}
+[dir="rtl"] .cf-card:hover .cf-arrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+/* ------------------------------------------------------------------ case page */
+.cf-case {
+  padding-top: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .cf-case {
+    padding-top: 3rem;
+  }
+}
+.cf-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9375rem;
+  color: var(--cf-muted);
+}
+.cf-crumbs a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  color: #c9eef9;
+  text-decoration: underline;
+  text-decoration-color: rgb(201 238 249 / 0.35);
+  text-underline-offset: 4px;
+}
+.cf-crumbs span[dir] {
+  font-family: var(--font-mono);
+}
+
+.cf-dossier {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--cf-rule);
+  border-inline-start: 2px solid var(--cf-awaiting);
+  background: linear-gradient(180deg, rgb(12 20 36 / 0.72), rgb(5 8 15 / 0.45));
+}
+@media (min-width: 1024px) {
+  .cf-dossier {
+    padding: 2.25rem 2.5rem;
+  }
+}
+.cf-dossier-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  color: var(--cc-head, #f2f5fa);
+}
+:lang(he) .cf-dossier-title,
+:lang(ar) .cf-dossier-title {
+  line-height: 1.2;
+}
+
+.cf-facts {
+  display: grid;
+  gap: 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-facts > div {
+  display: grid;
+  gap: 0.35rem;
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--cf-rule);
+}
+@media (min-width: 720px) {
+  .cf-facts > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+.cf-facts dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cf-label);
+}
+:lang(he) .cf-facts dt,
+:lang(ar) .cf-facts dt {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+.cf-facts dd {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.cf-notice {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgb(245 196 107 / 0.35);
+  border-inline-start-width: 2px;
+  background: rgb(245 196 107 / 0.06);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #fbe3b4;
+}
+
+.cf-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+@media (min-width: 1024px) {
+  .cf-body {
+    grid-template-columns: 15rem minmax(0, 46rem);
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+}
+
+/* Contents */
+.cf-toc--desk {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .cf-toc--desk {
+    position: sticky;
+    top: 6.5rem;
+    display: block;
+  }
+  .cf-toc--mob {
+    display: none;
+  }
+}
+.cf-toc--mob {
+  border: 1px solid var(--cf-rule);
+  background: var(--cf-panel);
+}
+.cf-toc-summary {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  padding-inline: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cf-label);
+  cursor: pointer;
+}
+.cf-toc--desk .cf-toc-summary {
+  min-height: 0;
+  padding: 0 0 0.75rem;
+  cursor: default;
+}
+:lang(he) .cf-toc-summary,
+:lang(ar) .cf-toc-summary {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+.cf-toc-list {
+  display: grid;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-toc--mob .cf-toc-list {
+  padding-inline: 1rem;
+}
+.cf-toc-list a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--cf-rule);
+  font-size: 0.9375rem;
+  color: var(--cf-muted);
+}
+.cf-toc-list a:hover {
+  color: #fff;
+}
+.cf-toc-no {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* Sections */
+.cf-sections {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+.cf-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 1.75rem;
+  border-bottom: 1px solid var(--cf-rule);
+}
+.cf-section:first-child {
+  padding-top: 0;
+}
+.cf-section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--cc-head, #f2f5fa);
+}
+.cf-section-no {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cf-label);
+}
+.cf-lead {
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+.cf-text {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--cf-muted);
+}
+
+.cf-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--cf-rule);
+  background: var(--cf-panel);
+}
+.cf-summary > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 1rem;
+}
+.cf-summary > div + div {
+  border-top: 1px solid var(--cf-rule);
+}
+@media (min-width: 720px) {
+  .cf-summary > div {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+.cf-summary dt {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.cf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.cf-chips li {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgb(127 220 255 / 0.35);
+  font-size: 0.9375rem;
+  color: #d8f4fc;
+}
+
+/* A slot names what will be written; it never imitates the content. */
+.cf-slot {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed rgb(148 180 220 / 0.32);
+  background: repeating-linear-gradient(135deg, transparent 0 10px, rgb(148 180 220 / 0.035) 10px 11px);
+}
+.cf-slot-note {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: rgb(245 196 107 / 0.9);
+}
+:lang(he) .cf-slot-note,
+:lang(ar) .cf-slot-note {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+.cf-slot-text {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cf-muted);
+}
+
+/* Steps */
+.cf-steps {
+  display: grid;
+}
+.cf-step {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 1rem;
+}
+.cf-step + .cf-step {
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-step-no {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--cf-rule-strong);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: #fff;
+}
+.cf-step-body {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+.cf-step-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: rgb(245 196 107 / 0.9);
+}
+:lang(he) .cf-step-tag,
+:lang(ar) .cf-step-tag {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+}
+.cf-step-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.cf-detail summary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: #c9eef9;
+  cursor: pointer;
+  list-style: none;
+}
+.cf-detail summary::-webkit-details-marker {
+  display: none;
+}
+.cf-detail summary::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.cf-detail[open] summary::before {
+  content: "−";
+}
+.cf-detail p {
+  padding: 0.75rem 1rem;
+  border-inline-start: 1px solid var(--cf-rule-strong);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--cf-muted);
+  unicode-bidi: plaintext;
+}
+
+/* Evidence plates */
+.cf-gallery {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .cf-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cf-gallery > li:first-child {
+    grid-column: 1 / -1;
+  }
+}
+.cf-figure {
+  display: grid;
+  gap: 0.6rem;
+}
+.cf-figure-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--cf-rule);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 12px, rgb(148 180 220 / 0.04) 12px 13px),
+    rgb(8 12 22 / 0.8);
+}
+.cf-figure-empty,
+.cf-video-empty {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(232 238 246 / 0.7);
+}
+:lang(he) .cf-figure-empty,
+:lang(ar) .cf-figure-empty,
+:lang(he) .cf-video-empty,
+:lang(ar) .cf-video-empty {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+.cf-figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--cf-muted);
+}
+.cf-figure-id {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--cf-label);
+}
+
+/* Video: a still frame with a play mark; plays only on request once a recording exists. */
+.cf-video {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  gap: 0.6rem;
+  min-width: 0; /* aspect-ratio must never widen the page */
+  aspect-ratio: 16 / 9;
+  padding: 1rem;
+  border: 1px solid var(--cf-rule);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 12px, rgb(148 180 220 / 0.04) 12px 13px),
+    rgb(8 12 22 / 0.8);
+  text-align: center;
+}
+.cf-video-play {
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--cf-rule-strong);
+  border-radius: 999px;
+  position: relative;
+}
+.cf-video-play::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  border-block: 0.45rem solid transparent;
+  border-left: 0.75rem solid rgb(232 238 246 / 0.5);
+  transform: translateX(0.12rem);
+}
+/* Play marks are not mirrored in RTL (media convention). */
+.cf-video-meta {
+  font-size: 0.875rem;
+  color: rgb(232 238 246 / 0.66);
+}
+
+/* Related skills */
+.cf-skill-links {
+  display: grid;
+  border-top: 1px solid var(--cf-rule);
+}
+.cf-skill-links a {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--cf-rule);
+}
+.cf-skill-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #c9eef9;
+}
+.cf-skill-links a:hover .cf-skill-name {
+  color: #fff;
+}
+.cf-skill-detail {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cf-muted);
+}
+
+/* Pager */
+.cf-pager {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 720px) {
+  .cf-pager {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+.cf-pager-link {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--cf-rule);
+  background: var(--cf-panel);
+  transition: border-color 0.2s;
+}
+.cf-pager-link:hover {
+  border-color: var(--cf-rule-strong);
+}
+.cf-pager-link--next {
+  text-align: end;
+}
+.cf-pager-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cf-label);
+}
+:lang(he) .cf-pager-label,
+:lang(ar) .cf-pager-label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+.cf-pager-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ refinement pass */
+/* Compact status row; the explanation lives in a disclosure. */
+.cf-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cf-verify summary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9375rem;
+  color: #c9eef9;
+  cursor: pointer;
+  list-style: none;
+}
+.cf-verify summary::-webkit-details-marker {
+  display: none;
+}
+.cf-verify summary::before {
+  content: "+";
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.cf-verify[open] summary::before {
+  content: "−";
+}
+.cf-verify > p,
+.cf-verify-list {
+  max-width: 44rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cf-muted);
+}
+.cf-verify-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.cf-verify-list > div {
+  display: grid;
+  gap: 0.1rem;
+}
+@media (min-width: 640px) {
+  .cf-verify-list > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+.cf-verify-list dt {
+  font-weight: 600;
+  color: var(--cf-text);
+}
+.cf-verify > p + p {
+  margin-top: 0.5rem;
+}
+.cf-verify > p:last-child {
+  margin-bottom: 0.75rem;
+}
+
+/* Dossier plate: id column (number over status) beside the case diagram. */
+.cf-plate {
+  display: grid;
+  grid-template-columns: auto minmax(5.5rem, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--cf-rule);
+  background:
+    linear-gradient(rgb(148 180 220 / 0.05) 1px, transparent 1px) 0 0 / 100% 12px,
+    linear-gradient(90deg, rgb(148 180 220 / 0.05) 1px, transparent 1px) 0 0 / 12px 100%,
+    rgb(6 10 18 / 0.7);
+}
+.cf-plate-id {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.cf-plate-no {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: #fff;
+}
+.cf-plate--dossier {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.cf-plate--dossier .cf-plate-no {
+  font-size: clamp(1.75rem, 6vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(201 211 225 / 0.6);
+}
+.cf-plate--dossier .cf-glyph {
+  max-width: 15rem;
+  justify-self: end;
+}
+
+.cf-glyph {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 5.25rem;
+  overflow: visible;
+}
+.cf-g-rail,
+.cf-g-line,
+.cf-g-node {
+  fill: none;
+  stroke: rgb(148 180 220 / 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-rail {
+  stroke: rgb(148 180 220 / 0.3);
+}
+.cf-g-node {
+  stroke: rgb(201 211 225 / 0.65);
+}
+.cf-g-accent,
+.cf-g-accent line,
+.cf-g-accent polyline {
+  stroke: var(--cc-cyan);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-line line,
+.cf-g-line polyline {
+  stroke: rgb(148 180 220 / 0.55);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-dot {
+  fill: rgb(148 180 220 / 0.45);
+}
+.cf-g-accent-fill {
+  fill: var(--cc-cyan);
+}
+.cf-g-label {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  fill: rgb(232 238 246 / 0.6);
+}
+.cf-g-label--accent {
+  fill: var(--cc-cyan-hi);
+}
+/* A planned case draws its diagram quietly; a documented one at full strength. */
+.cf-card:has(.cf-status[data-status="awaiting"]) .cf-glyph,
+.cf-dossier:has(.cf-status[data-status="awaiting"]) .cf-glyph {
+  opacity: 0.8;
+}
+.cf-card:hover .cf-glyph {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ documented state */
+/* Real evidence: the screenshot fills the plate; the plate opens the full-size viewer. */
+.cf-figure-frame--real {
+  padding: 0;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: rgb(8 12 22 / 0.8);
+}
+.cf-figure-frame--real:focus-visible {
+  outline: 2px solid var(--cc-cyan);
+  outline-offset: 3px;
+}
+.cf-figure-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.cf-figure-meta {
+  flex-basis: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(232 238 246 / 0.6);
+}
+.cf-viewer {
+  width: min(96vw, 74rem);
+  max-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 1rem);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--cf-rule-strong);
+  background: #05080f;
+  color: var(--cf-text);
+}
+.cf-viewer::backdrop {
+  background: rgb(2 4 9 / 0.85);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.cf-viewer-body {
+  display: grid;
+}
+.cf-viewer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--cf-rule);
+  font-size: 0.9375rem;
+}
+.cf-viewer-close {
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border: 1px solid var(--cf-rule-strong);
+  font-size: 0.9375rem;
+}
+.cf-viewer-close:hover {
+  border-color: var(--cc-cyan);
+}
+.cf-viewer-img {
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 7rem);
+  object-fit: contain;
+}
+
+.cf-text--strong {
+  color: var(--cf-text);
+}
+.cf-findings {
+  display: grid;
+  counter-reset: finding;
+}
+.cf-findings > li {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--cf-rule);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.cf-findings > li:first-child {
+  padding-top: 0;
+}
+.cf-finding-refs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--cf-muted);
+}
+.cf-finding-refs a {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  padding-inline: 0.5rem;
+  border: 1px solid var(--cf-rule-strong);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--cf-label);
+}
+.cf-video-real {
+  display: grid;
+  gap: 0.6rem;
+}
+.cf-video-el {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--cf-rule);
+  background: #05080f;
+}

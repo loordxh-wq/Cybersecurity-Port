@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import { publishedCases } from "@/content/case-files";
 import { locales, type Locale } from "@/i18n/routing";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import type { NavItem } from "./site/nav";
@@ -11,6 +12,8 @@ export async function getNavItems(): Promise<NavItem[]> {
     { href: "/", label: t("home") },
     { href: "/about", label: t("about") },
     { href: "/certifications", label: t("certifications") },
+    // Case files join the navigation only once a documented case is public (decision P2).
+    ...(publishedCases.length ? [{ href: "/case-files" as const, label: t("caseFiles") }] : []),
     { href: "/contact", label: t("contact") },
   ];
 }

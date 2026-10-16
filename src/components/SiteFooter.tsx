@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { hasPublishedProject } from "@/content/projects";
+import { hasPublishedWork } from "@/content/case-files";
 import { isPreview } from "@/content/stage";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -31,7 +31,7 @@ export async function SiteFooter() {
             <p className="text-lg font-semibold text-white">{tHero("name")}</p>
             <p className="max-w-sm text-white/70">{t("tagline")}</p>
             {/* Evidence statement: only once reviewed lab work is actually published. */}
-            {hasPublishedProject ? (
+            {hasPublishedWork ? (
               <p className="site-footer-labnote max-w-md text-sm leading-relaxed text-white/62">{t("labNote")}</p>
             ) : null}
           </div>

@@ -1,0 +1,22 @@
+{
+  "$comment": "Case files (Phase 2). Structure only; all wording lives in messages under caseFiles.items.<id>. Only status \"approved\" renders publicly. An approved case needs: evidence files sanitized and approved in src/assets/evidence/manifest.json and registered in src/content/evidence-images.ts, at least one finding tied to its evidence, every message in en/he/ar, updatedOn and approvedOn. Provenance is always personal-lab. Video is optional and must be an own recording with captions in all three languages. Run npm run check:content.",
+  "cases": [
+    {
+      "id": "wireshark",
+      "number": "CF-01",
+      "slug": "network-traffic-investigation",
+      "category": "network",
+      "status": "placeholder",
+      "provenance": "personal-lab",
+      "tools": ["Wireshark", "Kali Linux", "VirtualBox"],
+      "skills": ["wiresharkSiem", "network"],
+      "steps": ["capture", "filter", "stream"],
+      "evidencePlanned": 3,
+      "evidence": [],
+      "findings": [],
+      "video": null,
+      "updatedOn": null,
+      "approvedOn": null
+    }
+  ]
+}
