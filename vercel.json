@@ -1,0 +1,3 @@
+{
+  "buildCommand": "export SITE_STAGE=preview && node scripts/verify-preview-build.mjs && npm run build"
+}

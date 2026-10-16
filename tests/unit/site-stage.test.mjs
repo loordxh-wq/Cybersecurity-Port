@@ -6,7 +6,7 @@
 //  3. The content guard blocks preview-mode configuration leaking to any other branch.
 // Run: npm run test:guard
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -53,6 +53,21 @@ test("the review-branch pre-build check passes only for a Vercel Preview build o
   }
 });
 
+// The review branch's real vercel.json: its pre-build step must see the same SITE_STAGE as
+// the build, and still refuse anything but a Vercel Preview build of the review branch.
+test("vercel.json (review branch only): the real build command passes its own check only on Vercel Preview", { skip: !existsSync(join(repo, "vercel.json")) }, () => {
+  const cmd = JSON.parse(readFileSync(join(repo, "vercel.json"), "utf8")).buildCommand.replace(/&&\s*npm run build\s*$/, "");
+  assert.notEqual(cmd, JSON.parse(readFileSync(join(repo, "vercel.json"), "utf8")).buildCommand, "build command must end with npm run build");
+  const clean = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("VERCEL") && k !== "SITE_STAGE"));
+  const run = (env) => spawnSync("sh", ["-c", cmd], { cwd: repo, env: { ...clean, ...env }, encoding: "utf8" });
+  const vercelPreview = { VERCEL: "1", VERCEL_ENV: "preview", VERCEL_GIT_COMMIT_REF: REVIEW_BRANCH };
+  const ok = run(vercelPreview);
+  assert.equal(ok.status, 0, ok.stdout + ok.stderr);
+  assert.notEqual(run({ ...vercelPreview, VERCEL_ENV: "production" }).status, 0);
+  assert.notEqual(run({ ...vercelPreview, VERCEL_GIT_COMMIT_REF: "main" }).status, 0);
+  assert.notEqual(run({}).status, 0);
+});
+
 function guardOnBranch(branch, setup) {
   const dir = mkdtempSync(join(tmpdir(), "stage-"));
   for (const p of ["scripts", "messages", "src/content", "src/assets/evidence", ".gitignore", "package.json"]) cpSync(join(repo, p), join(dir, p), { recursive: true });
@@ -64,11 +79,11 @@ function guardOnBranch(branch, setup) {
   rmSync(dir, { recursive: true, force: true });
   return { ok: r.status === 0, out: r.stdout + r.stderr };
 }
-const reviewConfig = (d) => writeFileSync(join(d, "vercel.json"), JSON.stringify({ buildCommand: "node scripts/verify-preview-build.mjs && SITE_STAGE=preview npm run build" }));
+const reviewConfig = (d) => writeFileSync(join(d, "vercel.json"), JSON.stringify({ buildCommand: "export SITE_STAGE=preview && node scripts/verify-preview-build.mjs && npm run build" }));
 
 test("preview-mode build configuration cannot leak beyond the review branch", () => {
   assert.equal(guardOnBranch(REVIEW_BRANCH, reviewConfig).ok, true);
-  for (const branch of ["feature/case-files-cf01-03", "feature/recruiter-experience-phase1", "main"]) {
+  for (const branch of ["proposal/phase3-soc-lab", "review/case-files-preview", "feature/case-files-cf01-03", "feature/recruiter-experience-phase1", "main"]) {
     const r = guardOnBranch(branch, reviewConfig);
     assert.equal(r.ok, false, branch);
     assert.match(r.out, /vercel\.json requests preview mode/);

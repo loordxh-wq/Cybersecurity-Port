@@ -9,7 +9,8 @@
 //    mode is requested by mistake)
 //  - SITE_STAGE=preview off Vercel (local builds, tests) → preview, unless
 //    VERCEL_ENV=production is set, which always wins
-export const REVIEW_BRANCH = "review/case-files-preview";
+// Review branch only: the one branch allowed to build in preview mode on Vercel.
+export const REVIEW_BRANCH = "review/phase3-lab-preview";
 
 /** @param {Record<string, string | undefined>} env */
 export function resolveStage(env) {
