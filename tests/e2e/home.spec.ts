@@ -26,6 +26,8 @@ test.describe("home, desktop", () => {
       await page.goto(`/${locale}`);
       await expect(page.locator(".cc-scene")).toHaveAttribute("data-live", "true", { timeout: 20_000 });
       await expect(page.locator(".cc-sim")).toHaveText(labels[locale]);
+      // The indicator uses the V4.1 cyan accent (#42d5f6), not the amber pending mark.
+      await expect(page.locator(".cc-sim-tag")).toHaveCSS("background-color", "rgb(66, 213, 246)");
     }
     // English wording check of the hero: no live, monitoring, scanning or real-time claims.
     await page.goto("/en");
