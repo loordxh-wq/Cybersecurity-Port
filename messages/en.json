@@ -368,5 +368,135 @@
       }
     },
     "projects": "Verified projects"
+  },
+  "caseProto": {
+    "metaTitle": "Case Files · design prototype",
+    "badge": "Phase 2 design prototype · layout only · no evidence yet",
+    "kicker": "Case files",
+    "title": "Technical case files",
+    "lead": "Hands-on investigations from my own home lab, documented step by step. Each file shows its status, and only documented cases appear on the public site.",
+    "legendTitle": "Case status",
+    "status": {
+      "awaiting": "Awaiting evidence",
+      "inProgress": "In progress",
+      "documented": "Documented"
+    },
+    "statusHelp": {
+      "awaiting": "Planned. No screenshots or findings yet.",
+      "inProgress": "Evidence collected, write-up under review.",
+      "documented": "Evidence and write-up approved."
+    },
+    "provenance": "Personal home lab · not employment",
+    "category": {
+      "network": "Network traffic analysis",
+      "siem": "SIEM alert triage",
+      "identity": "Identity and access administration"
+    },
+    "label": {
+      "case": "Case",
+      "category": "Category",
+      "environment": "Lab environment",
+      "tools": "Tools",
+      "evidence": "Evidence",
+      "evidenceCount": "{approved} of {planned} evidence items",
+      "updated": "Last updated",
+      "notYet": "Not yet recorded",
+      "open": "Open case file",
+      "back": "All case files",
+      "contents": "On this page",
+      "previous": "Previous case",
+      "next": "Next case",
+      "planned": "Planned",
+      "plannedStep": "Planned step",
+      "technical": "Technical detail",
+      "whatIDid": "What I did",
+      "whatItShows": "What it shows",
+      "skills": "Skills used",
+      "slotNote": "Written only from real evidence",
+      "evidenceSlot": "Awaiting screenshot",
+      "videoSlot": "Awaiting recording",
+      "videoMeta": "30–60 s · captions EN / HE / AR · plays only on request",
+      "figure": "Figure",
+      "publicNote": "On the public site, a case appears only after it is documented and approved."
+    },
+    "notice": "This case is planned. Findings, screenshots and video will be added only from my own lab work, after review.",
+    "section": {
+      "summary": "Recruiter summary",
+      "objective": "Objective",
+      "environment": "Lab environment and tools",
+      "steps": "Investigation steps",
+      "findings": "Findings and observations",
+      "evidence": "Evidence gallery",
+      "video": "Walkthrough video",
+      "lessons": "Lessons learned",
+      "skills": "Related skills"
+    },
+    "slot": {
+      "whatIDid": "One sentence describing the hands-on work, written once the evidence is approved.",
+      "whatItShows": "One sentence on the capability it demonstrates, without claiming more than the evidence shows.",
+      "findings": "Each observation is one sentence tied to an evidence item (E-01, E-02…). Nothing is written here before the evidence exists.",
+      "evidence": "Sanitized screenshots from my own lab: no personal data, internal IPs, credentials or identifiers.",
+      "lessons": "What I would do differently next time, and what I want to learn next.",
+      "caption": "Caption and sanitization date added with the screenshot."
+    },
+    "cases": {
+      "wireshark": {
+        "title": "Network Traffic Investigation",
+        "objective": "Planned: follow DNS lookups, the TCP handshake and the difference between HTTP and TLS in traffic I generate in my own lab.",
+        "environment": "Two virtual machines on an isolated host-only network, one serving a test page and one capturing.",
+        "steps": {
+          "1": {
+            "title": "Capture traffic on the lab interface",
+            "detail": "Interface: the host-only adapter. Traffic generated with a single HTTP request to the second VM."
+          },
+          "2": {
+            "title": "Filter to one conversation",
+            "detail": "Display filters such as dns, tcp.flags.syn == 1 and ip.addr == <lab VM>."
+          },
+          "3": {
+            "title": "Follow the stream and compare HTTP with TLS",
+            "detail": "Follow → TCP Stream, then Statistics → Conversations."
+          }
+        }
+      },
+      "splunk": {
+        "title": "SOC Alert Investigation",
+        "objective": "Planned: triage an alert in Splunk built from logs I generate in my own lab, from the first search to a written conclusion.",
+        "environment": "Splunk Enterprise (free licence) on a lab VM, with authentication logs from my own test machines.",
+        "steps": {
+          "1": {
+            "title": "Ingest lab authentication logs",
+            "detail": "Settings → Add Data, sourcetype linux_secure, index main."
+          },
+          "2": {
+            "title": "Search and narrow the events",
+            "detail": "Searches such as \"Failed password\" with stats count by user, src."
+          },
+          "3": {
+            "title": "Build a timeline and write the conclusion",
+            "detail": "timechart span=1m count, then a saved report."
+          }
+        }
+      },
+      "ad": {
+        "title": "Active Directory Operations",
+        "objective": "Planned: build and administer a lab domain (users, groups, OUs and Group Policy) and note the Windows event IDs a SOC watches.",
+        "environment": "Windows Server evaluation VM as the domain controller for a lab domain, lab.local.",
+        "steps": {
+          "1": {
+            "title": "Promote a domain controller for lab.local",
+            "detail": "Server Manager → Active Directory Domain Services → Promote."
+          },
+          "2": {
+            "title": "Create OUs, users and a security group",
+            "detail": "Active Directory Users and Computers, verified with Get-ADGroupMember."
+          },
+          "3": {
+            "title": "Link a Group Policy and note the related events",
+            "detail": "Group Policy Management, then the matching Security log event IDs."
+          }
+        }
+      }
+    }
   }
 }
