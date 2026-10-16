@@ -1293,3 +1293,15 @@
   height: 1px;
   background: var(--cc-cyan);
 }
+
+/* One compact evidence panel for a planned case, instead of empty frames. */
+.cf-evidence-pending {
+  position: relative;
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--cf-rule);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 12px, rgb(148 180 220 / 0.035) 12px 13px),
+    rgb(8 12 22 / 0.7);
+}

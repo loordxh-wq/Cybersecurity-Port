@@ -425,6 +425,7 @@
       "planned": "Planned"
     },
     "notice": "This case is planned. Findings, screenshots and video will be added only from my own lab work, after review.",
+    "evidencePending": "Screenshots, findings and lessons learned are added here once the lab evidence is reviewed.",
     "section": {
       "summary": "Recruiter summary",
       "objective": "Objective",

@@ -40,8 +40,12 @@ test.describe("case files in the protected preview", () => {
           for (const c of cases) {
             await page.goto(`/${locale}/case-files/${c.slug}`);
             await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-            // One notice at the top; one "Planned" marker on the steps heading; quiet slots.
-            await expect(page.locator(".cf-notice")).toHaveCount(1);
+            // Planned cases stay quiet: no notice, no placeholder boxes, one "Planned" marker
+            // on the steps heading and a single compact evidence panel.
+            await expect(page.locator(".cf-notice, .cf-slot, .cf-figure-empty")).toHaveCount(0);
+            await expect(page.locator("#cf-summary, #cf-findings, #cf-lessons")).toHaveCount(0);
+            await expect(page.locator(".cf-evidence-pending")).toHaveCount(1);
+            await expect(page.locator("details.cf-toc--mob .cf-toc-list li")).toHaveCount(7);
             await expect(page.locator(".cf-section-tag")).toHaveCount(1);
             await expect(page.locator("#cf-steps .cf-section-tag")).toHaveCount(1);
             await expect(page.locator(".cf-step")).toHaveCount(c.steps);
@@ -52,10 +56,8 @@ test.describe("case files in the protected preview", () => {
             await expect(page.locator(`#${captionId}`)).not.toBeEmpty();
             await expect(page.locator(".cf-flow > li")).toHaveCount(c.stages);
             await expect(page.locator(".cf-checks > li")).toHaveCount(c.checks);
-            // No results claimed: findings and lessons are slots, no screenshots, no video.
-            await expect(page.locator("#cf-findings .cf-slot, #cf-lessons .cf-slot")).toHaveCount(2);
+            // No results claimed: no screenshots, findings or video.
             await expect(page.locator(".cf-gallery img, video, #cf-video, .cf-findings")).toHaveCount(0);
-            await expect(page.locator(".cf-figure-empty")).toHaveCount(3);
             const width = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
             expect(width.sw, c.slug).toBeLessThanOrEqual(width.cw);
             expect(await axe(page), c.slug).toEqual([]);

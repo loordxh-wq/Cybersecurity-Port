@@ -54,7 +54,10 @@ export default async function CaseFilePage({ params }: Params) {
   const next = visibleCases[idx + 1];
   const documented = c.status === "approved";
   const planned = c.status === "placeholder";
-  const shown = sections.filter((s) => s !== "video" || c.video);
+  // A planned case shows only what exists (method, steps, checks) and one compact
+  // evidence panel; summary, findings and lessons appear once there is content.
+  const evidenceOnly = new Set(["summary", "findings", "lessons"]);
+  const shown = sections.filter((s) => (s !== "video" || c.video) && !(planned && evidenceOnly.has(s)));
   const no = (s: (typeof sections)[number]) => String(shown.indexOf(s) + 1).padStart(2, "0");
   const has = (key: string) => t.has(`${k}.${key}` as never);
   const text = (key: string) => t(`${k}.${key}` as never);
@@ -99,7 +102,6 @@ export default async function CaseFilePage({ params }: Params) {
           <p className="cf-card-prov">{t("provenance")}</p>
           <Facts
             rows={[
-              { label: t("label.environment"), value: text("environment") },
               { label: t("label.tools"), value: <Tools tools={c.tools} /> },
               {
                 label: t("label.evidence"),
@@ -116,7 +118,7 @@ export default async function CaseFilePage({ params }: Params) {
           />
         </header>
 
-        {!documented ? (
+        {c.status === "draft" ? (
           <p className="cf-notice" role="status">
             {t("notice")}
           </p>
@@ -136,6 +138,7 @@ export default async function CaseFilePage({ params }: Params) {
           </div>
 
           <div className="cf-sections">
+            {!planned ? (
             <Section id="summary" n={no("summary")} title={t("section.summary")}>
               <dl className="cf-summary">
                 <div>
@@ -158,14 +161,14 @@ export default async function CaseFilePage({ params }: Params) {
                 </div>
               </dl>
             </Section>
+            ) : null}
 
             <Section id="objective" n={no("objective")} title={t("section.objective")}>
               <p className="cf-lead">{text("objective")}</p>
             </Section>
 
             <Section id="environment" n={no("environment")} title={t("section.environment")}>
-              <p className="cf-text">{text("environment")}</p>
-              <Tools tools={c.tools} />
+              <p className="cf-text cf-text--strong">{text("environment")}</p>
             </Section>
 
             <Section id="workflow" n={no("workflow")} title={t("section.workflow")}>
@@ -209,6 +212,7 @@ export default async function CaseFilePage({ params }: Params) {
               </ul>
             </Section>
 
+            {!planned ? (
             <Section id="findings" n={no("findings")} title={t("section.findings")}>
               {c.findings.length ? (
                 <ol className="cf-findings">
@@ -230,10 +234,25 @@ export default async function CaseFilePage({ params }: Params) {
                 <Slot>{t("slot.findings")}</Slot>
               )}
             </Section>
+            ) : null}
 
             <Section id="evidence" n={no("evidence")} title={t("section.evidence")}>
-              <p className="cf-text">{t("slot.evidence")}</p>
-              <EvidenceGallery items={galleryItems} emptySlots={emptySlots} labels={{ viewFull: t("label.viewFull"), close: t("label.close"), evidenceSlot: t("label.evidenceSlot") }} />
+              {planned ? (
+                <div className="cf-evidence-pending">
+                  <span aria-hidden="true" className="cf-card-ticks" />
+                  <EvidenceMeter
+                    approved={approvedCount}
+                    planned={Math.max(c.evidencePlanned, approvedCount)}
+                    label={t("label.evidenceCount", { approved: approvedCount, planned: Math.max(c.evidencePlanned, approvedCount) })}
+                  />
+                  <p className="cf-text">{t("evidencePending")}</p>
+                </div>
+              ) : (
+                <>
+                  <p className="cf-text">{t("slot.evidence")}</p>
+                  <EvidenceGallery items={galleryItems} emptySlots={emptySlots} labels={{ viewFull: t("label.viewFull"), close: t("label.close"), evidenceSlot: t("label.evidenceSlot") }} />
+                </>
+              )}
             </Section>
 
             {c.video ? (
@@ -248,9 +267,11 @@ export default async function CaseFilePage({ params }: Params) {
               </Section>
             ) : null}
 
+            {!planned ? (
             <Section id="lessons" n={no("lessons")} title={t("section.lessons")}>
               {has("lessons") ? <p className="cf-text cf-text--strong">{text("lessons")}</p> : <Slot>{t("slot.lessons")}</Slot>}
             </Section>
+            ) : null}
 
             <Section id="skills" n={no("skills")} title={t("section.skills")}>
               <ul className="cf-skill-links">
