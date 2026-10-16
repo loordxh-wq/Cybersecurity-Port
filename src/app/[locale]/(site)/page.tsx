@@ -5,6 +5,7 @@ import { CareerTrajectory } from "@/components/home/CareerTrajectory";
 import { CaseStudiesPreview } from "@/components/home/CaseStudiesPreview";
 import { ChapterRail } from "@/components/home/ChapterRail";
 import { CommandHero } from "@/components/home/CommandHero";
+import { CvRequest } from "@/components/cv/CvRequest";
 import { CredentialExhibit } from "@/components/home/CredentialExhibit";
 import "@/components/home/home.css";
 import { MissionChapter } from "@/components/home/MissionChapter";
@@ -38,6 +39,7 @@ export default async function HomePage({ params }: LocaleParams) {
     { id: "credentials", label: credentials("title") },
     ...(visibleProjects.length ? [{ id: "work", label: h("chapters.work") }] : []),
     { id: "open-to-work", label: otw("title") },
+    { id: "cv", label: h("chapters.cv") },
   ].map((c, i) => ({ ...c, index: String(i + 1).padStart(2, "0") }));
   const idx = (id: string) => chapters.find((c) => c.id === id)?.index ?? "";
 
@@ -50,6 +52,7 @@ export default async function HomePage({ params }: LocaleParams) {
       <CredentialExhibit index={idx("credentials")} />
       <CaseStudiesPreview index={idx("work")} />
       <OpenToWorkBand index={idx("open-to-work")} />
+      <CvRequest index={idx("cv")} />
       <ChapterRail label={h("chapters.label")} items={chapters} />
     </>
   );

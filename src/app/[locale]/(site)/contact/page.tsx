@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { CvRequest } from "@/components/cv/CvRequest";
 import { OpenToWork } from "@/components/OpenToWork";
 import { SocialLinks } from "@/components/SocialLinks";
 import { resolveLocale, type LocaleParams } from "@/lib/locale";
@@ -16,14 +17,19 @@ export default async function ContactPage({ params }: LocaleParams) {
   const tFooter = await getTranslations("footer");
 
   return (
-    <div className={`${ui.container} py-12 sm:py-20`}>
-      <OpenToWork headingLevel={1} />
-      <section aria-labelledby="profiles-title" className="reveal mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-        <h2 id="profiles-title" className="font-mono text-xs font-medium text-ice">
-          {tFooter("socialTitle")}
-        </h2>
-        <SocialLinks label={tFooter("socialTitle")} withNames />
-      </section>
-    </div>
+    <>
+      <div className={`${ui.container} pt-12 sm:pt-20`}>
+        <OpenToWork headingLevel={1} />
+      </div>
+      <CvRequest />
+      <div className={`${ui.container} pb-12 sm:pb-20`}>
+        <section aria-labelledby="profiles-title" className="reveal flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <h2 id="profiles-title" className="font-mono text-xs font-medium text-ice">
+            {tFooter("socialTitle")}
+          </h2>
+          <SocialLinks label={tFooter("socialTitle")} withNames />
+        </section>
+      </div>
+    </>
   );
 }
