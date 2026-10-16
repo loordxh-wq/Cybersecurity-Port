@@ -11,6 +11,14 @@
 [dir="rtl"] .cv-section {
   background: radial-gradient(ellipse 45% 55% at 78% 55%, rgb(29 58 138 / 0.2), transparent 70%);
 }
+@media (max-width: 639.98px) {
+  .cv-section {
+    padding-block: 3rem;
+  }
+  .cv-section .cv-grid {
+    margin-top: 1.75rem;
+  }
+}
 @media (min-width: 1024px) {
   .cv-section {
     padding-block: 6rem;
@@ -106,10 +114,12 @@
 .cv-dialog {
   width: min(34rem, calc(100% - 2rem));
   max-width: none;
+  max-height: calc(100vh - 2rem); /* fallback before dvh */
   max-height: calc(100dvh - 2rem);
   margin: auto;
   padding: 0;
   overflow: auto;
+  overscroll-behavior: contain; /* scrolling the dialog never scrolls the page behind it */
   border: 1px solid var(--cc-hair-strong);
   background: linear-gradient(180deg, #0c1424, #05080f 60%);
   color: #fff;
@@ -124,7 +134,8 @@
 @media (max-width: 639.98px) {
   .cv-dialog {
     width: 100%;
-    max-height: calc(100dvh - 1.5rem);
+    max-height: calc(100vh - 1.5rem);
+    max-height: calc(100dvh - 1.5rem - env(safe-area-inset-top));
     margin: auto 0 0;
     border-inline: 0;
     border-bottom: 0;
@@ -276,7 +287,8 @@
 .cv-dlg-foot {
   display: grid;
   gap: 0.5rem;
-  padding: 1rem 1.5rem 1.5rem;
+  /* The bottom sheet's last row stays above the iPhone home indicator. */
+  padding: 1rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
 }
 .cv-dlg-privacy {
   display: flex;

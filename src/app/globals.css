@@ -34,7 +34,13 @@
     background: var(--color-ink);
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    /* In-page links land below the fixed header (4rem, 5rem from 1024px) with 1rem of air. */
+    scroll-padding-top: 5rem;
+  }
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 6rem;
+    }
   }
 
   body {
@@ -44,6 +50,9 @@
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.7;
+    /* Landscape on notched iPhones: keep content out of the notch (0 everywhere else). */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }

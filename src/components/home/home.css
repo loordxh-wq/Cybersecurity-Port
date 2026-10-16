@@ -420,3 +420,37 @@
     display: none;
   }
 }
+
+/* ------------------------------------------------------------------ phone rhythm */
+/* Same chapters, shorter scroll: about a quarter less space between and inside sections.
+   The hero keeps its cinematic proportions. */
+@media (max-width: 639.98px) {
+  .home-chapter {
+    padding-block: 3rem;
+  }
+  .home-head {
+    margin-top: 1.75rem;
+    margin-bottom: 2rem;
+  }
+  .home-mission {
+    margin-top: 1.75rem;
+  }
+  .home-exhibit-head {
+    margin-top: 1.75rem;
+  }
+  .home-exhibit-grid {
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  /* The floor shrinks with the padding, so it still ends below the text. */
+  .home-band {
+    padding-block: 3.5rem 8rem;
+  }
+  .home-band-floor {
+    height: 9rem;
+  }
+  .home-band-grid {
+    gap: 2.25rem;
+    margin-top: 2rem;
+  }
+}

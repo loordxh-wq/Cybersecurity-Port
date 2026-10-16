@@ -10,6 +10,9 @@ import { siteUrl } from "@/lib/site";
 export const viewport: Viewport = {
   themeColor: "#07101b",
   colorScheme: "dark",
+  // Edge to edge on notched iPhones; content keeps clear of the notch and home
+  // indicator through env(safe-area-inset-*) paddings (globals.css, header, bars, dialogs).
+  viewportFit: "cover",
 };
 
 export function generateStaticParams() {
