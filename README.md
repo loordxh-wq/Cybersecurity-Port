@@ -65,8 +65,12 @@ private/                      Gitignored. Original CV and unredacted images only
   `cellcomMetrics.approved`, `publicEmail`. Flip them in `facts.ts`.
 - **CV privacy.** The CV is never published: no file in the repo, `public/`, any bundle
   or any route. Visitors use "Request My CV" (phone, shown only when the dialog opens,
-  `src/components/cv/contact-phone.ts`) and Eli sends it personally. `check:content`
-  fails the build if a document file or a CV route appears.
+  `src/components/cv/contact-phone.ts`) and Eli sends it personally.
+- **Document and secret guard** (`npm run check:content`, run by lint and build; proven by
+  `npm run test:guard`): any CV-like file or CV route fails, approved or not. Other
+  documents ship only as sanitized copies in `public/documents/` or `src/assets/evidence/`,
+  listed in `src/content/public-documents.json` with `sanitizedOn` and `approvedOn`.
+  Committed env files, keys and private-key/token text fail. `private/` stays local.
 - **RTL.** `<html dir>` is set per locale. Layout uses logical utilities
   (`ms-`, `ps-`, `start-`, `border-s`) so it mirrors automatically. Latin terms
   inside Hebrew/Arabic text are wrapped in `<bdi>` where they could reorder.

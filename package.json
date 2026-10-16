@@ -16,7 +16,8 @@
     "verify": "npm run lint && npm run typecheck && npm run build",
     "check:content": "node scripts/check-content.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:preview": "E2E_STAGE=preview playwright test tests/e2e/preview.spec.ts"
+    "test:e2e:preview": "E2E_STAGE=preview playwright test tests/e2e/preview.spec.ts",
+    "test:guard": "node --test tests/unit/*.test.mjs"
   },
   "dependencies": {
     "motion": "12.12.1",

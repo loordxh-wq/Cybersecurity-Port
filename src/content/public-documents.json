@@ -1,0 +1,4 @@
+{
+  "$comment": "Documents approved for publication (e.g. a sanitized lab report). Each file must be a sanitized copy, live in public/documents/ or src/assets/evidence/, and be approved by Eli. CV files are never allowed, even if listed. Entry: { \"path\": \"public/documents/<file>.pdf\", \"title\": \"…\", \"sanitizedOn\": \"YYYY-MM-DD\", \"approvedOn\": \"YYYY-MM-DD\" }.",
+  "documents": []
+}

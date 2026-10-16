@@ -41,22 +41,69 @@ for (const l of locales) {
   if (!get(messages[l], "common.simulatedTraining")) fail(`missing ${l} message common.simulatedTraining`);
 }
 
-// CV privacy: the CV is shared personally and must never ship with the site.
-// No document files anywhere in the project, and no route that could serve one.
+// ---------------------------------------------------------------- documents, CV and secrets
+// 1. A CV never ships: any document or image whose name looks like a CV fails,
+//    approved or not, and no route may be named like one.
+// 2. Other documents (PDF, Word, ...) may ship only when Eli has approved a sanitized
+//    copy: it must live in public/documents/ or src/assets/evidence/ and be listed in
+//    src/content/public-documents.json with sanitizedOn and approvedOn dates.
+// 3. Secrets never ship: tracked env files, private keys and keystores fail, and so
+//    does private-key or token text in source and content files.
+// private/ (gitignored, local only) is never scanned or shipped.
 const root = new URL("../", import.meta.url);
-const docExt = /\.(pdf|docx?|odt|rtf|pages)$/i;
-const skip = new Set(["node_modules", ".next", ".git", "test-results", "playwright-report", "private"]);
+const { documents: approvedDocs } = read("src/content/public-documents.json");
+const docExt = /\.(pdf|docx?|odt|rtf|pages|xlsx?|pptx?)$/i;
+const cvLikeExt = /\.(pdf|docx?|odt|rtf|pages|png|jpe?g|webp|gif|zip)$/i;
+const cvLikeName = /(^|[^a-z])(cv|resume|résumé|curriculum[-_ ]?vitae)([^a-z]|$)|קורות[-_ ]?חיים|سيرة[-_ ]?ذاتية/i;
+const docDirs = ["public/documents/", "src/assets/evidence/"];
+const secretFile = /(^|\/)(\.env(\..+)?|id_(rsa|dsa|ecdsa|ed25519)(\.pub)?|.+\.(pem|key|p12|pfx|jks|keystore|kdbx))$/i;
+const allowedSecretLike = new Set([".env.example"]);
+const secretText = [
+  [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, "private key"],
+  [/\bAKIA[0-9A-Z]{16}\b/, "AWS access key"],
+  [/\bgh[pousr]_[A-Za-z0-9]{36,}\b/, "GitHub token"],
+  [/\bxox[abprs]-[A-Za-z0-9-]{10,}\b/, "Slack token"],
+];
+const textExt = /\.(ts|tsx|js|mjs|cjs|json|css|md|mdx|txt|html|svg|ya?ml)$/i;
+const skip = new Set(["node_modules", ".next", ".git", "test-results", "playwright-report", "private", ".vercel"]);
+
+// Tracked files, when git is available: an ignored local .env is fine, a tracked one is not.
+let tracked = null;
+try {
+  const { execSync } = await import("node:child_process");
+  tracked = new Set(execSync("git ls-files", { cwd: new URL(".", root), encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).split("\n").filter(Boolean));
+} catch {
+  tracked = null; // no git (e.g. a build from an upload): treat every file as shippable
+}
+const ships = (r) => tracked === null || tracked.has(r);
+
+for (const d of approvedDocs) {
+  if (!d.path || !docDirs.some((dir) => d.path.startsWith(dir))) fail(`approved document must live in ${docDirs.join(" or ")}: ${d.path}`);
+  if (!d.sanitizedOn || !d.approvedOn) fail(`approved document needs sanitizedOn and approvedOn: ${d.path}`);
+  if (!existsSync(new URL(d.path, root))) fail(`approved document not found: ${d.path}`);
+}
+
 function walk(dir, rel = "") {
   for (const name of readdirSync(dir)) {
     if (skip.has(name)) continue;
-    const path = new URL(`${name}`, dir.href.endsWith("/") ? dir : new URL(`${dir.href}/`));
+    const url = new URL(name, dir);
     const r = rel ? `${rel}/${name}` : name;
-    if (statSync(path).isDirectory()) walk(new URL(`${path.href}/`), r);
-    else if (docExt.test(name)) fail(`document file must not be in the project (share CVs privately): ${r}`);
+    if (statSync(url).isDirectory()) {
+      walk(new URL(`${url.href}/`), r);
+      continue;
+    }
+    if (cvLikeExt.test(name) && cvLikeName.test(name.replace(/\.[^.]+$/, ""))) fail(`CV-like file must never be in the project (share CVs privately): ${r}`);
+    else if (docExt.test(name) && !approvedDocs.some((d) => d.path === r)) fail(`document not approved for publication (list a sanitized copy in src/content/public-documents.json): ${r}`);
     if (r.startsWith("src/app/") && /(^|\/)(cv|resume|curriculum)(\.|\/|$)/i.test(r)) fail(`no CV route may exist: ${r}`);
+    if (secretFile.test(r) && !allowedSecretLike.has(name) && ships(r)) fail(`secret or key file must not be committed: ${r}`);
+    if (textExt.test(name) && ships(r) && statSync(url).size < 2_000_000) {
+      const text = readFileSync(url, "utf8");
+      for (const [re, label] of secretText) if (re.test(text)) fail(`${label} found in ${r}`);
+    }
   }
 }
 walk(root);
+if (!/^\/?private\/?$/m.test(readFileSync(new URL(".gitignore", root), "utf8"))) fail(".gitignore must keep private/ out of the repository");
 
 if (errors) {
   console.error(`\ncontent check failed with ${errors} problem(s).`);
