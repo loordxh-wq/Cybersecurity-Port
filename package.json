@@ -9,11 +9,14 @@
   "scripts": {
     "dev": "next dev",
     "check:i18n": "node scripts/check-messages.mjs",
-    "lint": "npm run check:i18n && next lint --max-warnings 0",
+    "lint": "npm run check:i18n && npm run check:content && next lint --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "build": "npm run check:i18n && next build",
+    "build": "npm run check:i18n && npm run check:content && next build",
     "start": "next start",
-    "verify": "npm run lint && npm run typecheck && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run build",
+    "check:content": "node scripts/check-content.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:preview": "E2E_STAGE=preview playwright test tests/e2e/preview.spec.ts"
   },
   "dependencies": {
     "motion": "12.12.1",
@@ -24,7 +27,9 @@
     "three": "0.186.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
     "@eslint/eslintrc": "3.3.1",
+    "@playwright/test": "1.56.1",
     "@tailwindcss/postcss": "4.1.8",
     "@types/node": "22.15.29",
     "@types/react": "19.1.6",
@@ -39,6 +44,9 @@
     "sharp": "0.35.5",
     "next": {
       "postcss": "8.5.30"
+    },
+    "@axe-core/playwright": {
+      "playwright-core": "1.56.1"
     }
   }
 }
