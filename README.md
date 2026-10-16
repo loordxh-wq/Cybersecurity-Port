@@ -62,7 +62,11 @@ private/                      Gitignored. Original CV and unredacted images only
 - **Wording vs facts.** Text lives in `messages/*.json`; facts that are the same
   in every language (dates, URLs, issuers) live in `src/content/facts.ts`.
 - **Approval flags.** Anything that needs Eli's sign-off is off by default:
-  `cellcomMetrics.approved`, `publicEmail`, `publicCv`. Flip them in `facts.ts`.
+  `cellcomMetrics.approved`, `publicEmail`. Flip them in `facts.ts`.
+- **CV privacy.** The CV is never published: no file in the repo, `public/`, any bundle
+  or any route. Visitors use "Request My CV" (phone, shown only when the dialog opens,
+  `src/components/cv/contact-phone.ts`) and Eli sends it personally. `check:content`
+  fails the build if a document file or a CV route appears.
 - **RTL.** `<html dir>` is set per locale. Layout uses logical utilities
   (`ms-`, `ps-`, `start-`, `border-s`) so it mirrors automatically. Latin terms
   inside Hebrew/Arabic text are wrapped in `<bdi>` where they could reorder.
@@ -87,7 +91,6 @@ private/                      Gitignored. Original CV and unredacted images only
 - Approve the Cellcom figures (≈50 cases/day, 95% first-contact resolution), then
   set `cellcomMetrics.approved = true`.
 - Choose which email (if any) to publish, then set `publicEmail`.
-- Approve a redacted public CV, then add it under `public/cv/` and set `publicCv`.
 - Confirm the Hebrew and Arabic spelling of your name.
 - Send a portrait without the phone covering your face, when you have one.
 - Phase 2: SOC lab demo, projects, journal, roadmap, skills matrix, AI web

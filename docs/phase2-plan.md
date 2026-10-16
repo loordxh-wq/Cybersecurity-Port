@@ -14,7 +14,7 @@ Rules carried over: no invented projects, experience, metrics or credentials. Si
 | Career | Cellcom Tier 1 support; CyberGain Blue Team SOC-track course (Splunk, QRadar, Wireshark, FortiGate, AD, Windows, Linux, PowerShell, Python); national service 2022 | Cellcom figures hidden (`cellcomMetrics.approved = false`) |
 | Credentials | C\|SA (EC-Council, certification); Cisco Ethical Hacker and Networking Basics (course completions); redacted images | No verification URLs |
 | Projects, labs | None | Every case study and lab needs Eli's own material |
-| CV | `publicCv` is null for all languages | Redacted, approved PDFs per language |
+| CV | Available on request only (decision 2026-10-16); never published | — |
 | Contact | LinkedIn, Instagram, Facebook | `publicEmail` is null |
 | Journal, roadmap | None | Eli's entries and confirmed goals |
 
@@ -33,7 +33,7 @@ Everything in the "Gap" column ships as a **placeholder slot**, never as made-up
 /{locale}/certifications       Certification gallery (certifications separated from course completions)
 /{locale}/journal              Learning journal index
 /{locale}/journal/[slug]       Journal entry
-/{locale}/contact              Open to Work, recruiter brief, CV download, contact
+/{locale}/contact              Open to Work, recruiter brief, CV request, contact
 ```
 
 - **Navigation:** seven destinations. On desktop the command bar shows them with numbered indices. Below about 1280 px it shows Home, Lab, Projects and Contact, plus an "Index" control that opens the full-screen menu (the V4 mobile menu, reused). Mobile always uses the full-screen index.
@@ -151,14 +151,12 @@ A CI check fails the build if:
   - the empty state is one quiet line, not filler posts;
   - Eli is offered an entry template.
 
-### 5.6 Approved downloadable CV
-- **CV center** on `/contact` (also linked from the hero once approved).
-- One PDF per language. Eli approves which contact fields appear.
-- Files go through metadata stripping before commit; the procedure is documented in `docs/`.
-- Until `publicCv` is set, no download button is rendered (current behaviour is kept).
+### 5.6 CV, available upon request (replaces the downloadable CV)
+- Decision (2026-10-16): no CV download for anonymous visitors. A "Professional CV · Available Upon Request" section opens a dialog with Eli's phone number (call, SMS, copy). Eli sends the CV personally.
+- The CV never enters the repository, `public/`, any bundle or any route; `check:content` enforces this.
 
 ### 5.7 Open to Work and recruiter contact (`/contact`)
-- **HorizonBand:** "Open to: SOC trainee · Help desk · Desktop support · NOC". Region: Haifa, Nahariya, Karmiel / Northern Israel. Languages: from `about.languages`.
+- **HorizonBand:** "Open to: SOC trainee · Help desk · Desktop support · NOC". Location: flexible, suitable roles across Israel. Languages: from `about.languages`.
 - **Recruiter brief:** one printable screen with name, target roles, region, languages, verified credential, course completions, tools from the course, links. Generated only from approved facts.
 - **Contact:** LinkedIn now. A mailto link once Eli publishes an address. A form only if Eli wants one (D2); that would need a serverless endpoint, an email provider, spam protection and a privacy note.
 
@@ -190,7 +188,7 @@ A CI check fails the build if:
 | # | Milestone | Size | Depends on Eli for |
 | --- | --- | --- | --- |
 | **2.0** | Foundation: V4.1 becomes the real home; design primitives; evidence model; nav for 7 destinations; tests moved into the repo | M | — |
-| **2.1** | Certifications gallery, Open to Work, recruiter brief, CV slot | S–M | CV files, email (optional) |
+| **2.1** | Certifications gallery, Open to Work, recruiter brief | S–M | Email (optional) |
 | **2.2** | About + career roadmap; journal shell with empty state | S | "Now" and "Next" goals, first entries |
 | **2.3** | Projects framework; AI-assisted portfolio case study; Wireshark and AD showcases with PendingSlots | M | Case-study wording approval, lab screenshots |
 | **2.4** | SOC Investigation Lab, scenario 1 | L | Scenario approval |
@@ -205,7 +203,7 @@ A CI check fails the build if:
 - **D3:** SOC lab: approve scenario 1 (brute force → valid account) as the first.
 - **D4:** Approve the wording of the AI-assisted development case study.
 - **D5:** Who reviews the Hebrew and Arabic copy?
-- **Evidence:** Wireshark and AD screenshots or notes (unsanitized originals stay private; I sanitize copies), CV PDFs per language, public email, C|SA verification URL if one exists, roadmap goals, journal entries, a decision on the Cellcom figures.
+- **Evidence:** Wireshark and AD screenshots or notes (unsanitized originals stay private; I sanitize copies), public email, C|SA verification URL if one exists, roadmap goals, journal entries, a decision on the Cellcom figures.
 
 ---
 
@@ -225,3 +223,7 @@ A CI check fails the build if:
 - **Contact (D2):** LinkedIn only; no email, no form.
 - **Tests:** the Playwright + axe suite now lives in `tests/e2e` (71 tests on the public build plus a preview-build test).
 - **Not in 2.0:** About, Certifications and Contact pages keep their Phase 1.5 content styling inside the new chrome. They are redesigned in milestones 2.1–2.2.
+
+### Recruitment update (branch `feature/recruitment-flexible-location-cv`, awaiting review)
+- **Flexible location.** Status is now "Open to Work | Flexible Location" in all three languages. Regional job-search wording, the city list and the Northern District region in the structured data are removed. Target roles now include Blue Team / Security Operations.
+- **CV by request.** A Professional CV chapter appears on home and on the Open to Work page. Its dialog offers call, SMS and copy actions; the phone number is rendered only while the dialog is open. No CV file or endpoint exists.
