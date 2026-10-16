@@ -17,6 +17,8 @@ test("case studies in preparation are visible and marked as pending", async ({ p
   await expect(page.locator("footer")).toContainText("Protected preview build");
 });
 
+const tally = { en: "3 planned investigations", he: "3 חקירות מתוכננות", ar: "3 تحقيقات مخطّطة" } as const;
+
 const cases = [
   { slug: "network-traffic-investigation", stages: 5, steps: 4, checks: 4, category: "network" },
   { slug: "soc-alert-investigation", stages: 5, steps: 4, checks: 4, category: "siem" },
@@ -28,13 +30,20 @@ test.describe("case files in the protected preview", () => {
     test.describe(vpName, () => {
       test.use(viewports[vpName]);
       for (const locale of locales) {
-        test(`${locale}: CF-01 to CF-03 are visible, awaiting evidence, and invent nothing`, async ({ page }) => {
+        test(`${locale}: CF-01 to CF-03 are visible, planned, and invent nothing`, async ({ page }) => {
           await page.goto(`/${locale}/case-files`);
           await expect(page.locator("html")).toHaveAttribute("dir", dirOf(locale));
           await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
           await expect(page.locator(".cf-card")).toHaveCount(3);
           await expect(page.locator(".cf-card .cf-status[data-status=awaiting]")).toHaveCount(3);
-          await expect(page.locator(".cf-meter-cell[data-filled]")).toHaveCount(0);
+          // The planned state is stated once ("3 planned investigations"); the cards repeat it
+          // quietly, with no empty evidence meters.
+          await expect(page.locator(".cf-tally")).toHaveText(tally[locale]);
+          await expect(page.locator(".cf-card .cf-status--quiet")).toHaveCount(3);
+          await expect(page.locator(".cf-card .cf-meter, .cf-meter-cell[data-filled]")).toHaveCount(0);
+          // The status key sits on one line on a phone.
+          const rows = await page.locator(".cf-legend-row > li").evaluateAll((els) => new Set(els.map((e) => Math.round(e.getBoundingClientRect().top))).size);
+          expect(rows).toBe(1);
           expect(await axe(page)).toEqual([]);
 
           for (const c of cases) {
@@ -45,6 +54,9 @@ test.describe("case files in the protected preview", () => {
             await expect(page.locator(".cf-notice, .cf-slot, .cf-figure-empty")).toHaveCount(0);
             await expect(page.locator("#cf-summary, #cf-findings, #cf-lessons")).toHaveCount(0);
             await expect(page.locator(".cf-evidence-pending")).toHaveCount(1);
+            // No empty facts: no "0 of 3" meter and no "Not yet recorded" date on a planned case.
+            await expect(page.locator(".cf-meter")).toHaveCount(0);
+            await expect(page.locator(".cf-facts > div")).toHaveCount(1);
             await expect(page.locator("details.cf-toc--mob .cf-toc-list li")).toHaveCount(7);
             await expect(page.locator(".cf-section-tag")).toHaveCount(1);
             await expect(page.locator("#cf-steps .cf-section-tag")).toHaveCount(1);

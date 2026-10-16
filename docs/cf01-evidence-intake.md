@@ -1,6 +1,6 @@
 # CF-01 Network Traffic Investigation — evidence intake
 
-CF-01 is built and waiting for evidence: status **Awaiting evidence**, visible only in the protected preview, absent from the public site (404, no nav item, no sitemap entry, no footer statement). Nothing in it is written until Eli's own lab material arrives.
+CF-01 is built and waiting for evidence: status **Planned** (internally `placeholder`), visible only in the protected preview, absent from the public site (404, no nav item, no sitemap entry, no footer statement). Nothing in it is written until Eli's own lab material arrives.
 
 ## 1. What Eli sends (privately, never through Git)
 Upload a ZIP to the session containing:

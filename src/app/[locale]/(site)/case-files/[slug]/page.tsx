@@ -100,20 +100,25 @@ export default async function CaseFilePage({ params }: Params) {
             {text("title")}
           </h1>
           <p className="cf-card-prov">{t("provenance")}</p>
+          {/* A planned case has no evidence or dates yet: the status says so once, without empty rows. */}
           <Facts
             rows={[
               { label: t("label.tools"), value: <Tools tools={c.tools} /> },
-              {
-                label: t("label.evidence"),
-                value: (
-                  <EvidenceMeter
-                    approved={approvedCount}
-                    planned={Math.max(c.evidencePlanned, approvedCount)}
-                    label={t("label.evidenceCount", { approved: approvedCount, planned: Math.max(c.evidencePlanned, approvedCount) })}
-                  />
-                ),
-              },
-              { label: t("label.updated"), value: c.updatedOn ? formatDate(locale, c.updatedOn) : t("label.notYet") },
+              ...(planned
+                ? []
+                : [
+                    {
+                      label: t("label.evidence"),
+                      value: (
+                        <EvidenceMeter
+                          approved={approvedCount}
+                          planned={Math.max(c.evidencePlanned, approvedCount)}
+                          label={t("label.evidenceCount", { approved: approvedCount, planned: Math.max(c.evidencePlanned, approvedCount) })}
+                        />
+                      ),
+                    },
+                    { label: t("label.updated"), value: c.updatedOn ? formatDate(locale, c.updatedOn) : t("label.notYet") },
+                  ]),
             ]}
           />
         </header>
@@ -240,11 +245,6 @@ export default async function CaseFilePage({ params }: Params) {
               {planned ? (
                 <div className="cf-evidence-pending">
                   <span aria-hidden="true" className="cf-card-ticks" />
-                  <EvidenceMeter
-                    approved={approvedCount}
-                    planned={Math.max(c.evidencePlanned, approvedCount)}
-                    label={t("label.evidenceCount", { approved: approvedCount, planned: Math.max(c.evidencePlanned, approvedCount) })}
-                  />
                   <p className="cf-text">{t("evidencePending")}</p>
                 </div>
               ) : (
