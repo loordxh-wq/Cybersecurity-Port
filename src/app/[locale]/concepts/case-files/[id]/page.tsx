@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { protoCases, statusKey, type CaseId } from "@/components/concepts/case-files/data";
-import { CaseStatus, EvidenceMeter, Facts, Slot, Tools } from "@/components/concepts/case-files/parts";
+import { CasePlate, CaseStatus, EvidenceMeter, Facts, Slot, Tools } from "@/components/concepts/case-files/parts";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { resolveLocale } from "@/lib/locale";
@@ -68,12 +68,7 @@ export default async function CaseFilePrototype({ params }: Params) {
 
         <header className="cf-dossier">
           <span aria-hidden="true" className="cf-card-ticks" />
-          <div className="cf-dossier-top">
-            <p className="cf-dossier-no" dir="ltr" aria-hidden="true">
-              {c.number}
-            </p>
-            <CaseStatus status={c.status} label={status} />
-          </div>
+          <CasePlate number={c.number} category={c.category} size="dossier" numberHidden status={<CaseStatus status={c.status} label={status} />} />
           <p className="cf-card-cat">
             <span className="sr-only">
               {t("label.case")} {c.number} ·{" "}

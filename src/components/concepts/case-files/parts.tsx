@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { EvidenceStatus } from "@/content/evidence";
-import { statusKey } from "./data";
+import { statusKey, type CaseCategory } from "./data";
+import { CaseGlyph } from "./glyphs";
 
 /** Status pill: the same three states everywhere (awaiting evidence, in progress, documented). */
 export function CaseStatus({ status, label }: { status: EvidenceStatus; label: string }) {
@@ -59,5 +60,36 @@ export function Tools({ tools }: { tools: readonly string[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * Dossier plate: case number and status stacked on one side, the case diagram on the
+ * other. The number and the status never share a line, so long translations cannot
+ * squeeze either one.
+ */
+export function CasePlate({
+  number,
+  category,
+  status,
+  size = "card",
+  numberHidden = false,
+}: {
+  number: string;
+  category: CaseCategory;
+  status: ReactNode;
+  size?: "card" | "dossier";
+  numberHidden?: boolean;
+}) {
+  return (
+    <div className={`cf-plate cf-plate--${size}`}>
+      <div className="cf-plate-id">
+        <span className="cf-plate-no" dir="ltr" aria-hidden={numberHidden || undefined}>
+          {number}
+        </span>
+        {status}
+      </div>
+      <CaseGlyph category={category} />
+    </div>
   );
 }

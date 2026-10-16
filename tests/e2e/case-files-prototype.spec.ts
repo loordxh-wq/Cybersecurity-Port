@@ -28,6 +28,37 @@ for (const vpName of ["mobile360", "mobile", "desktop"] as const) {
   });
 }
 
+for (const vpName of ["mobile360", "mobile"] as const) {
+  test.describe(`case files refinements ${vpName}`, () => {
+    test.use(viewports[vpName]);
+    for (const locale of locales) {
+      test(`${locale}: status badges stay on one line, apart from the case number`, async ({ page }) => {
+        for (const path of ["/concepts/case-files", "/concepts/case-files/wireshark"]) {
+          await page.goto(`/${locale}${path}`);
+          for (const plate of await page.locator(".cf-plate").all()) {
+            const no = (await plate.locator(".cf-plate-no").boundingBox())!;
+            const status = plate.locator(".cf-status");
+            const box = (await status.boundingBox())!;
+            // Below the number, never beside it; one line high; inside the plate.
+            expect(box.y).toBeGreaterThanOrEqual(no.y + no.height);
+            // The label renders on exactly one line (distinct line boxes of its text).
+            const lines = await status.evaluate((el) => {
+              const text = Array.from(el.childNodes).find((n) => n.nodeType === 3 && n.textContent?.trim())!;
+              const range = document.createRange();
+              range.selectNodeContents(text);
+              return new Set(Array.from(range.getClientRects()).filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+            });
+            expect(lines, `${path} status wraps`).toBe(1);
+            const pb = (await plate.boundingBox())!;
+            expect(box.x).toBeGreaterThanOrEqual(pb.x - 1);
+            expect(box.x + box.width).toBeLessThanOrEqual(pb.x + pb.width + 1);
+          }
+        }
+      });
+    }
+  });
+}
+
 test.describe("case files prototype: integrity and interaction", () => {
   test.use(viewports.mobile);
 
@@ -49,6 +80,20 @@ test.describe("case files prototype: integrity and interaction", () => {
       await expect(page.locator(".cf-step-tag")).toHaveText(Array(3).fill("Planned step"));
       await expect(page.locator(".cf-facts")).toContainText("Not yet recorded");
     }
+  });
+
+  test("status explanation sits in a closed disclosure; diagrams are decorative", async ({ page }) => {
+    await page.goto("/en/concepts/case-files");
+    const verify = page.locator("details.cf-verify");
+    await expect(verify).not.toHaveAttribute("open", "");
+    await expect(page.locator(".cf-legend-row .cf-status")).toHaveCount(3);
+    await verify.locator("summary").focus();
+    await page.keyboard.press("Enter");
+    await expect(verify.locator("dd")).toHaveCount(3);
+    await expect(verify).toContainText("sanitized");
+    // One abstract diagram per card, hidden from assistive technology, no images.
+    await expect(page.locator(".cf-card svg.cf-glyph[aria-hidden=true]")).toHaveCount(3);
+    await expect(page.locator(".cf-card img")).toHaveCount(0);
   });
 
   test("not linked from the site and not in the sitemap", async ({ page, request }) => {

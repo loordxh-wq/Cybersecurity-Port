@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChapterRule } from "@/components/cc/ChapterRule";
 import { protoCases, statusKey } from "@/components/concepts/case-files/data";
-import { CaseStatus, EvidenceMeter, Tools } from "@/components/concepts/case-files/parts";
+import { CasePlate, CaseStatus, EvidenceMeter, Tools } from "@/components/concepts/case-files/parts";
 import { Link } from "@/i18n/navigation";
 import { resolveLocale, type LocaleParams } from "@/lib/locale";
 
@@ -39,19 +39,28 @@ export default async function CaseFilesPrototype({ params }: LocaleParams) {
           <h1 className="cf-index-title cc-display">{t("title")}</h1>
           <p className="cf-index-lead">{t("lead")}</p>
 
+          {/* Status stays visible as three marks; the full explanation is one tap away. */}
           <div className="cf-legend">
-            <p className="cf-legend-title">{t("legendTitle")}</p>
-            <dl className="cf-legend-list">
+            <ul className="cf-legend-row" aria-label={t("legendTitle")}>
               {statuses.map((s) => (
-                <div key={s}>
-                  <dt>
-                    <CaseStatus status={statusOf[s]} label={t(`status.${s}`)} />
-                  </dt>
-                  <dd>{t(`statusHelp.${s}`)}</dd>
-                </div>
+                <li key={s}>
+                  <CaseStatus status={statusOf[s]} label={t(`status.${s}`)} />
+                </li>
               ))}
-            </dl>
-            <p className="cf-legend-note">{t("label.publicNote")}</p>
+            </ul>
+            <details className="cf-verify">
+              <summary>{t("verifyTitle")}</summary>
+              <dl className="cf-verify-list">
+                {statuses.map((s) => (
+                  <div key={s}>
+                    <dt>{t(`status.${s}`)}</dt>
+                    <dd>{t(`statusHelp.${s}`)}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p>{t("verifyNote")}</p>
+              <p>{t("label.publicNote")}</p>
+            </details>
           </div>
         </header>
 
@@ -60,12 +69,7 @@ export default async function CaseFilesPrototype({ params }: LocaleParams) {
             <li key={c.id}>
               <article className="cf-card" aria-labelledby={`cf-${c.id}-title`}>
                 <span aria-hidden="true" className="cf-card-ticks" />
-                <div className="cf-card-top">
-                  <span className="cf-card-no" dir="ltr">
-                    {c.number}
-                  </span>
-                  <CaseStatus status={c.status} label={t(`status.${statusKey[c.status]}`)} />
-                </div>
+                <CasePlate number={c.number} category={c.category} status={<CaseStatus status={c.status} label={t(`status.${statusKey[c.status]}`)} />} />
                 <p className="cf-card-cat">{t(`category.${c.category}`)}</p>
                 <h2 id={`cf-${c.id}-title`} className="cf-card-title">
                   <Link href={`/concepts/case-files/${c.id}`} className="cf-card-link">

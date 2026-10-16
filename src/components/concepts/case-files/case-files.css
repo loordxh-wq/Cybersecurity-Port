@@ -45,7 +45,9 @@
 /* ------------------------------------------------------------------ shared atoms */
 .cf-status {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
+  line-height: 1.35;
   gap: 0.45rem;
   padding: 0.2rem 0.6rem;
   border: 1px solid currentColor;
@@ -64,6 +66,7 @@
   color: var(--cf-documented);
 }
 .cf-status-mark {
+  flex: none;
   width: 0.45rem;
   height: 0.45rem;
   border: 1px solid currentColor;
@@ -197,40 +200,11 @@
 }
 .cf-legend {
   display: grid;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  padding-top: 1.25rem;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--cf-rule);
 }
-.cf-legend-title {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--cf-label);
-}
-.cf-legend-list {
-  display: grid;
-  gap: 0.6rem;
-}
-@media (min-width: 900px) {
-  .cf-legend-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
-  }
-}
-.cf-legend-list > div {
-  display: grid;
-  gap: 0.35rem;
-  justify-items: start;
-}
-.cf-legend-list dd {
-  font-size: 0.9375rem;
-  color: var(--cf-muted);
-}
-.cf-legend-note {
-  font-size: 0.9375rem;
-  color: var(--cf-muted);
-}
-
 .cf-grid {
   display: grid;
   gap: 1.25rem;
@@ -280,18 +254,6 @@
 .cf-card:focus-within {
   outline: 2px solid var(--cc-cyan);
   outline-offset: 3px;
-}
-.cf-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.cf-card-no {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  letter-spacing: 0.12em;
-  color: #fff;
 }
 .cf-card-title {
   font-size: 1.375rem;
@@ -383,21 +345,6 @@
   .cf-dossier {
     padding: 2.25rem 2.5rem;
   }
-}
-.cf-dossier-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.cf-dossier-no {
-  font-family: var(--font-mono);
-  font-size: clamp(1.75rem, 5vw, 2.75rem);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(201 211 225 / 0.6);
 }
 .cf-dossier-title {
   font-size: clamp(2rem, 6vw, 3.5rem);
@@ -874,4 +821,173 @@
 .cf-pager-title {
   font-size: 1rem;
   font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ refinement pass */
+/* Compact status row; the explanation lives in a disclosure. */
+.cf-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cf-verify summary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9375rem;
+  color: #c9eef9;
+  cursor: pointer;
+  list-style: none;
+}
+.cf-verify summary::-webkit-details-marker {
+  display: none;
+}
+.cf-verify summary::before {
+  content: "+";
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.cf-verify[open] summary::before {
+  content: "−";
+}
+.cf-verify > p,
+.cf-verify-list {
+  max-width: 44rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cf-muted);
+}
+.cf-verify-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.cf-verify-list > div {
+  display: grid;
+  gap: 0.1rem;
+}
+@media (min-width: 640px) {
+  .cf-verify-list > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+.cf-verify-list dt {
+  font-weight: 600;
+  color: var(--cf-text);
+}
+.cf-verify > p + p {
+  margin-top: 0.5rem;
+}
+.cf-verify > p:last-child {
+  margin-bottom: 0.75rem;
+}
+
+/* Dossier plate: id column (number over status) beside the case diagram. */
+.cf-plate {
+  display: grid;
+  grid-template-columns: auto minmax(5.5rem, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--cf-rule);
+  background:
+    linear-gradient(rgb(148 180 220 / 0.05) 1px, transparent 1px) 0 0 / 100% 12px,
+    linear-gradient(90deg, rgb(148 180 220 / 0.05) 1px, transparent 1px) 0 0 / 12px 100%,
+    rgb(6 10 18 / 0.7);
+}
+.cf-plate-id {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.cf-plate-no {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: #fff;
+}
+.cf-plate--dossier {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.cf-plate--dossier .cf-plate-no {
+  font-size: clamp(1.75rem, 6vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(201 211 225 / 0.6);
+}
+.cf-plate--dossier .cf-glyph {
+  max-width: 15rem;
+  justify-self: end;
+}
+
+.cf-glyph {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 5.25rem;
+  overflow: visible;
+}
+.cf-g-rail,
+.cf-g-line,
+.cf-g-node {
+  fill: none;
+  stroke: rgb(148 180 220 / 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-rail {
+  stroke: rgb(148 180 220 / 0.3);
+}
+.cf-g-node {
+  stroke: rgb(201 211 225 / 0.65);
+}
+.cf-g-accent,
+.cf-g-accent line,
+.cf-g-accent polyline {
+  stroke: var(--cc-cyan);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-line line,
+.cf-g-line polyline {
+  stroke: rgb(148 180 220 / 0.55);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.cf-g-dot {
+  fill: rgb(148 180 220 / 0.45);
+}
+.cf-g-accent-fill {
+  fill: var(--cc-cyan);
+}
+.cf-g-label {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  fill: rgb(232 238 246 / 0.6);
+}
+.cf-g-label--accent {
+  fill: var(--cc-cyan-hi);
+}
+/* A planned case draws its diagram quietly; a documented one at full strength. */
+.cf-card:has(.cf-status[data-status="awaiting"]) .cf-glyph,
+.cf-dossier:has(.cf-status[data-status="awaiting"]) .cf-glyph {
+  opacity: 0.8;
+}
+.cf-card:hover .cf-glyph {
+  opacity: 1;
 }
