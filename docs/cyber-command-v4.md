@@ -18,9 +18,9 @@ One axis ties the page together: the **signal horizon**.
 The scene tells a short story rather than looping noise.
 
 1. **Assemble.** About 2,800 points (1,500 on small or low-power devices) converge from scattered positions into a lattice sphere.
-2. **Identify.** Eli's real portrait decrypts at the centre, in coarse blocks that resolve to full resolution.
-   - Its rim dissolves into fine cells, so the portrait reads as part of the lattice, not a framed photo.
-   - Points in front of the face thin out so the face stays readable.
+2. **Identify.** Eli's real portrait sits at the centre, drawn above all scene geometry so nothing crosses the face.
+   - A single identify sweep passes over it on entrance.
+   - Only the outer rim dissolves into a fine halftone, so it joins the lattice without a hard frame.
 3. **Connect.** A simulated topology establishes links on bezier paths. Packets travel along them, the receiving node flashes, then the links terminate and re-form elsewhere.
 4. **Scan.** Every 7 s a scan field sweeps the core from top to bottom. Points light up as it passes, and the name receives the same sweep.
 
@@ -44,7 +44,7 @@ The scene is explicitly simulated:
 | Reduced motion | One composed still frame (assembled, decrypted, links shown). No animation loop and no pointer parallax. CSS entrance animations are disabled. |
 | Off-screen | `IntersectionObserver` and `visibilitychange` stop the render loop. |
 | Resolution | DPR capped at 2, or 1.5 on small and low-power devices. Adaptive: if frames average more than 28 ms after the entrance, the pixel ratio drops to 1, then to 0.75. |
-| Geometry sync | The camera is fixed (fov 35, distance about 7.2), so the portrait is always 34.4% of the scene height. CSS uses the same ratio for the poster and for the horizon length. The core's x position comes from `--cx`, set per breakpoint and mirrored for RTL. |
+| Geometry sync | The camera is fixed (fov 35, distance about 7.2), so the portrait is always 37.9% of the scene height. CSS uses the same ratio for the poster and for the horizon length. The core's x position comes from `--cx`, set per breakpoint and mirrored for RTL. |
 | RTL | Mirrored layout, scene side, horizon, CTA arrow and menu. Arabic never uses the mono face, because the fallback breaks letter joining. |
 | Accessibility | One `h1` (sr-only Latin plus a decorative giant in EN; the localized name is the real heading in HE/AR), skip link, keyboard-reachable menu (focus moves in, Escape restores focus), visible focus rings, text at least 12 px, axe clean. |
 
@@ -101,3 +101,14 @@ Rules for every section:
 - Display: Archivo extended 800 (Latin); IBM Plex Sans Hebrew and Arabic bold for localized names and headings.
 - Body: IBM Plex Sans.
 - Micro-labels: JetBrains Mono (Latin and Hebrew), Plex Sans for Arabic.
+
+## V4.1 refinement
+
+Branch `design/cyber-command-v4.1` (V4 stays untouched on `design/cyber-command-v4`).
+
+- **Portrait visibility.** The portrait is drawn last with depth testing off: no line, particle, ring or shell crosses Eli's face. It is about 10% larger (radius 0.78 → 0.86), with a lighter grade (80% natural colour) and a softer vignette. The coarse mosaic decrypt is gone. The canvas portrait is complete from its first frame, so the poster-to-WebGL hand-off is a pure cross-fade and the face never disappears. The rim now dissolves as a narrow halftone of round dots, replacing the ragged square cells. The surrounding scene still assembles, rotates, links, carries packets and scans.
+- **Calmer topology.** Nodes now sit on a compact shell (radius 1.95–2.55, was 2.05–2.95) with flatter curves, so links stay inside the scene and away from the type.
+- **Mobile composition (360/390).** The scene is 56svh (was 60), and the name, role and CTA row move up. The CTA and the certificates link share one row down to 360 px. The focus line moves below the CTAs on mobile, so the first screen is: status, name, role, actions.
+- **Disclosure.** "Simulated topology · demo visual, not live data" is still always shown, now in 12 px sans at reduced contrast (still above 4.5:1), with a small amber square instead of a hatched box, aligned to the scene's end edge.
+- **Prototype label.** It moved out of the fixed overlay into normal flow at the end of the page, so it never covers content. It exists only on noindex `/concepts` routes and must not be carried into any production page.
+- **Polish.** Softer chrome on the name (no dark mid-band that read as a strike-through), the status shown as a hairline pill, a quieter portrait edge, a later first scan (2.6 s) so the entrance settles first, and the scroll cue lifted above the hero's bottom fade.
