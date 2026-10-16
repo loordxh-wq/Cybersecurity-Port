@@ -243,7 +243,12 @@ Over-reactions the debrief flags, without penalty, as unnecessary:
 - One summary line, e.g. "6 of 8 findings supported by evidence".
 - The visitor can revise and resubmit any number of times.
 
-**Integrity.** The scenario key lives in the client bundle, which is unavoidable without a backend, so a determined visitor can read it. That is acceptable for a training simulation, and the key is loaded only when the visitor submits.
+**Independent investigation first (requirement, approved with D3).** The model answer, the debrief and the model analyst notes must not be visible before the visitor submits a verdict.
+- `key.json` (expected dispositions, predicates, actions) and the model analyst notes are a separate code-split chunk, fetched only when *Submit verdict* is pressed. They are never in the HTML, the initial JavaScript or the message bundle of the workspace.
+- The debrief and report views render only from a submitted state. Opening `?view=debrief` or `?view=report` before submitting shows the verdict form instead.
+- Hints during the investigation are limited to facts computed from the data (the inspector's "observed in the data" lines). They never state a conclusion or an expected status.
+- Tests: before submission there is no debrief content in the DOM and no request for the key chunk. A direct URL to the debrief falls back to the verdict. After submission the debrief renders.
+- **Integrity limit:** without a backend the key still ships to the browser once requested, so a determined visitor could fetch the chunk directly. That is acceptable for a training simulation; the requirement is that the experience never reveals it before submission.
 
 ### 3.5 Event schema and sample
 
@@ -448,7 +453,7 @@ src/content/lab/
   labs.json                      { id, status, approvedOn } (publication gate)
   soc-01/events.json             generated, committed (≈ 480 events)
   soc-01/scenario.json           org facts, alerts, enrichment, MITRE ids, claims (ids only)
-  soc-01/key.json                expected dispositions, predicates, actions (lazy-loaded at submit)
+  soc-01/key.json                expected dispositions, predicates, actions, model notes (fetched only on submit)
 scripts/soc-lab/generate-soc01.mjs
 messages/{en,he,ar}.json         new "lab" namespace (UI ≈ 170 keys, scenario narrative ≈ 90 keys)
 ```
@@ -643,12 +648,12 @@ Rough effort: M1 about 1 session; M2 1–2; M3 2; M4 2; M5 1–2; M6 1.
 | --- | --- | --- | --- |
 | D1 | Route name | `/{locale}/lab` and `/{locale}/lab/soc-01` (as reserved in the Phase 2 plan) | **Approved** |
 | D2 | Debrief style | Claim-by-claim checklist with a "6 of 8 supported" line, no percentage score | **Approved** |
-| D3 | Model analyst notes in the debrief | Yes, written from §3.3 and approved by Eli in all three languages | Open |
-| D4 | Fictional names | Generic fictional names (§3.1) on `northwind.example`; Eli can veto any name | Open |
+| D3 | Model analyst notes in the debrief | Yes, written from §3.3 and approved by Eli in all three languages | **Approved**: grounded only in the synthetic evidence, with accurate EN/HE/AR translations |
+| D4 | Fictional names | Generic fictional names (§3.1) on `northwind.example`; Eli can veto any name | **Approved**: fully fictional company, users and hosts; documentation-range IPs only |
 | D5 | Display time zone | UTC everywhere, labelled (the SOC convention) | **Approved** |
-| D6 | Home and recruiter links after approval | The home card "SOC investigation lab" links to the lab; the recruiter brief adds one "Personal project" line | Open |
+| D6 | Home and recruiter links after approval | The home card "SOC investigation lab" links to the lab; the recruiter brief adds one "Personal project" line | **Approved for later only**: activated after the completed lab is reviewed and approved, not before |
 | D7 | Workspace header | Keep the compact site header (identity, language switch, recruiter button) above the workspace | **Approved** |
-| D8 | Mockups (M1) | A static concept route on this proposal branch, shown in a protected Preview after your approval to deploy | Mockups **approved and built** (§10). Protected Preview deployment: open, needs a separate approval |
+| D8 | Mockups (M1) | A static concept route on this proposal branch, shown in a protected Preview after your approval to deploy | **Approved**: M1 visual direction approved subject to iPhone review; protected Preview approved (§10) |
 
 ---
 
