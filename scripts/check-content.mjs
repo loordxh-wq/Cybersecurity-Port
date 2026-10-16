@@ -1,6 +1,6 @@
 // Content integrity: fails the build if portfolio content could reach the public
 // site without its evidence, its translations or its simulated-data label.
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(`../${p}`, import.meta.url), "utf8"));
 const locales = ["en", "he", "ar"];
@@ -40,6 +40,23 @@ for (const p of projects) {
 for (const l of locales) {
   if (!get(messages[l], "common.simulatedTraining")) fail(`missing ${l} message common.simulatedTraining`);
 }
+
+// CV privacy: the CV is shared personally and must never ship with the site.
+// No document files anywhere in the project, and no route that could serve one.
+const root = new URL("../", import.meta.url);
+const docExt = /\.(pdf|docx?|odt|rtf|pages)$/i;
+const skip = new Set(["node_modules", ".next", ".git", "test-results", "playwright-report", "private"]);
+function walk(dir, rel = "") {
+  for (const name of readdirSync(dir)) {
+    if (skip.has(name)) continue;
+    const path = new URL(`${name}`, dir.href.endsWith("/") ? dir : new URL(`${dir.href}/`));
+    const r = rel ? `${rel}/${name}` : name;
+    if (statSync(path).isDirectory()) walk(new URL(`${path.href}/`), r);
+    else if (docExt.test(name)) fail(`document file must not be in the project (share CVs privately): ${r}`);
+    if (r.startsWith("src/app/") && /(^|\/)(cv|resume|curriculum)(\.|\/|$)/i.test(r)) fail(`no CV route may exist: ${r}`);
+  }
+}
+walk(root);
 
 if (errors) {
   console.error(`\ncontent check failed with ${errors} problem(s).`);
