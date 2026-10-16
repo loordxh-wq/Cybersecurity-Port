@@ -26,6 +26,11 @@ const put = (dir, path, body = "x") => {
   mkdirSync(join(dir, path, ".."), { recursive: true });
   writeFileSync(join(dir, path), body);
 };
+// Fake secrets are assembled at runtime so this file never contains one literally
+// (the guard scans committed source and would rightly reject it).
+const fakePrivateKey = ["-----BEGIN", "RSA PRIVATE", "KEY-----"].join(" ");
+const fakeAwsKey = "AKIA" + "ABCDEFGHIJKLMNOP";
+
 const approve = (dir, docs) =>
   writeFileSync(join(dir, "src/content/public-documents.json"), JSON.stringify({ documents: docs }));
 
@@ -74,8 +79,8 @@ test("approval needs dates and an allowed folder", () => {
 test("committed secrets are blocked; ignored local env files are not", () => {
   assert.equal(sandbox((d) => put(d, ".env.production", "TOKEN=1"), [".env.production"]).ok, false);
   assert.equal(sandbox((d) => put(d, "certs/server.key")).ok, false);
-  assert.equal(sandbox((d) => put(d, "src/content/notes.md", "-----BEGIN RSA PRIVATE KEY-----")).ok, false);
-  assert.equal(sandbox((d) => put(d, "src/content/x.json", '{"k":"AKIAABCDEFGHIJKLMNOP"}')).ok, false);
+  assert.equal(sandbox((d) => put(d, "src/content/notes.md", fakePrivateKey)).ok, false);
+  assert.equal(sandbox((d) => put(d, "src/content/x.json", JSON.stringify({ k: fakeAwsKey }))).ok, false);
   // .env* is gitignored in the real repo, so a local file is never tracked or shipped.
   assert.equal(sandbox((d) => put(d, ".env.local", "TOKEN=1")).ok, true);
   assert.equal(sandbox((d) => put(d, ".env.example", "TOKEN=")).ok, true);
