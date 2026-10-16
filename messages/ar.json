@@ -348,7 +348,7 @@
       },
       "network": {
         "title": "الشبكات واستكشاف الأعطال",
-        "detail": "استكشاف أعطال TCP/IP و DNS و Wi-Fi مع العملاء طبقةً بعد طبقة، إضافةً إلى دورة Cisco Networking Basics."
+        "detail": "في العمل: استكشاف أعطال TCP/IP و DNS و Wi-Fi مع العملاء طبقةً بعد طبقة. في دورة Cisco Networking Basics: أساسيات عناوين IP و DHCP."
       },
       "blueTeam": {
         "title": "أساسيات Blue Team و SOC",

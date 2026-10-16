@@ -348,7 +348,7 @@
       },
       "network": {
         "title": "Networking and troubleshooting",
-        "detail": "TCP/IP, DNS and Wi-Fi troubleshooting with customers, layer by layer, plus Cisco Networking Basics."
+        "detail": "At work: TCP/IP, DNS and Wi-Fi troubleshooting with customers, layer by layer. Course: Cisco Networking Basics, including IP addressing and DHCP fundamentals."
       },
       "blueTeam": {
         "title": "Blue Team and SOC fundamentals",

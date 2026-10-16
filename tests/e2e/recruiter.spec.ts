@@ -102,6 +102,11 @@ test.describe("recruiter brief content and comfort", () => {
     expect(text).not.toMatch(/%|Demonstrated|expert|advanced|years? of/i);
     await expect(page.locator(".rb-skills > li")).toHaveCount(6);
     await expect(page.locator(".rb-skills > li").first().locator(".rb-evidence")).toHaveText(["Employment"]);
+    // DHCP is course knowledge (Cisco Networking Basics), kept apart from work experience.
+    const network = page.locator(".rb-skills > li").nth(1);
+    await expect(network.locator(".rb-evidence")).toHaveText(["Employment", "Course training"]);
+    await expect(network.locator(".rb-skill-detail")).toContainText("Course: Cisco Networking Basics, including IP addressing and DHCP fundamentals");
+    expect(await network.innerText()).not.toMatch(/DHCP (server )?administration|managed DHCP/i);
     await expect(page.locator("#rb-projects")).toHaveCount(0); // no approved case file yet
     await expect(page.locator(".rb-creds li[data-kind=certification]")).toHaveCount(1);
     await expect(page.locator(".rb-creds li[data-kind=courseCompletion]")).toHaveCount(2);

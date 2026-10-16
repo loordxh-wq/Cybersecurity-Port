@@ -11,7 +11,9 @@
  * so it is not a type here. No proficiency levels or percentages, by design.
  *
  * Validated 2026-10-16 against src/content/facts.ts and messages (timeline, credentials).
- * Not included until Eli confirms the evidence: DHCP (not in the CV-derived facts).
+ * DHCP (confirmed by Eli 2026-10-16) is listed under networking as course knowledge only
+ * (Cisco Networking Basics: IP addressing and DHCP fundamentals), never as production
+ * DHCP administration. The detail text keeps "At work" and "Course" apart.
  */
 export type EvidenceType = "employment" | "certification" | "course" | "project";
 
