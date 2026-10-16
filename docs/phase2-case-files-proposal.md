@@ -1,6 +1,6 @@
 # Phase 2: Technical Case Files — design proposal
 
-Status: **proposal for review.** Nothing here is implemented on the approved site.
+Status: **proposal; P1, P2, P4, P5 approved, P3 pending iPhone review.** Nothing here is implemented on the approved site.
 Baseline: Phase 1 is preserved on the branch `baseline/phase1-approved` at commit `246f2ac`.
 Prototype: `/{en|he|ar}/concepts/case-files`, only on the branch `proposal/phase2-case-files`. The prototype is never indexed, never linked from the site and not in the sitemap.
 
@@ -208,10 +208,12 @@ Each milestone gets its own branch, a protected Preview only when Eli asks, and 
 
 ---
 
-## 9. Decisions for Eli
+## 9. Decisions (Eli, 2026-10-16)
 
-- **P1** Route name: `/case-files` (recommended) or `/projects`.
-- **P2** Nav: add "Case files" as the fifth item once the first case is documented (recommended), or link only from the home page and the brief.
-- **P3** Visual direction as in the prototype (status spine, outlined case number, ruled dossier facts) — approve, or name changes.
-- **P4** First case to document: CF-01 Wireshark (recommended; the recording guide is ready).
-- **P5** Video for the first case: include once recorded, or ship CF-01 with screenshots only first.
+- **P1 — Approved:** route `/case-files`.
+- **P2 — Approved:** "Case files" joins the main navigation only after the first case is documented, approved and publicly available.
+- **P3 — Provisionally approved:** final design approval after Eli reviews the prototype on his iPhone (protected Preview of `proposal/phase2-case-files`).
+- **P4 — Approved:** CF-01 Wireshark is the first case, built from Eli's own lab evidence.
+- **P5 — Decided:** the architecture supports original video walkthroughs, but video is **optional** for publishing. CF-01 can ship with authentic, sanitized screenshots and well-documented findings only. The guard must not require a video; when a video is present, it must be `own-recording` with captions in all three languages.
+
+Not started: full Phase 2 implementation, merge, production deployment.
