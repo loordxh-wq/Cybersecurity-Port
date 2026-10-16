@@ -3,7 +3,7 @@
     "siteName": "Eli Saad",
     "home": {
       "title": "Eli Saad | Aspiring SOC Analyst, Blue Team & IT Support",
-      "description": "Early-career cybersecurity portfolio of Eli Saad: EC-Council Certified SOC Analyst, Blue Team training and technical support experience. Open to work in Northern Israel."
+      "description": "Early-career cybersecurity portfolio of Eli Saad: EC-Council Certified SOC Analyst, Blue Team training and technical support experience. Open to suitable roles across Israel, with a flexible location."
     },
     "about": {
       "title": "About Eli Saad | From technical support to the SOC",
@@ -15,7 +15,7 @@
     },
     "contact": {
       "title": "Open to work | Eli Saad",
-      "description": "Eli Saad is looking for entry-level SOC, help desk, desktop support and NOC roles in Northern Israel. Get in touch on LinkedIn."
+      "description": "Eli Saad is open to entry-level SOC, Blue Team, help desk, IT support, desktop support and NOC roles across Israel, with a flexible location. Request his CV or get in touch on LinkedIn."
     },
     "notFound": {
       "title": "Page not found | Eli Saad"
@@ -50,7 +50,7 @@
     "name": "Eli Saad",
     "role": "Aspiring SOC Analyst | Blue Team & IT Support",
     "focus": "Cybersecurity · Networking · AI-Assisted Web Development",
-    "status": "Open to work in Northern Israel",
+    "status": "Open to Work | Flexible Location",
     "tagline": "Learning to detect threats, investigate incidents and build secure systems, one lab at a time.",
     "ctaContact": "Contact me",
     "ctaCertifications": "See my certificates",
@@ -144,27 +144,23 @@
   },
   "openToWork": {
     "title": "Open to work",
-    "lead": "I’m looking for my next role in Northern Israel. If your team is hiring, I’d be glad to talk.",
+    "lead": "I’m open to suitable roles across Israel, with a flexible location. If your team is hiring, I’d be glad to talk.",
     "rolesTitle": "Roles I’m looking for",
     "roles": {
       "socTrainee": "Junior SOC Analyst / SOC Trainee",
+      "blueTeam": "Blue Team / Security Operations",
       "helpDesk": "Help Desk / IT Support",
       "desktopSupport": "Desktop Support",
       "noc": "Junior NOC"
     },
     "locationTitle": "Location",
-    "location": "Northern Israel",
-    "cities": {
-      "haifa": "Haifa",
-      "nahariya": "Nahariya",
-      "karmiel": "Karmiel"
-    },
+    "location": "Flexible location",
     "cta": "Message me on LinkedIn",
-    "recruiterNote": "Recruiters: LinkedIn is the fastest way to reach me.",
-    "cvPending": "A downloadable CV will be added here once it’s ready."
+    "recruiterNote": "Recruiters: reach me on LinkedIn, or request my CV by phone.",
+    "locationDetail": "Open to suitable opportunities across Israel"
   },
   "footer": {
-    "tagline": "Aspiring SOC analyst in Northern Israel, learning one lab at a time.",
+    "tagline": "Aspiring SOC analyst, learning one lab at a time.",
     "navTitle": "Pages",
     "socialTitle": "Find me on",
     "languageTitle": "Language",
@@ -236,7 +232,8 @@
       "identity": "Identity",
       "mission": "Mission",
       "career": "Career trajectory",
-      "work": "Case studies"
+      "work": "Case studies",
+      "cv": "Professional CV"
     },
     "career": {
       "title": "From IT support toward the SOC",
@@ -286,5 +283,27 @@
         "needed": "Approved case-study wording and screenshots from the design reviews."
       }
     }
+  },
+  "cv": {
+    "title": "Professional CV",
+    "subtitle": "Available Upon Request",
+    "cta": "Request My CV",
+    "body": "Interested in my experience or qualifications? Please contact me directly to request my latest CV. I’ll be happy to share it with you.",
+    "privacy": "My CV is not published online. I send it personally to recruiters and hiring teams who contact me.",
+    "dialogTitle": "Request my CV",
+    "dialogLead": "Call or text me and I’ll send you my latest CV.",
+    "phone": "Phone",
+    "international": "International format",
+    "call": "Call",
+    "sms": "Send SMS",
+    "copy": "Copy number",
+    "copied": "Number copied",
+    "copyFailed": "Couldn’t copy automatically. Select the number to copy it.",
+    "smsBody": "Hi Eli, I’d like to request your CV.",
+    "linkedin": "Prefer LinkedIn? Message me there",
+    "close": "Close",
+    "callAria": "Call Eli Saad",
+    "smsAria": "Send an SMS to Eli Saad",
+    "forRecruiters": "For recruiters"
   }
 }

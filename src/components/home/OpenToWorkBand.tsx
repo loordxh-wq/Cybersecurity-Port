@@ -1,17 +1,17 @@
 import { getTranslations } from "next-intl/server";
 import { ChapterRule } from "@/components/cc/ChapterRule";
-import { linkedin, publicCv, targetCities, targetRoles } from "@/content/facts";
+import { linkedin, targetRoles } from "@/content/facts";
 
 /**
  * Final chapter: Open to Work as a full-bleed horizon band. A perspective grid
- * floor and the signal horizon converge on one action: LinkedIn, the approved
- * recruiter channel. No email or form until Eli approves one.
+ * floor and the signal horizon converge on LinkedIn. The CV request chapter that
+ * follows carries the phone contact. No email or form until Eli approves one.
  */
 export async function OpenToWorkBand({ index }: { index: string }) {
   const t = await getTranslations("openToWork");
   const about = await getTranslations("about");
   const social = await getTranslations("social");
-  const hasCv = Boolean(publicCv.en || publicCv.he || publicCv.ar);
+  const cv = await getTranslations("cv");
 
   return (
     <section id="open-to-work" data-section aria-labelledby="otw-band-title" className="home-band">
@@ -36,10 +36,15 @@ export async function OpenToWorkBand({ index }: { index: string }) {
                 </span>
                 <span className="sr-only">({social("newTab")})</span>
               </a>
+              <a href="#cv" className="cc-textlink">
+                {cv("cta")}
+                <span aria-hidden="true" className="cc-arrow">
+                  →
+                </span>
+              </a>
             </div>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-white/68">
               {t("recruiterNote")}
-              {!hasCv ? <> {t("cvPending")}</> : null}
             </p>
           </div>
           <dl className="cc-readouts home-band-readouts">
@@ -57,7 +62,7 @@ export async function OpenToWorkBand({ index }: { index: string }) {
               <dt>{t("locationTitle")}</dt>
               <dd>
                 {t("location")}
-                <span className="block text-sm text-white/62">{targetCities.map((c) => t(`cities.${c}`)).join(" · ")}</span>
+                <span className="block text-sm text-white/62">{t("locationDetail")}</span>
               </dd>
             </div>
             <div>
