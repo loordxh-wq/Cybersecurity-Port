@@ -364,3 +364,60 @@ The earlier milestone plan maps as follows: 2.1 becomes P1–P3, 2.2's roadmap a
 - **D4 (print brief):** include a print/save-as-PDF of the *brief* (public facts only, no phone, not your CV)? Recommended: yes.
 - **D5 (skills list):** confirm the skills and their sources in §2.5, and add anything you have real evidence for.
 - **D6 (start point):** begin with P1 + P2 together as the first reviewable step (recommended)?
+
+---
+
+## 8. Future requirement: Technical Operations Showcase (architecture only)
+
+Recorded 2026-10-16 at Eli's request. **Not in the current milestone.** No video features are implemented and no footage exists yet. This section makes sure today's structure accepts the showcase later without rework.
+
+### Four categories
+1. SOC / SIEM threat investigation
+2. Wireshark network traffic analysis
+3. Active Directory / Windows Server administration
+4. AI-assisted web development
+
+### Where it lives
+- **No new site area.** Each video belongs to a **case file** (§2.3): the 6–10 s preview appears on the case ledger row and in the case header, and the 30–60 s walkthrough sits in the case's **Evidence** section beside the plates.
+- An optional `/projects?type=video` filter, or a "Technical operations" view of the ledger, can list cases that have a walkthrough. It reuses the ledger; there is no separate gallery.
+- The recruiter brief's "Verified projects" block can show the preview poster for approved cases. It stays still on the brief (no autoplay there).
+
+### Content model
+`src/content/media.json`, validated by `check:content` like projects and evidence. One entry per video:
+
+| Field | Purpose |
+|---|---|
+| `id`, `caseId` | Links the video to its case file |
+| `category` | One of the four categories above |
+| `provenance` | `own-recording` (Eli's screen recording from his own lab) or `simulated-demo` (a demonstration on fictional data, labelled as such). **No other value is accepted:** stock footage and generated scenes can never be presented as Eli's hands-on work, so they have no valid provenance and fail the check |
+| `status` | `placeholder` / `draft` / `approved` (same evidence model; only approved renders publicly) |
+| `preview` | 6–10 s muted clip: AV1/WebM + H.264/MP4, about 1–1.5 MB max, no audio track |
+| `full` | 30–60 s walkthrough: AV1/WebM + H.264/MP4, 720p (1080p when the screen text needs it), about 8–12 MB max |
+| `poster` | AVIF/WebP still from the actual recording (never a generated image) |
+| `captions` | WebVTT in **en, he, ar**, all three required before approval |
+| `transcript` | Text version in three languages (accessibility, search, readers who skip video) |
+| `chapters` | Optional WebVTT chapters matching the case methodology steps |
+| `tools`, `steps`, `findings` | Message keys in three languages, shown beside the video |
+| `sanitizedOn`, `approvedOn` | The recording is reviewed frame by frame before approval: no real IPs, hostnames, usernames, emails, tokens, serials or personal data on screen |
+
+### Rules the checks will enforce (when implemented)
+- **Provenance:** every video has a valid `provenance`. `simulated-demo` always renders the amber **SIMULATED TRAINING LAB** label on the preview, the player and the transcript.
+- **Approval:** an approved video needs posters, both formats, captions and transcripts in all three languages, and sanitize/approve dates.
+- **Size budgets:** the size limits above fail the build if exceeded. The document guard is extended so video files are allowed only in the approved media location, listed in `media.json`.
+- **Hosting:** video files are kept out of Git history. Use Vercel Blob or a similar static media store, decided at implementation time and only with Eli's approval. The CSP gains a matching `media-src` entry then, and only then.
+
+### Player behaviour (when implemented)
+- **Preview:** muted, inline, looping, `preload="none"`. It starts only when visible (IntersectionObserver) and pauses off-screen. **With reduced motion, only the poster is shown** and the visitor chooses to play.
+- **Walkthrough:** a native `<video controls>` with caption tracks for the current language, selected by default, plus a keyboard-accessible play/pause button with a visible focus ring.
+  - No autoplay with sound, ever.
+  - A "Read the transcript" link sits right below.
+- **Responsive:** 16:9 frame inside an evidence plate. On phones the walkthrough opens at full width with native fullscreen. The preview never pushes text below the fold on the recruiter brief.
+- **RTL:** controls follow the browser's native player. Surrounding text, chapters and transcripts are localized and mirrored, and tool names and IPs stay isolated LTR.
+
+### Acceptance criteria (for that future milestone)
+- No video bytes load until a video is near the viewport. Pages with previews keep LCP ≤ 2.5 s and CLS ≤ 0.05; posters reserve their space.
+- Captions are present and correct in en/he/ar, and transcripts are reachable by keyboard and screen reader.
+- Every simulated demonstration is labelled visibly and in text. No footage appears without an `own-recording` or `simulated-demo` provenance and Eli's approval.
+
+### What Eli provides
+Raw screen recordings from his own labs; these stay private, and sanitized, trimmed copies are prepared for approval. Plus the narration or key points for each walkthrough, and approval of captions and transcripts in all three languages.
