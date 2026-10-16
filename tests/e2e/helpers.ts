@@ -17,6 +17,7 @@ export const pages = [
   ["about", "/about"],
   ["certifications", "/certifications"],
   ["contact", "/contact"],
+  ["recruiter", "/recruiter"],
 ] as const;
 
 /** Load, scroll through once so lazy images and in-view effects run, return to the top. */

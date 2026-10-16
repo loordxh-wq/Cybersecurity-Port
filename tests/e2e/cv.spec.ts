@@ -64,7 +64,7 @@ test.describe("recruitment content", () => {
 
   test("the phone number is not in any server-rendered page", async ({ request }) => {
     for (const l of locales) {
-      for (const path of ["", "/about", "/certifications", "/contact"]) {
+      for (const path of ["", "/about", "/certifications", "/contact", "/recruiter"]) {
         const html = await (await request.get(`/${l}${path}`)).text();
         for (const f of phoneFragments) expect(html, `${l}${path}`).not.toContain(f);
       }
