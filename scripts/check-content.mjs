@@ -188,6 +188,35 @@ function walk(dir, rel = "") {
 walk(root);
 if (!/^\/?private\/?$/m.test(readFileSync(new URL(".gitignore", root), "utf8"))) fail(".gitignore must keep private/ out of the repository");
 
+// ---------------------------------------------------------------- preview-mode leakage
+// Preview mode (drafts and unfinished case files) is requested by build configuration
+// only on the never-merged review branch. Anywhere else, a committed file that asks
+// for it fails the build: vercel.json, package.json scripts or a committed .env file.
+{
+  const { REVIEW_BRANCH } = await import("./site-stage.mjs");
+  let branch = process.env.VERCEL_GIT_COMMIT_REF || "";
+  if (!branch) {
+    try {
+      const { execSync } = await import("node:child_process");
+      branch = execSync("git symbolic-ref --short -q HEAD", { cwd: new URL(".", root), encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    } catch {
+      branch = "";
+    }
+  }
+  const asksForPreview = (text) => /SITE_STAGE\s*=\s*["']?preview|verify-preview-build/.test(text);
+  const vercelJson = new URL("vercel.json", root);
+  if (existsSync(vercelJson) && asksForPreview(readFileSync(vercelJson, "utf8")) && branch !== REVIEW_BRANCH) {
+    fail(`vercel.json requests preview mode on branch "${branch || "unknown"}"; it may exist only on ${REVIEW_BRANCH}`);
+  }
+  const pkgUrl = new URL("package.json", root);
+  if (existsSync(pkgUrl)) {
+    const scripts = JSON.parse(readFileSync(pkgUrl, "utf8")).scripts ?? {};
+    for (const name of ["build", "start", "prebuild", "postinstall", "vercel-build"]) {
+      if (scripts[name] && asksForPreview(scripts[name])) fail(`package.json script "${name}" must never request preview mode`);
+    }
+  }
+}
+
 if (errors) {
   console.error(`\ncontent check failed with ${errors} problem(s).`);
   process.exit(1);
