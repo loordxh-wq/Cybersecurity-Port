@@ -186,7 +186,7 @@ Four threads are interleaved. Only one is an attack.
 
 **Thread D — a mistyped unlock (benign: expected activity).**
 - 08:41–08:42, `n.katz` on `WS-0117` logs four **4625** failures:
-  - logon type 7 (unlock), `SubStatus 0xC000006A`, local source;
+  - logon type 7 (unlock; Microsoft: "This workstation was unlocked"), `Status 0xC000006D`, `SubStatus 0xC000006A`, no remote source address (`-`); see §11 for the stated environment;
   - then **4624** type 7 at 08:42:30.
 - **Alert ALR-0420 (Low, 08:43): "Repeated failed logons — n.katz".**
 - Expected disposition: *Benign — expected activity* (user error at their own workstation).
@@ -696,7 +696,19 @@ The sample data was checked against Windows Security auditing behaviour before a
 | Internal host names | Names for internal addresses come from the scenario's asset inventory, not from event fields | Shown as "Asset inventory" in Entities |
 
 **Uncertainties to resolve before M2:**
-1. **Failed screen unlock (ALR-0420).** Successful unlocks record logon type 7. On recent Windows versions a *failed* unlock can be recorded as type 2 rather than 7, depending on the credential provider. Options: keep type 7 with a note, or use type 2 for the failures and type 7 for the success. Recommendation: type 2 failures, then the type 7 success, with a short gloss in the inspector.
+1. **Failed screen unlock (ALR-0420): resolved, no data change.**
+   - **Microsoft's documentation** defines logon type 7 as "Unlock — This workstation was unlocked" and applies the same logon-type table to the Logon Type field of 4625. It does not document failed unlocks being recorded as type 2. The M1.1 suggestion to use type 2 was therefore withdrawn as unsupported.
+   - **Fictional environment, stated in the scenario:**
+     - Windows 11 workstations joined to the NORTHWIND domain;
+     - password sign-in (the default password credential provider);
+     - "Audit Logon" enabled for success and failure;
+     - no smart cards or Windows Hello in this scenario.
+   - **Event semantics used:**
+     - four 4625 events on WS-0117, logon type 7, `Status 0xC000006D`, `SubStatus 0xC000006A`, Account `n.katz`, no remote source address (recorded as `-`);
+     - then 4624 logon type 7 on WS-0117.
+   - **Stated limitation:** real telemetry can vary with Windows version, credential provider and sign-in method. The lab models this one documented behaviour and does not claim it is universal.
+   - **Not modelled:** 4800/4801 (workstation locked/unlocked, *Audit Other Logon/Logoff Events*), stated in "what these logs cannot show".
+   - **Research note:** the Microsoft Learn pages could not be fetched from the build container (network policy), so they were consulted through search results. Eli or a reviewer should confirm against the live 4624 and 4625 pages before M2 freezes the dataset.
 2. **Exact field set per event.** Fields such as `LmPackageName`, `KeyLength`, `TransmittedServices` and `ImpersonationLevel` are not modelled. The inspector shows only the fields listed in §3.5. A "Raw" view must not invent values for omitted fields.
 3. **Domain controller events not modelled.** 4776 (NTLM validation) and 4768/4769/4771 (Kerberos) would also exist on DC01. Their absence is a deliberate scope limit and is stated in the debrief's "what these logs cannot show".
 4. **Timing realism.** Spray cadence (about 20–24 s) and the 15 s gap before the RDP session are plausible for tooling, but are scenario choices, not measurements.
@@ -781,3 +793,23 @@ Every counter shown (pinned, linked, classified, steps complete) is a selector o
 - Unit tests cover every selector and the evaluation.
 - E2E tests cover: pinning changes the count everywhere; unpinning removes links; the verdict cannot be submitted incomplete; no debrief text or key request before submission; the debrief appears after submission; back gesture and scroll restoration on mobile.
 - axe passes on every state, in three languages and two layouts.
+
+---
+
+## 14. Answer delivery: verification and limitations
+
+**M1.1 mockup (verified by `tests/e2e/lab-mockup.spec.ts`).** The lab is made of React Server Components only. Its copy, including the debrief and the model analyst notes, never reaches a client bundle. The test checks four channels before submission, in all three languages:
+
+| Channel | Check | Result |
+| --- | --- | --- |
+| Client bundles | Every file under `.next/static` (all JavaScript, CSS and JSON a browser can download) is scanned for answer text | None found (lab copy appears only in server output) |
+| Page HTML and server payloads | HTML and the React Server Components payload (`RSC: 1`) of every pre-submission screen are scanned | None found; the debrief screen contains the text (positive control) |
+| Prefetching | Every visible link on the landing page and on four workspace screens is hovered at desktop and phone sizes. Responses are scanned, and no request may target `view=debrief` or `view=report`. | No answer text delivered, no debrief or report request. Workspace links are plain anchors, so Next.js does not prefetch them; the only prefetched link (landing → SOC-01) loads the briefing. |
+| Requests during navigation | All text, JavaScript, JSON and RSC responses while moving between screens are scanned | None found |
+
+**Limitations of the mockup.** The debrief is a separate server-rendered screen, reachable by typing `?view=debrief`. That is deliberate for design review and is not how the real lab will gate it.
+
+**Real lab (M2/M3), and its unavoidable limits:**
+- The answer key and model notes become a code-split chunk loaded with a dynamic `import()` only inside the submit handler. There are no prefetch or preload hints, the key is not in the message bundle, and the debrief/report views render only from submitted state. The same four-channel test will run against the interactive build and fail if the chunk is requested before submission.
+- **Unavoidable without a server:** once built, the chunk is a static file. Its name is listed in the build manifest, so a determined visitor could fetch it directly, outside the interface.
+- Closing that gap would need a server-side evaluation endpoint, which keeps the key on the server and returns only the debrief for a submitted verdict. That adds a backend and personal-data considerations the lab currently avoids. Recommendation: accept the limit for a training simulation and say so in "About this simulation".

@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { copyFor } from "../../src/components/lab-mockup/copy";
 import { axe, dirOf, locales, viewports } from "./helpers";
@@ -86,6 +88,48 @@ test.describe("lab mockup · protected preview", () => {
     const ind = page.locator('.lm-desk .lm-rel[data-kind="indicator"]');
     await expect(ind).toHaveCount(2);
     await expect(page.locator('.lm-desk .lm-rel-group[data-kind="indicator"]')).toContainText("They do not establish who operated them.");
+  });
+
+  test("answer content is not delivered before submission: bundles, HTML, server payloads, prefetch and requests", async ({ page, request }) => {
+    const markers: string[] = locales.flatMap((l) => [copyFor[l].debrief.notes[0] ?? "", copyFor[l].debrief.notes[3] ?? "", copyFor[l].debrief.hWhy.h3, copyFor[l].debrief.summary2]).filter(Boolean);
+    // 1. Client bundles: nothing under .next/static (every file a browser can download) holds answer text.
+    const walk = (dir: string): string[] => readdirSync(dir).flatMap((f) => (statSync(join(dir, f)).isDirectory() ? walk(join(dir, f)) : [join(dir, f)]));
+    const assets = walk(".next/static").filter((f) => /\.(js|css|json)$/.test(f));
+    expect(assets.length).toBeGreaterThan(10);
+    for (const f of assets) {
+      const body = readFileSync(f, "utf8");
+      for (const m of markers) expect(body.includes(m), `${f} contains answer text`).toBe(false);
+    }
+    // 2. HTML and RSC payloads: absent on every pre-submission screen, present on the debrief (control).
+    for (const l of locales) {
+      for (const v of ["briefing", "queue", "logs", "filters", "event", "entities", "entity", "evidence", "timeline", "verdict", "findings"]) {
+        for (const headers of [{} as Record<string, string>, { RSC: "1" }]) {
+          const body = await (await request.get(`/${l}/lab/soc-01?view=${v}`, { headers })).text();
+          for (const m of markers) expect(body.includes(m), `${l} ${v} ${headers.RSC ? "RSC" : "HTML"}`).toBe(false);
+        }
+      }
+      const debrief = await (await request.get(`/${l}/lab/soc-01?view=debrief`, { headers: { RSC: "1" } })).text();
+      expect(debrief).toContain(copyFor[l].debrief.notes[0] ?? "missing");
+    }
+    // 3 + 4. Navigation and prefetch: no response carries answer text and no request targets the debrief or report.
+    const seen: string[] = [];
+    page.on("response", async (res) => {
+      seen.push(res.url());
+      const type = res.headers()["content-type"] ?? "";
+      if (!/text|javascript|json|x-component/.test(type)) return;
+      const body = await res.text().catch(() => "");
+      for (const m of markers) expect(body.includes(m), `${res.url()} delivered answer text`).toBe(false);
+    });
+    for (const vp of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(vp);
+      for (const path of ["/en/lab", "/he/lab/soc-01?view=briefing", "/ar/lab/soc-01?view=verdict", "/en/lab/soc-01?view=findings", "/en/lab/soc-01?view=logs"]) {
+        await page.goto(path, { waitUntil: "networkidle" });
+        for (const a of await page.locator("a[href]:visible").all()) await a.hover({ trial: false, force: true }).catch(() => undefined);
+        await page.waitForLoadState("networkidle");
+      }
+    }
+    expect(seen.length).toBeGreaterThan(5);
+    expect(seen.filter((u) => /view=(debrief|report)/.test(u))).toEqual([]);
   });
 
   test("the landing page renders in all languages", async ({ page }) => {
