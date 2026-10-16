@@ -216,4 +216,7 @@ Each milestone gets its own branch, a protected Preview only when Eli asks, and 
 - **P4 — Approved:** CF-01 Wireshark is the first case, built from Eli's own lab evidence.
 - **P5 — Decided:** the architecture supports original video walkthroughs, but video is **optional** for publishing. CF-01 can ship with authentic, sanitized screenshots and well-documented findings only. The guard must not require a video; when a video is present, it must be `own-recording` with captions in all three languages.
 
+- **Wording (Eli, 2026-10-16):** the provenance label is **"Personal Lab"** (replaces "Personal home lab · not employment"). Decorative diagrams carry no visible disclaimers. Public wording is confident and professional ("Personal Lab", "Technical Investigation", "Documented Evidence"), with no "demo / fake / illustrative" labels. Unfinished cases stay hidden from the public site, and all internal evidence, privacy and integrity checks remain.
+- **Footer:** see `docs/footer-wording-proposal.md` (proposal only, separate from Phase 1 until approved).
+
 Not started: full Phase 2 implementation, merge, production deployment.
