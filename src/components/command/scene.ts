@@ -3,7 +3,8 @@
  *
  * Story, not noise:
  *  1. Assemble  – scattered data converges into a lattice core.
- *  2. Identify  – Eli's real portrait decrypts block by block at the centre.
+ *  2. Identify  – Eli's real portrait sits at the centre, always unobstructed; an identify
+ *                 sweep passes over it once and the tick crown draws in.
  *  3. Connect   – a simulated topology establishes and terminates links; packets travel them.
  *  4. Scan      – a scan field sweeps the structure every few seconds; points it passes light up.
  *
@@ -35,7 +36,8 @@ export interface SceneHandle {
 }
 
 const R_CORE = 1.45;
-const PORTRAIT_R = 0.78;
+// Portrait radius. CSS mirrors it: diameter = 2 × 0.86 / (2 × 2.269) = 37.9% of the scene height.
+const PORTRAIT_R = 0.86;
 const SCAN_PERIOD = 7;
 const SCAN_SWEEP = 2.6;
 
@@ -115,7 +117,7 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
         // Keep Eli's face readable: points in front of the portrait thin out over it.
         float rr = length((mv.xy - c.xy) * (c.z / mv.z));
         float front = step(c.z, mv.z);
-        float hole = mix(1.0, mix(0.1, 1.0, smoothstep(0.62, 0.95, rr)), front);
+        float hole = mix(1.0, mix(0.15, 1.0, smoothstep(0.86, 1.08, rr)), front);
         float scan = 1.0 - smoothstep(0.0, 0.14, abs(world.y - uScanY));
         vScan = scan;
         float tw = 0.78 + 0.22 * sin(uTime * 1.6 + aSeed * 60.0);
@@ -191,8 +193,9 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
     const u = Math.random() * 2 - 1;
     const t = Math.random() * Math.PI * 2;
     const s = Math.sqrt(1 - u * u);
-    const d = 2.05 + Math.random() * 0.9;
-    nodes.push(new T.Vector3(Math.cos(t) * s * d, u * d * 0.78, Math.sin(t) * s * d));
+    // A compact shell just outside the lattice keeps links inside the scene, away from the type.
+    const d = 1.95 + Math.random() * 0.6;
+    nodes.push(new T.Vector3(Math.cos(t) * s * d, u * d * 0.72, Math.sin(t) * s * d));
   }
   const nodeGeo = new T.BufferGeometry();
   nodeGeo.setAttribute("position", new T.BufferAttribute(new Float32Array(nodes.flatMap((v) => [v.x, v.y, v.z])), 3));
@@ -244,14 +247,14 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
     const A = nodes[a]!;
     const B = nodes[b]!;
     tmpCtrl.copy(A).add(B).multiplyScalar(0.5);
-    tmpCtrl.setLength(Math.max(tmpCtrl.length(), 1.4) + 0.45);
+    tmpCtrl.setLength(Math.max(tmpCtrl.length(), 1.6) + 0.3);
     return new T.QuadraticBezierCurve3(A.clone(), tmpCtrl.clone(), B.clone());
   }
   function pickPair(): [number, number] {
     for (;;) {
       const a = Math.floor(Math.random() * NODE_COUNT);
       const b = Math.floor(Math.random() * NODE_COUNT);
-      if (a !== b && nodes[a]!.distanceTo(nodes[b]!) > 1.6) return [a, b];
+      if (a !== b && nodes[a]!.distanceTo(nodes[b]!) > 1.4) return [a, b];
     }
   }
   for (let i = 0; i < LINK_COUNT; i++) {
@@ -318,31 +321,34 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
       void main(){
         float r = length(vUv - 0.5) * 2.0;
         if (r > 1.0) discard;
-        // Decrypt: coarse blocks resolve to full resolution as uReveal rises.
-        float cells = mix(10.0, 260.0, smoothstep(0.35, 1.0, uReveal));
-        vec2 q = (floor(vUv * cells) + 0.5) / cells;
-        vec2 suv = uReveal > 0.995 ? vUv : q;
-        vec2 tuv = (suv - 0.5) * 0.9 + vec2(0.49, 0.52);
+        vec2 tuv = (vUv - 0.5) * 0.9 + vec2(0.49, 0.52);
         vec3 col = texture2D(uTex, tuv).rgb;
+        // A light cool grade only: the face keeps its natural tone.
         float lum = dot(col, vec3(0.299, 0.587, 0.114));
-        vec3 cool = vec3(lum) * vec3(0.78, 0.92, 1.12);
-        col = mix(cool, col, 0.6);
-        float block = hash(floor(vUv * 18.0));
-        float vis = step(block, uReveal * 1.25);
-        // The rim dissolves into fine cells, so the portrait reads as part of the lattice, not a framed photo.
-        float grain = hash(floor(vUv * 120.0) + 3.0);
-        vis *= step(grain, smoothstep(1.0, 0.78, r) * 1.25);
-        float scan = 1.0 - smoothstep(0.0, 0.035, abs(vWorld.y - uScanY));
-        col += vec3(0.35, 0.85, 1.0) * scan * 0.45;
-        float edge = smoothstep(1.0, 0.94, r);
-        float vignette = mix(1.0, 0.55, smoothstep(0.55, 1.0, r));
+        col = mix(vec3(lum) * vec3(0.86, 0.95, 1.08), col, 0.8);
+        // Only the outer rim dissolves, as a fine halftone of round dots that shrink toward
+        // the edge, so the portrait joins the lattice without a hard frame. The face is never broken up.
+        float fadeIn = smoothstep(1.0, 0.9, r);
+        float dotR = 0.6 * fadeIn + 0.1 * hash(floor(vUv * 180.0));
+        float dotD = length(fract(vUv * 180.0) - 0.5);
+        float dots = (1.0 - smoothstep(dotR - 0.08, dotR + 0.08, dotD)) * sqrt(fadeIn);
+        float vis = mix(dots, 1.0, smoothstep(0.92, 0.87, r));
+        // Identify sweep (entrance) and the periodic scan: a soft, thin highlight.
+        float idY = mix(1.1, -0.1, uReveal);
+        float sweep = (1.0 - smoothstep(0.0, 0.05, abs(vUv.y - idY))) * step(uReveal, 0.999);
+        float scan = 1.0 - smoothstep(0.0, 0.03, abs(vWorld.y - uScanY));
+        col += vec3(0.4, 0.85, 1.0) * (scan * 0.18 + sweep * 0.35);
+        float edge = smoothstep(1.0, 0.97, r);
+        float vignette = mix(1.0, 0.74, smoothstep(0.62, 1.0, r));
         gl_FragColor = vec4(col * vignette * vis, edge * vis);
       }`,
     transparent: true,
-    depthWrite: true,
+    depthTest: false,
+    depthWrite: false,
   });
   const portrait = new T.Mesh(new T.CircleGeometry(PORTRAIT_R, 96), portraitMat);
-  portrait.renderOrder = -1; // write depth first so the far hemisphere sits behind Eli
+  // Drawn last and on top: no line, particle or ring ever crosses Eli's face.
+  portrait.renderOrder = 10;
   stage.add(portrait);
 
   // Bezel: a fine ring and a slowly turning tick crown around the portrait.
@@ -435,9 +441,9 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
       shellMat.opacity = 0.16 * easeOut((e - 0.6) / 1.2);
       for (const m of ringMats) m.uniforms.uOpacity!.value = easeOut((e - 0.7) / 1.2);
       nodeMat.uniforms.uOpacity!.value = easeOut((e - 1.2) / 1.0);
-      portraitMat.uniforms.uReveal!.value = easeInOut((e - 0.9) / 1.4);
+      portraitMat.uniforms.uReveal!.value = easeInOut((e - 0.7) / 1.3);
     }
-    const intro = opts.reduced ? 1 : easeOut((e - 0.9) / 1.2);
+    const intro = opts.reduced ? 1 : easeOut((e - 1.0) / 1.2);
     (bezel.material as THREE.MeshBasicMaterial).opacity = 0.22 * intro;
     (ticks.material as THREE.LineBasicMaterial).opacity = 0.3 * intro;
     for (const g of glows) (g.material as THREE.SpriteMaterial).opacity = (g.userData.op as number) * (opts.reduced ? 1 : easeOut(e / 1.6));
@@ -457,7 +463,7 @@ export async function createCommandScene(canvas: HTMLCanvasElement, opts: SceneO
     stage.position.y = scroll * 0.9;
 
     // Scan sweep every SCAN_PERIOD seconds after the entrance.
-    const scanT = e - 2.4;
+    const scanT = e - 2.6;
     if (scanT > 0 && !opts.reduced) {
       const ph = scanT % SCAN_PERIOD;
       if (ph < SCAN_SWEEP) {
