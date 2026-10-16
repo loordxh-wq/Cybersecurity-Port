@@ -1,0 +1,3 @@
+{
+  "buildCommand": "node scripts/verify-preview-build.mjs && SITE_STAGE=preview npm run build"
+}
