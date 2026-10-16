@@ -187,7 +187,7 @@ export default async function ConceptV4({ params }: LocaleParams) {
             </ol>
           </div>
         </section>
-        <PrototypeBadge letter="v4" />
+        <PrototypeBadge letter="v4" inline />
       </main>
     </div>
   );
