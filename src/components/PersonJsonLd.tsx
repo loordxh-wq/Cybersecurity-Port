@@ -7,7 +7,7 @@ export function PersonJsonLd({ url }: { url: string }) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: person.nameLatin,
-    alternateName: ["אילי סעד", "إيلي سعد"],
+    alternateName: ["איליא סעד", "إيلي سعد"],
     jobTitle: "Aspiring SOC Analyst",
     url,
     image: `${siteUrl}${person.portrait.src}`,

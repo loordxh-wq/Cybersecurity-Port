@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { locales, settle, viewports } from "./helpers";
 
-const names = { en: "Eli Saad", he: "אילי סעד", ar: "إيلي سعد" } as const;
+const names = { en: "Eli Saad", he: "איליא סעד", ar: "إيلي سعد" } as const;
 const status = {
   en: "Open to Work | Flexible Location",
   he: "פתוח להצעות עבודה | גמישות במיקום",
