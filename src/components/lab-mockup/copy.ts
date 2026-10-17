@@ -16,7 +16,7 @@ type Copy = {
   toVerdict: string;
   briefingBtn: string;
   tabs: Record<"brief" | "alerts" | "logs" | "entities" | "timeline" | "evidence" | "mitre" | "verdict", string>;
-  index: { title: string; lead: string; open: string; meta: [string, string][]; howTitle: string; how: string[]; data: string; designed: string };
+  index: { title: string; lead: string; open: string; meta: [string, string][]; howTitle: string; how: string[]; data: string; credit: string };
   brief: { title: string; mission: string; objectivesTitle: string; objectives: string[]; controlsTitle: string; controls: string[]; dataTitle: string; data: string; gate: string; start: string };
   queue: { title: string; sorted: string; sev: Record<"high" | "medium" | "low", string>; status: Record<"new" | "review" | "closed", string>; rule: Record<AlertId, string>; fired: string; context: string; contextBody: string };
   logs: { title: string; pivot: string; help: string; results: string; range: string; sorted: string; facets: Record<"event" | "account" | "type" | "sub" | "result", string>; cols: Record<"time" | "event" | "account" | "source" | "client" | "type" | "auth" | "status" | "host", string>; outcome: Record<"fail" | "ok", string>; histo: string; legend: Record<"other" | "fail" | "ok", string>; brush: string; filters: string };
@@ -79,7 +79,7 @@ const en: Copy = {
     howTitle: "How it works",
     how: ["Read the briefing and pick an alert from the overnight queue.", "Filter the logs and open any event for its fields.", "Pin events as evidence and link them to your findings.", "Submit a five-step verdict, then compare your reasoning with the evidence."],
     data: "Synthetic data: a fictional organisation, documentation-range IP addresses and fictional accounts.",
-    designed: "Scenario and dataset designed by Eli Saad.",
+    credit: "Scenario, synthetic data and draft text were created with AI assistance for this portfolio. Eli Saad's review and validation are in progress.",
   },
   brief: {
     title: "Briefing",
@@ -101,7 +101,7 @@ const en: Copy = {
     rule: { "ALR-0418": "Successful logon after multiple failures", "ALR-0419": "Many accounts failed from one source", "ALR-0417": "Account locked out", "ALR-0420": "Repeated failed logons" },
     fired: "Fired",
     context: "Rule",
-    contextBody: "3 or more failed logons, then a success for the same account, within 10 minutes.",
+    contextBody: "3 or more failed logons from one source address, then a successful logon from the same source, within 10 minutes.",
   },
   logs: {
     title: "Log explorer",
@@ -361,7 +361,7 @@ const he: Copy = {
     howTitle: "איך זה עובד",
     how: ["קוראים את התדריך ובוחרים התראה מתור הלילה.", "מסננים את הלוגים ופותחים כל אירוע לפרטיו.", "מצמידים אירועים כראיות ומקשרים אותם לממצאים.", "מגישים הכרעה בחמישה שלבים ומשווים את הנימוק לראיות."],
     data: "נתונים סינתטיים: ארגון בדוי, כתובות IP מטווחי תיעוד וחשבונות בדויים.",
-    designed: "התרחיש ומערך הנתונים עוצבו על ידי איליא סעד.",
+    credit: "התרחיש, הנתונים הסינתטיים וטיוטות הטקסט נוצרו בסיוע בינה מלאכותית עבור תיק העבודות הזה. הבדיקה והאימות של איליא סעד עדיין בתהליך.",
   },
   brief: {
     title: "תדריך",
@@ -383,7 +383,7 @@ const he: Copy = {
     rule: { "ALR-0418": "התחברות מוצלחת אחרי כמה כישלונות", "ALR-0419": "כישלונות בחשבונות רבים ממקור אחד", "ALR-0417": "חשבון ננעל", "ALR-0420": "ניסיונות התחברות כושלים חוזרים" },
     fired: "הופעלה",
     context: "כלל",
-    contextBody: "3 התחברויות כושלות או יותר ואחריהן הצלחה לאותו חשבון, בתוך 10 דקות.",
+    contextBody: "3 התחברויות כושלות או יותר מכתובת מקור אחת, ואחריהן התחברות מוצלחת מאותו מקור, בתוך 10 דקות.",
   },
   logs: {
     title: "סייר לוגים",
@@ -643,7 +643,7 @@ const ar: Copy = {
     howTitle: "كيف يعمل",
     how: ["اقرأ الإحاطة واختر تنبيهًا من قائمة الليلة.", "صفِّ السجلات وافتح أي حدث لعرض حقوله.", "ثبّت الأحداث كأدلة واربطها بنتائجك.", "قدّم حكمًا من خمس خطوات، ثم قارن استدلالك بالأدلة."],
     data: "بيانات اصطناعية: مؤسسة خيالية، وعناوين IP من نطاقات التوثيق، وحسابات خيالية.",
-    designed: "صمّم السيناريو ومجموعة البيانات إيلي سعد.",
+    credit: "أُنشئ السيناريو والبيانات الاصطناعية ومسودات النص بمساعدة الذكاء الاصطناعي لهذا الملف. مراجعة إيلي سعد والتحقق منها لا يزالان قيد التنفيذ.",
   },
   brief: {
     title: "الإحاطة",
@@ -665,7 +665,7 @@ const ar: Copy = {
     rule: { "ALR-0418": "تسجيل دخول ناجح بعد محاولات فاشلة متعددة", "ALR-0419": "فشل حسابات كثيرة من مصدر واحد", "ALR-0417": "قفل حساب", "ALR-0420": "محاولات دخول فاشلة متكررة" },
     fired: "أُطلق",
     context: "القاعدة",
-    contextBody: "3 محاولات دخول فاشلة أو أكثر ثم نجاح للحساب نفسه خلال 10 دقائق.",
+    contextBody: "3 محاولات تسجيل دخول فاشلة أو أكثر من عنوان مصدر واحد، ثم تسجيل دخول ناجح من المصدر نفسه، خلال 10 دقائق.",
   },
   logs: {
     title: "مستكشف السجلات",

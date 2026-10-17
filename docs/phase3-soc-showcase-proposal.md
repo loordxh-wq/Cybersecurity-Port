@@ -1,6 +1,8 @@
 # Phase 3 (revised): SOC Investigation Showcase — See How I Investigate
 
-Product concept, visitor journey, storyboard and mockups. **Proposal only.** Nothing here is
+Product concept, visitor journey, storyboard and mockups. **Proposal only.** Creative direction
+approved as a proposal on 2026-10-17 with decisions D1–D8 (§14); the checkpoint deliverables
+requested before the full player are §15–§20. Nothing here is
 merged, deployed or implemented beyond static, preview-only mockup frames on the proposal branch
 `proposal/phase3-soc-showcase`. That branch starts from the M1.2 lab (`proposal/phase3-soc-lab`
 at `0e555cf`), which is preserved unchanged.
@@ -97,8 +99,9 @@ end card. That means:
   interface". Real Splunk appears only in Eli's own recordings (Phase 4).
 - **Who wrote what.** The SOC-01 scenario, dataset and draft narration were drafted with AI
   assistance during these sessions, under Eli's direction and review. The M1 lab index said
-  "Scenario and dataset designed by Eli Saad." Before anything goes public, Eli chooses a credit
-  line that is accurate (decision D7). The page will not overstate authorship.
+  "Scenario and dataset designed by Eli Saad." **Resolved by D7 (§14):** that line is replaced
+  everywhere with an AI-assistance disclosure, and nothing claims Eli designed or validated the
+  material until he has.
 - **Strongest authenticity upgrade (recommended, D4).** Eli loads the SOC-01 synthetic dataset
   into his own Splunk lab and records himself working the case.
   - The walkthrough then becomes an `own-recording` of simulated data: real tool, real hands, a
@@ -137,7 +140,7 @@ home indicator: one row, 56 px, 44 px targets.
 **Reduced motion.** No autoplay and no movement. The walkthrough opens in the text version, and
 each chapter shows its key screen as a still with markers.
 
-## 5. Storyboard (SOC-01, about 2 min 40 s)
+## 5. Storyboard (SOC-01, about 2 min 40 s) — superseded by the final storyboard in §15
 
 Times are cue points. Each "beat" is one caption. *Motion* names what moves; *reduced motion*
 says what replaces it.
@@ -337,3 +340,396 @@ walkthrough can be a recording instead. The player supports both from day one.
   drafted with AI assistance under your direction?
 - **D8 · Protected Preview.** Keep it on the M1.2 lab, or switch it to these showcase mockups
   (same safeguards, only with your go-ahead)?
+
+---
+
+# Checkpoint before the full player (2026-10-17)
+
+## 14. Decisions recorded
+
+| | Decision | Effect on this proposal |
+|---|---|---|
+| D1 | A dedicated "See How I Investigate" page, linked to the relevant case files | Working route `/investigations` at implementation; the mockup stays at `/showcase` (preview only) |
+| D2 | SOC-01 is the first walkthrough, clearly labelled as a training simulation, for the player prototype; Eli's own recordings come later | §15 storyboard; §18 recording plan |
+| D3 | Captions first. All narration is draft material that Eli personally reviews and corrects; voice may come later | Every frame carries "Draft text for Eli to review and correct before approval" |
+| D4 | Plan to reproduce and analyse SOC-01 in Eli's own Splunk lab with validated synthetic data, and record it. **Not presented as completed work** | §18 is a plan; nothing on any page says it has been done |
+| D5 | No autoplay | §6, §17 |
+| D6 | Conventional left-to-right playback controls in all three languages; RTL page layouts stay correct | Transport and progress bar `dir="ltr"` (tested); everything else mirrors |
+| D7 | Replace the overstated authorship claim with an accurate AI-assistance disclosure; claim nothing as designed or validated by Eli until it is | Lab index line replaced; showcase entry, end card and text version carry the disclosure (tested in all three languages) |
+| D8 | Keep the protected M1.2 lab Preview; propose a separate protected Showcase Preview | §20 |
+
+**Disclosure text (EN; HE and AR in the copy files):** "Scenario, synthetic data and draft text were
+created with AI assistance for this portfolio. Eli Saad's review and validation are in progress."
+The deployed M1.2 lab Preview (`dpl_EjkqbLRoU9E573mWsQBXYmMhWAoe`) still shows the old line until it
+is redeployed; that needs your approval and is not part of this checkpoint.
+
+**Accuracy correction found during this checkpoint.** ALR-0418's rule text said "3 or more failed
+logons, then a success **for the same account**, within 10 minutes". In the dataset, j.morgan has
+no failed logons: the 17 failures are for 17 *other* accounts from 203.0.113.45. A per-account rule
+could not have fired. The rule is corrected to what the events support: **"3 or more failed logons
+from one source address, then a successful logon from the same source, within 10 minutes."**
+- Changed: the rule text in the lab copy and the showcase copy (EN/HE/AR).
+- Not changed: any event, time, field or count in the dataset.
+- Windows semantics are unaffected: this is the scenario's detection logic, not event content.
+
+## 15. Final five-chapter storyboard
+
+Each chapter answers five questions about **Eli's workflow**, not a generic tutorial:
+- **What I examined**;
+- **Why**;
+- **What I observed**, with one line per numbered marker on the screen;
+- **What the evidence supports**;
+- **What remains uncertain**.
+
+The panel beside the analyst screen shows exactly these five, and so does the text version. All
+wording is draft (D3).
+
+### Chapter 1 · Alert detection (0:00–0:25)
+| | |
+|---|---|
+| Examined | ALR-0418, the overnight queue around it, and the detection rule that fired |
+| Why | The rule's logic sets the limits of the alert and decides where to look first |
+| Observed | ① ALR-0418 matched j.morgan on JMP01, a jump server reachable over Remote Desktop · ② ALR-0419 fired a minute later for one source, 203.0.113.45 · ③ the rule: 3+ failed logons from one source, then a success from the same source, within 10 min |
+| Supports | Enough to open an investigation into this source and account; an alert alone shows a pattern, not a compromise |
+| Uncertain | Whether the success was the account owner; whether both alerts describe the same activity |
+
+| Time | Beat | Screen and motion | Marker | Reduced motion |
+|---|---|---|---|---|
+| 0:00 | Alert fires | Queue settles; ALR-0418 slides in at the top (280 ms), one severity pulse | ① | Queue complete, ① outlined |
+| 0:09 | Second alert | ALR-0419 arrives below | ② | Cut |
+| 0:16 | Read the rule | Rule card expands under the queue; other alerts dim to 45 % | ③ | Cut |
+
+### Chapter 2 · Log examination (0:25–1:05)
+| | |
+|---|---|
+| Examined | All events from 203.0.113.45 in the alert window, then the successful logon e-0193, field by field |
+| Why | To test the alert against raw events and compare the success with the account's usual behaviour |
+| Observed | ① 17 failures, one per account, ~20 s apart; sub-status 0xC000006A or 0xC0000064 · ② e-0193: type 3, NTLM; j.morgan's earlier logons used Kerberos from 198.51.100.142 · ③ 15 s later, e-0194: type 10, Remote Desktop, same source |
+| Supports | A password spray from one source, during which a logon as j.morgan succeeded and was followed by an RDP session |
+| Uncertain | Who was at the keyboard: logs identify the account, not the person |
+
+| Time | Beat | Screen and motion | Marker | Reduced motion |
+|---|---|---|---|---|
+| 0:25 | Pivot | Query types `ip:203.0.113.45` (30 ms/char); histogram bars rise; brush settles on 02:09–02:18 | — | Query and chart complete |
+| 0:37 | Pattern | Rows stagger in (40 ms); failure sub-statuses tint | ① | Table complete |
+| 0:47 | The success | Highlight sweeps to e-0193; field panel slides in; Logon type and Authentication light up | ② | Panel shown, fields outlined |
+| 0:58 | RDP | e-0194 highlights | ③ | Cut |
+
+### Chapter 3 · Event correlation (1:05–1:40)
+| | |
+|---|---|
+| Examined | Relationships between sources, accounts and hosts across the window, and what j.morgan's account did next |
+| Why | To set the scope: which hosts were reached after the success, and which activity is unrelated noise |
+| Observed | ① 02:21: j.morgan authenticated to SRV-FILE01 from JMP01's internal address (Kerberos) · ② 203.0.113.77: 7 failures from 02:31, same client name DESKTOP-7Q2M4 · ③ svc-backup failures come from its scheduled job after a password change |
+| Supports | Activity moved from JMP01 to SRV-FILE01 under j.morgan's account; the svc-backup lockout is unrelated |
+| Uncertain | Whether 203.0.113.77 is the same actor: a shared client name is an indicator, not attribution |
+
+| Time | Beat | Screen and motion | Marker | Reduced motion |
+|---|---|---|---|---|
+| 1:05 | Map | Nodes fade in by column; edges draw source → accounts → host (stroke, 480 ms) | — | Map complete |
+| 1:17 | Lateral step | Edge JMP01 → SRV-FILE01 draws; timeline cursor runs to 02:21 | ① | Cut |
+| 1:28 | Indicator only | Dashed arc between the sources; amber dashed tick at 02:31 | ② | Dashed arc shown |
+| 1:35 | Explained noise | svc-backup highlights briefly, then dims | ③ | Cut |
+
+Phones: a vertical path (203.0.113.45 → j.morgan → JMP01 → SRV-FILE01) replaces the map.
+
+### Chapter 4 · Evidence selection (1:40–2:10)
+| | |
+|---|---|
+| Examined | Which events each finding needs, and which events are noise |
+| Why | A finding is only as strong as the events behind it; a reviewer must be able to retrace it |
+| Observed | ① a baseline logon from 10 March comes first · ② seven events in time order, each with a one-line reason · ③ only events from the logs; no assumption as evidence |
+| Supports | Every finding in chapter 5 points to at least one kept event |
+| Uncertain | What happened inside the RDP session: authentication events do not record actions |
+
+| Time | Beat | Screen and motion | Marker | Reduced motion |
+|---|---|---|---|---|
+| 1:40 | Baseline first | First card settles, with the analyst's "Pinned" feedback (reused from M1.2 as an animation beat; not a visitor control) | ① | List complete |
+| 1:52 | The story | Cards 2–7 settle in time order; each reason fades in | ② | Cut |
+| 2:04 | Only logs | Footnote appears | ③ | Cut |
+
+### Chapter 5 · Findings and limitations (2:10–2:40)
+| | |
+|---|---|
+| Examined | The kept evidence against each claim that could be made |
+| Why | To state only what the data supports, and make the limits clear to whoever acts next |
+| Observed | ① observed facts stated without interpretation · ② the shared client name stays unconfirmed · ③ file access on SRV-FILE01 cannot be determined from logon events |
+| Supports | j.morgan's password was guessed during the spray and then used for RDP and a logon to SRV-FILE01; contain the account and the RDP exposure first |
+| Uncertain | Which files, if any, were accessed on SRV-FILE01; whether the session is still open; whether 203.0.113.77 is linked |
+
+| Time | Beat | Screen and motion | Marker | Reduced motion |
+|---|---|---|---|---|
+| 2:10 | Observed | Observed-facts card fills first | ① | Board complete |
+| 2:18 | Conclusions | Supported (green rule), then Unconfirmed (amber) | ② | Cut |
+| 2:26 | Limits | Not determinable (dashed), then Next steps | ③ | Cut |
+| 2:40 | End | Fade to the end card | — | End card |
+
+## 16. Desktop and iPhone presentation review
+
+Measured on the static frames (Chromium; desktop 1440 × 900, iPhone 390 × 844 and 360 × 800). The
+"Proposal mockup" strip (about 36 px on phones) exists only in the mockup.
+
+**Desktop — what works**
+- The three-layer hierarchy reads in order: the analyst screen (focus), the caption, then the
+  five-question panel. The cyan markers tie screen and text together without colour-only meaning.
+- Labels are always visible: the simulation label above the title and in the screen's title bar.
+- RTL: chrome, rail, caption and panel mirror; IPs, IDs, times, the histogram, timeline and
+  transport stay left to right (D6).
+
+**Desktop — to refine in S2**
+- The panel (764–862 px) is taller than the screen in chapters 1, 2 and 5 (372–570 px). Proposal:
+  "Examined" and "Why" collapse to a two-line header once the chapter has played for 5 s, and
+  "Skills shown" moves under the transport. This keeps the panel no taller than the screen.
+- Long hostnames wrap in the field panel (`JMP01.northwind.example`); widen the value column or
+  use the short name with the FQDN in a tooltip-free second line.
+
+**iPhone — what works**
+- No horizontal overflow at 360, 390 or 430 in any frame or language (tested).
+- The transport bar is one row, 56 px, with 44 px targets, and stays pinned from the screen to the
+  end of the chapter notes, then settles (fixed in this checkpoint).
+- Chapter 3 uses a vertical path instead of a shrunken map (readable at 360).
+- Chapter 4 rows are one line each; the reason shows on the highlighted and the arriving event.
+  Chapter 5 shows category and claim; the reasoning lives in the panel (fixed in this checkpoint).
+
+**iPhone — measured and still open**
+| Chapter | Screen height (390) | Fits the space between header block and bar (≈ 531 px)? |
+|---|---|---|
+| 1 | 548 px | Nearly |
+| 2 | 582 px | No (by ~50 px) |
+| 3 | 543 px | Nearly |
+| 4 | 725 px | No |
+| 5 | 633 px | No |
+
+Proposed fix for S2 (needs motion, so it is not faked in a static frame): a **fixed-height phone
+screen**, `min(31rem, 100svh − header − bar − 5.5rem)`, whose content **pans to the active beat**
+like a camera, eased over 480 ms, so the part the caption talks about is always in view. Reduced
+motion: the pan becomes a cut. Also on the showcase page only, the site header compacts to 52 px,
+as on the lab workspace (`body:has(...)`, with the same `@supports` fallback).
+
+## 17. Motion preview plan
+
+**Goal:** show you real motion on desktop and iPhone **before** the full player is built, so the
+choreography is approved on evidence, not on description.
+
+**Deliverable: a motion study (S2a), preview only.**
+- Chapters 2 and 3 (the most technical motion: typing, row stagger, field highlight, edge drawing,
+  timeline cursor, chapter transition).
+- Driven by a minimal cue runner: a JSON list of `{ t, action, target }`, with play/pause and
+  restart only.
+- Rendered on a new preview-only frame (`/showcase/motion?chapter=2`), never linked.
+- Recorded automatically with Playwright video at 1440 × 900 and 390 × 844 (2×), plus a
+  reduced-motion run. You receive the MP4s; nothing is deployed unless you approve §20.
+- A short page of frame-by-frame stills accompanies each video for review on any device.
+
+**Motion tokens**
+| Token | Duration | Easing | Use |
+|---|---|---|---|
+| `quick` | 160 ms | `cubic-bezier(.2,0,0,1)` | Highlight on, marker appear |
+| `base` | 280 ms | `cubic-bezier(.2,0,0,1)` | Panel slide, row settle, card settle |
+| `draw` | 480 ms | `cubic-bezier(.3,0,0,1)` | Graph edges (stroke-dashoffset), timeline cursor, phone camera pan |
+| `scene` | 400 ms out + 320 ms in | `cubic-bezier(.4,0,.2,1)` | Chapter change: outgoing scene fades with 4 px drift, incoming fades in |
+| `type` | 30 ms per character | linear | Query typing |
+| `stagger` | 40 ms per row | — | Result rows, evidence cards |
+
+**Choreography rules**
+1. One focal motion at a time; the marker appears 150 ms before its caption line.
+2. A caption stays at least 2.5 s and at reading speed (about 15 characters per second); the
+   next beat waits for it.
+3. Only `transform` and `opacity` (and SVG stroke) animate: no layout animation, no blur, no
+   parallax, no particles, no glitch or "hacker" effects, no sound.
+4. Motion direction: content-level slides follow the reading direction; time-based motion
+   (typing, timeline cursor, progress) is always left to right.
+5. The player pauses when the tab is hidden or the player leaves the viewport; it never loops.
+
+**Quality bar:** 60 fps on a mid-range phone profile (Chrome, 4× CPU throttle), no layout shift,
+checked on your iPhone in Safari. Accessibility: a pause control at all times (WCAG 2.2.2), no
+flashing (2.3.1), and reduced motion replaces every movement with a cut (2.3.3).
+
+## 18. Splunk recording workflow and media requirements (plan only, D4)
+
+**Status: planned.** Nothing here has been done, and no page will say it has until you have
+recorded and approved it.
+
+**A. Lab**
+- Your own Splunk Enterprise instance on your lab VM (the tools listed for CF-02: Splunk,
+  Linux, VMware).
+- A dedicated index `soc01`. The server and user display names are set to neutral values (for
+  example `soc-lab` and `analyst`) before recording, so no personal or machine names appear.
+
+**B. Synthetic data: generate, then validate, then ingest**
+1. **Generate** the full SOC-01 dataset (about 482 events, 10 Mar 12:00 → 11 Mar 09:00 UTC) from
+   the scenario specification (lab proposal §3), as JSON lines whose field names follow the
+   Windows Security event schema: `EventID`, `TimeCreated`, `Computer`, `TargetUserName`,
+   `TargetDomainName`, `LogonType`, `IpAddress`, `IpPort`, `WorkstationName`,
+   `AuthenticationPackageName`, `LogonProcessName`, `Status`, `SubStatus`, `TargetLogonId`.
+   - The generator and dataset would live in the repo (synthetic, no personal data), reviewed
+     like code. It is written only after you approve this plan.
+2. **Validate**, before ingest, with automated checks plus your review:
+   - 4624 / 4625 / 4740 fields as documented by Microsoft;
+   - logon type 3 + NTLM + `NtLmSsp` for the network logon, logon type 10 + `Negotiate` + `User32`
+     for the RDP session (lab proposal §11);
+   - `Status 0xC000006D` with `SubStatus 0xC000006A` (wrong password) or `0xC0000064` (no such
+     account);
+   - 4740 caller computer recorded in `TargetDomainName`;
+   - the counts the walkthrough states: 18 accounts, 17 failures, 2 successes, 7 from .77,
+     02:10:05–02:16:40.
+   - **Optional, strongest:** generate a few genuine reference events in your lab domain (a wrong
+     password, an RDP logon) and compare their field layout with the synthetic ones. The references
+     stay private.
+3. **Ingest** with `sourcetype=_json`, `TIME_PREFIX`/`TIME_FORMAT` on `TimeCreated`. The
+   recording says on screen that the data is synthetic and JSON-formatted with Windows field names,
+   not a live Windows event feed.
+
+**C. Searches per chapter (drafts for you to run and correct)**
+```spl
+# Ch1 · ALR-0418 logic (10-minute tumbling window; a production rule would use a sliding window)
+index=soc01 EventID IN (4624, 4625) IpAddress!="-"
+| bin _time span=10m
+| stats count(eval(EventID=4625)) AS failures, count(eval(EventID=4624)) AS successes,
+        values(eval(if(EventID=4624, TargetUserName, null()))) AS succeeded_as BY _time, IpAddress, Computer
+| where failures>=3 AND successes>=1
+
+# Ch1 · ALR-0419 logic
+index=soc01 EventID=4625 IpAddress!="-"
+| bin _time span=10m
+| stats dc(TargetUserName) AS accounts, count AS failures BY _time, IpAddress
+| where accounts>=10
+
+# Ch2 · pivot on the source
+index=soc01 IpAddress="203.0.113.45" earliest="03/11/2026:01:45:00" latest="03/11/2026:02:45:00"
+| sort 0 _time
+| table _time EventID TargetUserName Computer LogonType AuthenticationPackageName LogonProcessName SubStatus WorkstationName
+
+# Ch2 · baseline for the account
+index=soc01 EventID=4624 TargetUserName="j.morgan"
+| stats count, min(_time) AS first, max(_time) AS last, values(IpAddress) AS sources,
+        values(AuthenticationPackageName) AS auth, values(LogonType) AS types BY Computer
+| convert ctime(first) ctime(last)
+
+# Ch3 · where the account went next
+index=soc01 EventID=4624 TargetUserName="j.morgan" earliest="03/11/2026:02:00:00" latest="03/11/2026:03:00:00"
+| table _time Computer IpAddress LogonType AuthenticationPackageName
+
+# Ch3 · the shared client name (indicator only)
+index=soc01 WorkstationName="DESKTOP-7Q2M4"
+| stats count, dc(TargetUserName) AS accounts, min(_time) AS first, max(_time) AS last BY IpAddress
+| convert ctime(first) ctime(last)
+
+# Ch3 · explain the lockout
+index=soc01 (EventID=4740 OR TargetUserName="svc-backup")
+| table _time EventID TargetUserName Computer LogonType Status SubStatus
+```
+Chapter 4: the kept events are tagged in Splunk (an event tag such as `soc01_evidence`) and listed
+with `index=soc01 tag=soc01_evidence | sort 0 _time`. Chapter 5: your written findings (observed /
+supported / unconfirmed / not determinable / next steps), in your words.
+
+**D. Recording**
+- OBS Studio, 1920 × 1080 canvas, 30 fps, high-quality master (CRF ≈ 18). Browser zoom 125–150 %
+  so SPL and field values stay legible at 720p.
+- A clean browser profile (no bookmarks bar, extensions or history), OS notifications off,
+  Splunk dark theme, cursor highlight on, no microphone (captions first, D3).
+- One take per chapter (2–5 min raw each), following §15; retakes are normal.
+
+**E. Sanitization and approval (frame by frame)**
+- No real IP addresses, hostnames, usernames, emails, licence or serial numbers, tokens or
+  personal data on screen. Only the synthetic `northwind.example` values and RFC 5737 addresses.
+- The raw masters stay private, on your machine, **never in the repo, `public/` or the bundle**.
+
+**F. Media deliverables (per `docs/next-level-proposal.md` §8)**
+| Asset | Spec |
+|---|---|
+| Walkthrough | ≤ 3 min; MP4 H.264 1080p (target ≤ 25 MB) + WebM AV1 (≤ 15 MB); 720p fallback |
+| Preview clip | 6–10 s, muted, no audio track, ≤ 1.5 MB |
+| Poster | AVIF + WebP still taken **from the recording** |
+| Captions | WebVTT in en, he, ar, your wording, reviewed |
+| Chapters | WebVTT chapters matching §15 |
+| Transcript | Text in en, he, ar |
+| Provenance | `own-recording` of **simulated training data**, labelled on the player |
+
+Hosting (for example Vercel Blob) is decided only with your approval. Video files stay out of Git
+history.
+
+## 19. Exact reusable components
+
+**Reused as is**
+| File | Exports | Used for |
+|---|---|---|
+| `src/components/lab-mockup/data.ts` | `alerts`, `results`, `selected`, `pins` (and through `EntityGraph`: `entities`, `relations`, `hostEdges`, `selectedEntity`, `backgroundCount`; through `Histogram`: `histogram`, `brush`) | All five chapters' screen data |
+| `src/components/lab-mockup/parts.tsx` | `V`, `Sev`, `Outcome`, `fill`, `Histogram` | LTR value isolation, severity and outcome marks, template fill, ch2 histogram |
+| `src/components/lab-mockup/Entities.tsx` | `EntityGraph` (with internal `entityLabel`) | Ch3 relationship map (desktop and tablet) |
+| `src/components/cc/SimTag.tsx` | `SimLabel` | Simulation labels (header, screen bar, entry card) |
+| `src/components/lab-mockup/lab-mockup.css` | `.lm` tokens; `.lm-btn`, `.lm-label`, `.lm-review`, `.lm-sim`, `.lm-arrow`, `.lm-v`; `.lm-sev*`, `.lm-outcome`; `.lm-histo*`, `.lm-bar-*`, `.lm-key*`; `.lm-graph*`, `.lm-g-*` | Visual tokens and the reused components' styles |
+| `src/content/stage.ts` | `isPreview` | Preview-only gate on the route |
+| `scripts/site-stage.mjs`, `scripts/verify-preview-build.mjs`, `scripts/check-content.mjs` (leak guard) | `resolveStage`, `REVIEW_BRANCH`, pre-build check | Preview isolation (§20) |
+| `tests/e2e/helpers.ts` | `axe`, `dirOf`, `locales`, `viewports` | Showcase tests |
+| `tests/unit/lab-mockup-data.test.mjs` | 9 consistency tests | Guard the reused data slice |
+
+**Lab copy keys reused** (`src/components/lab-mockup/copy.ts`; at implementation they move to a
+`showcase` namespace, renamed away from retired features such as `verdict.*`):
+`queue.sev`, `queue.rule`, `queue.contextBody`; `logs.cols`, `logs.outcome`, `logs.results`,
+`logs.histo`, `logs.legend`, `logs.brush`; `flt.query`; `insp.name`, `insp.field`,
+`insp.logonType`; `ent.groups`, `ent.legend`, `ent.mapNote`, `ent.viewMap`, `ent.group16`,
+`ent.group6`; `tl.notes`, `tl.h.*.claim`; `debrief.cats`, `debrief.hWhy.h1`, `debrief.hWhy.h3`;
+`verdict.f.f1/f2/f4/f5`, `verdict.a.a1/a4/a6`; `day`; `index.credit` (D7).
+
+**Adapted (pattern reused, code rewritten)**
+- `Desktop.tsx` `Learn`: optional neutral "Terms" disclosure under chapter 2.
+- `Mobile.tsx` `PinFooter` "Pinned" toast style: an animation beat in chapter 4, played by the analyst.
+- M1.2 phone rules (`lab-mockup.css` §M1.2): 44 px targets, safe areas, sticky rules, compact header pattern.
+
+**Not reused (retired from the public experience; kept as research)**
+- `Desktop.tsx`: `DesktopWorkspace`, `WorkspaceBar`, `Queue`, `Tabs`, `BriefingView`, `Explorer`,
+  `FilterChips`, `Inspector`, `InspectorBody`, `Dock`, `ObservedList`, `WorkingHypotheses`,
+  `TimelineView`, `HypothesesPanel`, `EntitiesView`, `EntityPanel`, `Stepper`, `DispositionTable`,
+  `VerdictView`, `ProgressPanel`, `DebriefBody`, `DebriefView`.
+- `Mobile.tsx`: all views (`MobileFlow`, sheets, pin footer, verdict, findings).
+- `Entities.tsx`: `EntityTable`, `EntityDetail`, `EntityCards`, `EvidenceChips`.
+- `data.ts`: `stageState`, `submittedDispositions`, `draftFindings`, `findingResults`,
+  `hypotheses.submitted`.
+- The answer-delivery test (it stays with the lab; the showcase has no hidden content).
+
+**New for the showcase** (`src/components/showcase-mockup/`): `Showcase.tsx` (`ShowcaseMockup`,
+scenes, `AnalystLog`, `Screen`, `Transport`, `ChapterRail`, `PlayerHead`, `Hub`, `End`,
+`TextVersion`), `copy.ts`, `showcase-mockup.css`.
+
+## 20. Safe, isolated Showcase Preview deployment plan (for approval; nothing deployed)
+
+The existing M1.2 lab Preview (`review/phase3-lab-preview`, `dpl_EjkqbLRoU9E573mWsQBXYmMhWAoe`)
+stays exactly as it is (D8).
+
+1. **Branch:** create `review/phase3-showcase-preview` from the approved showcase commit. It is
+   only ever updated by merging approved commits (no force-push).
+2. **Review-only files, on that branch only:**
+   - `scripts/site-stage.mjs`: `REVIEW_BRANCH = "review/phase3-showcase-preview"`;
+   - `vercel.json` with the same guarded command
+     (`export SITE_STAGE=preview && node scripts/verify-preview-build.mjs && npm run build`);
+   - the unit test's branch list updated.
+
+   The leak guard keeps rejecting a preview `vercel.json` on every other branch.
+3. **Same project, nothing changed in it:** `eli-saad-cyber-portfolio`
+   (`prj_AC18Y1OYYqgp7Hkf6BFIYhLFjJGZ`).
+   - Vercel Authentication stays enabled for all deployments except custom domains.
+   - 0 environment variables, no domain changes, no setting changes, GitHub not connected.
+4. **Before deploying:**
+   - confirm the exact commit SHA, project, protection, environment variables and domains;
+   - run lint, typecheck, unit tests, the local Vercel-like build (`VERCEL=1`, `VERCEL_ENV=preview`,
+     branch ref) and the preview tests;
+   - run the production lock (a forced preview under `VERCEL_ENV=production` resolves to public) and
+     the wrong-branch refusal;
+   - run the full public-build regression, including `/showcase` and `/lab` returning 404.
+5. **Deploy:** `create_deployment` from `gitSource` (org `loordxh-wq`, repo `Cybersecurity-Port`,
+   `ref` = the review branch, `sha` = the exact commit), **no target** (Preview), `forceNew`.
+6. **After READY:**
+   - verify `target: null`, protection unchanged, the production list unchanged, and every earlier
+     deployment present;
+   - report the deployment URL and the branch alias. The alias name is long, so Vercel may shorten
+     it with a hash; the exact alias is reported as Vercel returns it.
+   - send direct EN/HE/AR links to `/showcase` frames.
+7. **Contents:** the preview build of that branch also contains the preview-only `/lab` mockups and
+   case files, all behind Vercel Authentication. Nothing becomes public.
+8. **Stop conditions:** if the branch name is not detected, protection differs, or the pre-build
+   check fails, stop and report; never bypass. The failed deployment is left as is for inspection.
+9. **Withdrawal:** nothing touches Production. On request, the Showcase Preview deployment can be
+   deleted without affecting the M1.2 Preview.
+
+**Needs your explicit approval before any of this runs.**

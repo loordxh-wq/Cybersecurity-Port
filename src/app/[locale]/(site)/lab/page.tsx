@@ -67,7 +67,7 @@ export default async function LabIndexMockup({ params }: LocaleParams) {
           </div>
         </article>
         <p className="lm-index-foot">
-          {t.index.data} {t.index.designed}
+          {t.index.data} {t.index.credit}
         </p>
       </div>
     </div>

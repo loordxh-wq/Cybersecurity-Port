@@ -26,7 +26,7 @@ const starts = [0, 25, 65, 100, 130];
 const total = 160;
 const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
 
-/** Numbered marker tying a highlighted element on the screen to its line in "What to notice". */
+/** Numbered marker tying a highlighted element on the screen to its line in "What I observed". */
 function Mark({ n }: { n: number }) {
   return (
     <span aria-hidden="true" className="sc-mark">
@@ -232,7 +232,7 @@ function SceneCorrelate({ s, l }: P) {
         <Mark n={2} />
       </p>
       <p className="sc-explained">
-        <V>ALR-0417</V> · {s.chapters[2].callouts[2]}
+        <V>ALR-0417</V> · {s.chapters[2].observed[2]}
         <Mark n={3} />
       </p>
       <div className="sc-tl">
@@ -279,7 +279,7 @@ function SceneEvidence({ s, l }: P) {
         ))}
       </ol>
       <p className="sc-ev-foot">
-        {s.chapters[3].callouts[2]}
+        {s.chapters[3].observed[2]}
         <Mark n={3} />
       </p>
     </div>
@@ -336,6 +336,47 @@ function SceneFindings({ s, l }: P) {
 
 const scenes = [SceneAlert, SceneLogs, SceneCorrelate, SceneEvidence, SceneFindings] as const;
 type ChapterIndex = 0 | 1 | 2 | 3 | 4;
+
+/**
+ * The five questions every chapter answers about the workflow: examined, why, observed
+ * (one line per marker on the screen), what the evidence supports, what remains uncertain.
+ */
+function AnalystLog({ s, c, marks = false }: { s: ShowcaseCopy; c: ShowcaseCopy["chapters"][number]; marks?: boolean }) {
+  const q = s.player.q;
+  return (
+    <dl className="sc-log">
+      <div>
+        <dt>{q.examined}</dt>
+        <dd>{c.examined}</dd>
+      </div>
+      <div>
+        <dt>{q.why}</dt>
+        <dd>{c.why}</dd>
+      </div>
+      <div>
+        <dt>{q.observed}</dt>
+        <dd>
+          <ol className="sc-notice">
+            {c.observed.map((t, i) => (
+              <li key={t}>
+                {marks ? <Mark n={i + 1} /> : <V className="sc-notice-n">{i + 1}</V>}
+                <span>{t}</span>
+              </li>
+            ))}
+          </ol>
+        </dd>
+      </div>
+      <div data-q="supports">
+        <dt>{q.supports}</dt>
+        <dd>{c.supports}</dd>
+      </div>
+      <div data-q="uncertain">
+        <dt>{q.uncertain}</dt>
+        <dd>{c.uncertain}</dd>
+      </div>
+    </dl>
+  );
+}
 
 /* ------------------------------------------------------------------ player chrome */
 
@@ -456,15 +497,7 @@ function Player({ s, l, n }: P & { n: ChapterIndex }) {
         <div className="sc-notes">
           <p className="lm-label">{fill(s.player.chapterOf, { n: n + 1 })}</p>
           <h2 className="sc-notes-title">{c.title}</h2>
-          <h3 className="sc-notes-sub">{s.player.notice}</h3>
-          <ol className="sc-notice">
-            {c.callouts.map((t, i) => (
-              <li key={t}>
-                <Mark n={i + 1} />
-                <span>{t}</span>
-              </li>
-            ))}
-          </ol>
+          <AnalystLog s={s} c={c} marks />
           <h3 className="sc-notes-sub">{s.player.skills}</h3>
           <ul className="sc-skills">
             {c.skills.map((k) => (
@@ -523,6 +556,7 @@ function Hub({ s, l }: P) {
               <li key={k}>{k}</li>
             ))}
           </ul>
+          <p className="sc-credit">{s.credit}</p>
           <div className="sc-feature-actions">
             <Link href="/showcase?frame=c1" className="lm-btn lm-btn--solid">
               {h.watch}
@@ -591,6 +625,7 @@ function End({ s }: { s: ShowcaseCopy }) {
           </Link>
         </div>
         <p className="sc-end-data">{s.end.data}</p>
+        <p className="sc-credit">{s.credit}</p>
       </div>
       <div className="sc-controls">
         <Transport s={s} at={playhead.end} playing={false} />
@@ -613,11 +648,7 @@ function TextVersion({ s }: { s: ShowcaseCopy }) {
             </p>
             <h3 className="sc-notes-title">{c.title}</h3>
             <p>{c.narration}</p>
-            <ul className="sc-textv-points">
-              {c.callouts.map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
+            <AnalystLog s={s} c={c} />
             <p className="sc-textv-still">
               <span className="lm-label">{s.text.still}</span> {c.still}
             </p>
@@ -625,6 +656,7 @@ function TextVersion({ s }: { s: ShowcaseCopy }) {
         ))}
       </ol>
       <p className="sc-end-data">{s.end.data}</p>
+      <p className="sc-credit">{s.credit}</p>
       <p className="sc-draft">{s.draft}</p>
     </section>
   );

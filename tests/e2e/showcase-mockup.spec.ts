@@ -53,13 +53,35 @@ test.describe("showcase mockup · protected preview", () => {
     });
   }
 
+  test("authorship: AI assistance is disclosed; no claim that Eli designed or validated the material", async ({ page }) => {
+    for (const l of locales) {
+      for (const f of ["hub", "end", "text"]) {
+        await page.goto(`/${l}/showcase?frame=${f}`);
+        await expect(page.locator(".sc").getByText(showcaseCopy[l].credit)).toBeVisible();
+      }
+      await page.goto(`/${l}/lab`);
+      await expect(page.locator(".lm-index-foot")).toContainText(showcaseCopy[l].credit);
+    }
+    await page.goto("/en/lab");
+    await expect(page.locator("body")).not.toContainText("designed by Eli Saad");
+  });
+
+  test("every chapter states what was examined, why, what was observed, what is supported and what remains uncertain", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const [i, f] of (["c1", "c2", "c3", "c4", "c5"] as const).entries()) {
+      await page.goto(`/en/showcase?frame=${f}`);
+      const c = showcaseCopy.en.chapters[i]!;
+      for (const t of [c.examined, c.why, c.supports, c.uncertain]) await expect(page.locator(".sc-notes .sc-log")).toContainText(t);
+    }
+  });
+
   test("chapters: every marker on the screen has a matching line of text; controls are named", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     for (const [i, f] of (["c1", "c2", "c3", "c4", "c5"] as const).entries()) {
       await page.goto(`/en/showcase?frame=${f}`);
       const marks = await page.locator(".sc-screen .sc-mark").allTextContents();
       const notes = page.locator(".sc-notice li");
-      await expect(notes).toHaveCount(showcaseCopy.en.chapters[i]!.callouts.length);
+      await expect(notes).toHaveCount(showcaseCopy.en.chapters[i]!.observed.length);
       for (const m of new Set(marks)) expect(Number(m)).toBeLessThanOrEqual(await notes.count());
       await expect(page.locator('.sc-rail [aria-current="step"]')).toContainText(showcaseCopy.en.chapters[i]!.title);
       for (const name of ["Replay chapter", "Previous chapter", "Pause", "Next chapter"]) await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
