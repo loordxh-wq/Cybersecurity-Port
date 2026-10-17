@@ -3,7 +3,7 @@
     "siteName": "Eli Saad",
     "home": {
       "title": "Eli Saad | Aspiring SOC Analyst, Blue Team & IT Support",
-      "description": "Early-career cybersecurity portfolio of Eli Saad: EC-Council Certified SOC Analyst, Blue Team training and technical support experience. Open to work in Northern Israel."
+      "description": "Early-career cybersecurity portfolio of Eli Saad: EC-Council Certified SOC Analyst, Blue Team training and technical support experience. Open to suitable roles across Israel, with a flexible location."
     },
     "about": {
       "title": "About Eli Saad | From technical support to the SOC",
@@ -15,10 +15,14 @@
     },
     "contact": {
       "title": "Open to work | Eli Saad",
-      "description": "Eli Saad is looking for entry-level SOC, help desk, desktop support and NOC roles in Northern Israel. Get in touch on LinkedIn."
+      "description": "Eli Saad is open to entry-level SOC, Blue Team, help desk, IT support, desktop support and NOC roles across Israel, with a flexible location. Request his CV or get in touch on LinkedIn."
     },
     "notFound": {
       "title": "Page not found | Eli Saad"
+    },
+    "recruiter": {
+      "title": "Recruiter brief | Eli Saad, Aspiring SOC Analyst",
+      "description": "One-page summary for recruiters: Tier 1 technical support experience, Blue Team SOC-track training, the EC-Council C|SA certification and skills with their evidence. Open to suitable roles across Israel."
     }
   },
   "nav": {
@@ -27,11 +31,15 @@
     "home": "Home",
     "about": "About",
     "certifications": "Certifications",
+    "caseFiles": "Case Files",
     "contact": "Open to work",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "language": "Language",
-    "switchTo": "Switch to {language}"
+    "switchTo": "Switch to {language}",
+    "menu": "Menu",
+    "forRecruiters": "For recruiters",
+    "recruitersShort": "Recruiters"
   },
   "localeNames": {
     "en": "English",
@@ -49,12 +57,13 @@
     "name": "Eli Saad",
     "role": "Aspiring SOC Analyst | Blue Team & IT Support",
     "focus": "Cybersecurity · Networking · AI-Assisted Web Development",
-    "status": "Open to work in Northern Israel",
+    "status": "Open to Work | Flexible Location",
     "tagline": "Learning to detect threats, investigate incidents and build secure systems, one lab at a time.",
     "ctaContact": "Contact me",
     "ctaCertifications": "See my certificates",
     "portraitAlt": "Portrait of Eli Saad",
-    "socialLabel": "Social profiles"
+    "socialLabel": "Social profiles",
+    "ctaBrief": "Recruiter brief"
   },
   "homeAbout": {
     "title": "From the support desk to the SOC",
@@ -143,36 +152,429 @@
   },
   "openToWork": {
     "title": "Open to work",
-    "lead": "I’m looking for my next role in Northern Israel. If your team is hiring, I’d be glad to talk.",
+    "lead": "I’m open to suitable roles across Israel, with a flexible location. If your team is hiring, I’d be glad to talk.",
     "rolesTitle": "Roles I’m looking for",
     "roles": {
       "socTrainee": "Junior SOC Analyst / SOC Trainee",
+      "blueTeam": "Blue Team / Security Operations",
       "helpDesk": "Help Desk / IT Support",
       "desktopSupport": "Desktop Support",
       "noc": "Junior NOC"
     },
     "locationTitle": "Location",
-    "location": "Northern Israel",
-    "cities": {
-      "haifa": "Haifa",
-      "nahariya": "Nahariya",
-      "karmiel": "Karmiel"
-    },
+    "location": "Flexible location",
     "cta": "Message me on LinkedIn",
-    "recruiterNote": "Recruiters: LinkedIn is the fastest way to reach me.",
-    "cvPending": "A downloadable CV will be added here once it’s ready."
+    "recruiterNote": "Recruiters: reach me on LinkedIn, or request my CV by phone.",
+    "locationDetail": "Open to suitable opportunities across Israel"
   },
   "footer": {
-    "tagline": "Aspiring SOC analyst in Northern Israel, learning one lab at a time.",
+    "tagline": "Aspiring SOC analyst, learning one lab at a time.",
     "navTitle": "Pages",
     "socialTitle": "Find me on",
     "languageTitle": "Language",
-    "simulatedNote": "Any lab or demo data on this site is simulated for training and is clearly labelled. No real customer or security event data is shown.",
+    "labNote": "Technical investigations and hands-on projects are documented using personal lab environments. Evidence is reviewed before publication.",
     "rights": "© {year} Eli Saad"
   },
   "notFound": {
     "title": "This page doesn’t exist",
     "body": "The link may be old or mistyped. Go back to the home page to find what you need.",
     "cta": "Go to the home page"
+  },
+  "concepts": {
+    "indexTitle": "Hero design prototypes",
+    "indexLead": "Three creative directions for the hero and navigation. Review only: not part of the public site.",
+    "open": "Open prototype",
+    "prototype": "Prototype {letter}",
+    "back": "All prototypes",
+    "names": {
+      "a": "Threat Observatory",
+      "b": "Cybernetic Monolith",
+      "c": "Digital Forensics",
+      "v4": "Cyber Command"
+    },
+    "summaries": {
+      "a": "An immersive 3D intelligence core with Eli at its centre.",
+      "b": "Editorial black and chrome with a sculptural monolith.",
+      "c": "An investigation case file that traces Eli’s path into the SOC.",
+      "v4": "A signature intelligence scene, editorial identity and a factual career signal."
+    },
+    "labels": {
+      "credential": "Credential",
+      "training": "Training",
+      "experience": "Experience",
+      "index": "Index",
+      "caseFile": "Case file",
+      "exhibit": "Exhibit A",
+      "profile": "Profile",
+      "discipline": "Discipline",
+      "status": "Status",
+      "trace": "Career trace",
+      "next": "Next step"
+    },
+    "v4": {
+      "name": "Cyber Command",
+      "summary": "A signature intelligence scene, editorial identity and a factual career signal.",
+      "simulated": "Simulated topology · demo visual, not live data",
+      "legendNodes": "Nodes",
+      "legendLinks": "Connections",
+      "legendScan": "Scan",
+      "scroll": "Scroll",
+      "menu": "Menu",
+      "chapterMission": "Mission overview",
+      "chapterCareer": "Career evolution",
+      "verified": "Verified credential",
+      "courses": "Course completions"
+    }
+  },
+  "common": {
+    "simulatedTraining": "Simulated training lab",
+    "personalLab": "Personal Lab",
+    "pending": "Evidence pending",
+    "draft": "Draft",
+    "previewOnly": "Protected preview only",
+    "previewBuild": "Protected preview build. Drafts and case studies in preparation are visible here only, never on the public site.",
+    "evidenceNeeded": "Evidence needed"
+  },
+  "home": {
+    "chapters": {
+      "label": "On this page",
+      "identity": "Identity",
+      "mission": "Mission",
+      "career": "Career trajectory",
+      "work": "Case studies",
+      "cv": "Professional CV"
+    },
+    "career": {
+      "title": "From IT support toward the SOC",
+      "lead": "Every stage on this line is real and verifiable. Select one to see what it involved.",
+      "stagesLabel": "Career stages",
+      "progress": "Stage {current} of {total}",
+      "kind": {
+        "experience": "Experience",
+        "training": "Training",
+        "certification": "Certification",
+        "next": "Next step"
+      },
+      "nextBody": "I’m applying for entry-level roles where I can keep learning on real systems."
+    },
+    "work": {
+      "title": "Case studies in preparation",
+      "lead": "Each one reaches the public site only after its evidence is complete and approved."
+    },
+    "scroll": "Scroll",
+    "sceneLabel": "Network Visualization",
+    "legend": {
+      "nodes": "Nodes",
+      "links": "Connections",
+      "scan": "Motion"
+    }
+  },
+  "projects": {
+    "items": {
+      "socLab": {
+        "title": "SOC investigation lab",
+        "summary": "An interactive investigation of a fictional authentication incident: repeated failed logins followed by a successful one.",
+        "needed": "Scenario dataset and guided walkthrough, built in milestone 2.4."
+      },
+      "wireshark": {
+        "title": "Wireshark traffic analysis",
+        "summary": "Packet-level analysis from my own lab captures: DNS, the TCP handshake, HTTP versus TLS.",
+        "needed": "Sanitized screenshots or exports from my own captures."
+      },
+      "activeDirectory": {
+        "title": "Active Directory administration",
+        "summary": "Users, groups, OUs and policies in a lab domain, with the event IDs that matter to a SOC.",
+        "needed": "Sanitized screenshots and notes from my lab domain."
+      },
+      "aiPortfolio": {
+        "title": "AI-assisted portfolio build",
+        "summary": "How I directed the design and development of this site with AI-assisted tools, and which parts the AI generated.",
+        "needed": "Approved case-study wording and screenshots from the design reviews."
+      }
+    }
+  },
+  "cv": {
+    "title": "Professional CV",
+    "subtitle": "Available Upon Request",
+    "cta": "Request My CV",
+    "body": "Interested in my experience or qualifications? Please contact me directly to request my latest CV. I’ll be happy to share it with you.",
+    "privacy": "My CV is not published online. I send it personally to recruiters and hiring teams who contact me.",
+    "dialogTitle": "Request my CV",
+    "dialogLead": "Call or text me and I’ll send you my latest CV.",
+    "phone": "Phone",
+    "international": "International format",
+    "call": "Call",
+    "sms": "Send SMS",
+    "copy": "Copy number",
+    "copied": "Number copied",
+    "copyFailed": "Couldn’t copy automatically. Select the number to copy it.",
+    "smsBody": "Hi Eli, I’d like to request your CV.",
+    "linkedin": "Prefer LinkedIn? Message me there",
+    "close": "Close",
+    "callAria": "Call Eli Saad",
+    "smsAria": "Send an SMS to Eli Saad",
+    "forRecruiters": "For recruiters"
+  },
+  "recruiter": {
+    "kicker": "Recruiter brief",
+    "intro": "A one-page summary of my experience, training and credentials. Every item is verifiable.",
+    "direction": "Professional direction",
+    "directionBody": "Entry-level roles in security operations and IT support, anywhere in Israel.",
+    "experience": "Work experience",
+    "training": "Cybersecurity training",
+    "credentials": "Credentials",
+    "skills": "Skills by evidence",
+    "skillsNote": "Each skill names where it comes from. No self-rated levels.",
+    "contact": "Contact",
+    "contactNote": "My CV is shared personally on request.",
+    "openToWorkPage": "Open to Work details",
+    "copyLink": "Copy link to this brief",
+    "linkCopied": "Link copied",
+    "linkCopyFailed": "Couldn’t copy the link. Copy it from the address bar.",
+    "print": "Print or save as PDF",
+    "printNote": "Summary from Eli Saad’s portfolio. CV available on request.",
+    "contactBar": "Contact options",
+    "issued": "Issued {date}",
+    "completed": "Completed {date}",
+    "evidence": {
+      "employment": "Employment",
+      "certification": "Certification",
+      "course": "Course training",
+      "project": "Personal project"
+    },
+    "evidenceLegend": "Employment: paid work. Certification: passed an exam. Course training: completed course. Personal project: my own work.",
+    "skill": {
+      "support": {
+        "title": "Technical support",
+        "detail": "Tier 1 support at Cellcom: diagnosing customer issues, documenting cases and escalating with clear notes."
+      },
+      "network": {
+        "title": "Networking and troubleshooting",
+        "detail": "At work: TCP/IP, DNS and Wi-Fi troubleshooting with customers, layer by layer. Course: Cisco Networking Basics, including IP addressing and DHCP fundamentals."
+      },
+      "blueTeam": {
+        "title": "Blue Team and SOC fundamentals",
+        "detail": "Security event monitoring and triage concepts from the SOC-track course and the C|SA exam."
+      },
+      "windowsAd": {
+        "title": "Windows and Active Directory",
+        "detail": "User, group and system administration in course lab environments."
+      },
+      "wiresharkSiem": {
+        "title": "Wireshark and SIEM",
+        "detail": "Traffic analysis in Wireshark and event investigation in Splunk and QRadar, in course training labs."
+      },
+      "aiWeb": {
+        "title": "AI-assisted web development",
+        "detail": "Directed the design and build of this trilingual portfolio using AI-assisted development tools."
+      }
+    },
+    "projects": "Verified projects"
+  },
+  "caseFiles": {
+    "meta": {
+      "title": "Case Files | Eli Saad",
+      "description": "Investigations from Eli Saad's personal lab: the objective, workflow and checks behind each one, with reviewed evidence once a case is documented."
+    },
+    "kicker": "Case files",
+    "title": "Technical case files",
+    "lead": "Investigations from my own home lab, each with its objective, workflow and checks. A case is marked Documented only after my own screenshots and findings are reviewed.",
+    "legendTitle": "Case status",
+    "verifyTitle": "How evidence is verified",
+    "verifyNote": "Every screenshot comes from my own lab and is sanitized before review: no personal data, internal IPs, credentials or identifiers.",
+    "publicNote": "On the public site, a case appears only after it is documented and approved.",
+    "status": {
+      "awaiting": "Planned",
+      "inProgress": "In progress",
+      "documented": "Documented"
+    },
+    "statusHelp": {
+      "awaiting": "Objective, workflow and checks are published; screenshots and findings follow from my own lab.",
+      "inProgress": "Evidence collected, write-up under review.",
+      "documented": "Evidence and write-up approved."
+    },
+    "provenance": "Personal Lab",
+    "category": {
+      "network": "Network traffic analysis",
+      "siem": "SIEM alert triage",
+      "identity": "Identity and access administration"
+    },
+    "label": {
+      "case": "Case",
+      "environment": "Lab environment",
+      "tools": "Tools",
+      "evidence": "Evidence",
+      "evidenceCount": "{approved} of {planned} evidence items",
+      "updated": "Last updated",
+      "notYet": "Not yet recorded",
+      "open": "Open case file",
+      "back": "All case files",
+      "contents": "On this page",
+      "previous": "Previous case",
+      "next": "Next case",
+      "technical": "Technical detail",
+      "whatIDid": "What I did",
+      "whatItShows": "What it shows",
+      "skills": "Skills used",
+      "evidenceSlot": "Awaiting screenshot",
+      "figure": "Figure",
+      "viewFull": "View full size",
+      "close": "Close",
+      "findingRef": "Evidence",
+      "videoMeta": "Captions in English, Hebrew and Arabic · plays only on request",
+      "planned": "Planned",
+      "evidenceItems": "{count, plural, one {# evidence item} other {# evidence items}}"
+    },
+    "notice": "This case is planned. Findings, screenshots and video will be added only from my own lab work, after review.",
+    "evidencePending": "Screenshots, findings and lessons learned are added here once the lab evidence is reviewed.",
+    "section": {
+      "summary": "Recruiter summary",
+      "objective": "Objective",
+      "environment": "Lab environment and tools",
+      "workflow": "Workflow",
+      "steps": "Investigation steps",
+      "checks": "What I check",
+      "findings": "Findings and observations",
+      "evidence": "Evidence gallery",
+      "video": "Walkthrough video",
+      "lessons": "Lessons learned",
+      "skills": "Related skills"
+    },
+    "slot": {
+      "whatIDid": "One sentence describing the hands-on work, written once the evidence is approved.",
+      "whatItShows": "One sentence on the capability it demonstrates, without claiming more than the evidence shows.",
+      "findings": "Each observation is one sentence tied to an evidence item (E‑01, E‑02…). Nothing is written here before the evidence exists.",
+      "evidence": "Sanitized screenshots from my own lab: no personal data, internal IPs, credentials or identifiers.",
+      "lessons": "What I would do differently next time, and what I want to learn next.",
+      "caption": "Caption and sanitization date added with the screenshot."
+    },
+    "items": {
+      "wireshark": {
+        "title": "Network Traffic Investigation",
+        "objective": "Trace a page request through DNS, the TCP handshake and HTTP versus TLS, in traffic generated in my own lab.",
+        "environment": "Two virtual machines on an isolated host-only network, one serving a test page and one capturing.",
+        "workflow": {
+          "capture": "Capture",
+          "filter": "Filter",
+          "inspect": "Inspect",
+          "follow": "Follow",
+          "summarise": "Summarise"
+        },
+        "diagram": {
+          "caption": "How a page request travels: a DNS lookup, the TCP three-way handshake, then HTTP in clear text or TLS encrypted.",
+          "client": "Client",
+          "resolver": "DNS resolver",
+          "server": "Web server",
+          "query": "DNS query",
+          "response": "DNS response"
+        },
+        "checks": {
+          "dns": "DNS: the name queried and the address returned, which the client then connects to.",
+          "tcp": "TCP: the three-way handshake (SYN, SYN-ACK, ACK), plus any resets or retransmissions.",
+          "http": "HTTP: method, host and status code, readable in clear text.",
+          "tls": "TLS: the handshake and the server name (SNI) are visible; the content is encrypted."
+        },
+        "steps": {
+          "capture": {
+            "title": "Capture traffic on the lab interface",
+            "detail": "Interface: the host-only adapter. Traffic generated with one DNS lookup and one HTTP request to the second VM."
+          },
+          "dns": {
+            "title": "Isolate the DNS lookup",
+            "detail": "Display filter dns; compare the query with the response."
+          },
+          "handshake": {
+            "title": "Read the TCP handshake",
+            "detail": "Display filter tcp.flags.syn == 1; follow the SYN, SYN-ACK and ACK."
+          },
+          "stream": {
+            "title": "Follow the stream and compare HTTP with TLS",
+            "detail": "Follow → TCP Stream, then Statistics → Conversations."
+          }
+        }
+      },
+      "splunk": {
+        "title": "SOC Alert Investigation",
+        "objective": "Triage an authentication alert in Splunk, from the first search to a written verdict, using logs generated in my own lab.",
+        "environment": "Splunk Enterprise (free licence) on a lab VM, with authentication logs from my own test machines.",
+        "workflow": {
+          "alert": "Alert",
+          "scope": "Scope",
+          "pivot": "Pivot",
+          "timeline": "Timeline",
+          "verdict": "Verdict"
+        },
+        "diagram": {
+          "caption": "Triage narrows many events to the few that matter, then tests them against a timeline before a verdict."
+        },
+        "checks": {
+          "scope": "Which accounts and sources the alert involves, and over what time window.",
+          "sequence": "Whether failed logins are followed by a success from the same source.",
+          "rhythm": "How the activity is spread over time: a short burst or a steady pattern.",
+          "verdict": "What supports the conclusion, and what would justify escalating it."
+        },
+        "steps": {
+          "ingest": {
+            "title": "Ingest lab authentication logs",
+            "detail": "Settings → Add Data, sourcetype linux_secure, index main."
+          },
+          "search": {
+            "title": "Search and narrow the events",
+            "detail": "Searches such as \"Failed password\", limited to the alert's time window."
+          },
+          "pivot": {
+            "title": "Pivot on accounts and sources",
+            "detail": "stats count by user, src, then a search for successful logins from the same sources."
+          },
+          "timeline": {
+            "title": "Build a timeline and write the conclusion",
+            "detail": "timechart span=1m count, then a saved report."
+          }
+        }
+      },
+      "ad": {
+        "title": "Active Directory Operations",
+        "objective": "Build and administer a lab domain (users, groups, OUs and Group Policy) and map the Windows events a SOC watches.",
+        "environment": "A Windows Server evaluation VM as the domain controller for lab.local, with a Windows client VM joined to the domain.",
+        "workflow": {
+          "promote": "Promote",
+          "structure": "Structure",
+          "accounts": "Accounts",
+          "policy": "Policy",
+          "verify": "Verify"
+        },
+        "diagram": {
+          "caption": "A lab domain: organizational units hold users, groups and computers, and a Group Policy object is linked to one unit."
+        },
+        "checks": {
+          "placement": "Accounts sit in the right organizational unit, and access comes from group membership rather than direct permissions.",
+          "policy": "Group Policy is linked to the intended unit and actually applies (gpresult).",
+          "audit": "The Security log records the changes: 4720 (account created), 4728 (member added to a global security group), 4625 (failed logon) and 4740 (lockout)."
+        },
+        "steps": {
+          "promote": {
+            "title": "Promote a domain controller for lab.local",
+            "detail": "Server Manager → Active Directory Domain Services → Promote."
+          },
+          "structure": {
+            "title": "Create OUs, users and a security group",
+            "detail": "Active Directory Users and Computers, verified with Get-ADGroupMember."
+          },
+          "policy": {
+            "title": "Link a Group Policy to the lab OU",
+            "detail": "Group Policy Management → Create a GPO in this domain, and Link it here."
+          },
+          "verify": {
+            "title": "Verify the policy and the audit events",
+            "detail": "gpresult /r on the lab client, then the matching Security log event IDs."
+          }
+        }
+      }
+    },
+    "count": {
+      "awaiting": "{count, plural, one {# planned investigation} other {# planned investigations}}",
+      "inProgress": "{count, plural, one {# case in progress} other {# cases in progress}}",
+      "documented": "{count, plural, one {# documented case} other {# documented cases}}"
+    }
   }
 }

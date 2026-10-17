@@ -1,0 +1,1007 @@
+/*
+ * CYBER COMMAND (prototype V4)
+ *
+ * One idea carries the composition: a signal horizon. The intelligence core's
+ * equator continues as a hairline across the page and runs between the two
+ * lines of Eli's name, so the scene and the typography share one axis. When the
+ * scene runs a scan, the name receives the same sweep (`--scan`, set by the scene).
+ *
+ * Palette: graphite black, midnight navy, electric cyan, cobalt, a controlled
+ * violet, white type and chrome. Glow is reserved for the scene; the type stays flat.
+ */
+
+.cc-root {
+  --cc-bg: #04060b;
+  --cc-navy: #081226;
+  --cc-cyan: #42d5f6;
+  --cc-cyan-hi: #a5f0ff;
+  --cc-cobalt: #2f6bff;
+  --cc-violet: #8b7cff;
+  --cc-chrome: #c9d3e1;
+  --hh: max(100svh, 640px);
+  background: var(--cc-bg);
+  color: #fff;
+}
+
+.cc-display {
+  font-family: var(--font-archivo), var(--font-sans);
+  font-stretch: 118%;
+  letter-spacing: -0.02em;
+}
+:lang(he) .cc-display,
+:lang(ar) .cc-display {
+  font-family: var(--font-sans);
+  font-stretch: normal;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------ header */
+.cc-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(165 240 255 / 0.16) 20%, rgb(165 240 255 / 0.16) 80%, transparent);
+}
+.cc-mark {
+  position: relative;
+  display: inline-block;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+}
+.cc-mark > span {
+  position: absolute;
+  inset-inline: -0.35rem;
+  top: 50%;
+  height: 1px;
+  background: var(--cc-cyan);
+  box-shadow: 0 0 8px var(--cc-cyan);
+}
+.cc-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0.375rem;
+  border-radius: 999px;
+  background: #fff;
+}
+.cc-navlink[aria-current="page"] {
+  position: relative;
+}
+.cc-navlink[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 1rem;
+  bottom: 0.35rem;
+  height: 1px;
+  background: var(--cc-cyan);
+}
+.cc-burger {
+  position: relative;
+  display: inline-block;
+  width: 1.375rem;
+  height: 0.75rem;
+}
+.cc-burger > span {
+  position: absolute;
+  inset-inline: 0;
+  height: 1.5px;
+  background: #fff;
+  transition: transform 0.35s var(--ease-out-soft), top 0.35s var(--ease-out-soft);
+}
+.cc-burger > span:first-child {
+  top: 0;
+}
+.cc-burger > span:last-child {
+  top: calc(100% - 1.5px);
+  inset-inline-start: 0.45rem;
+}
+.cc-burger[data-open="true"] > span:first-child {
+  top: calc(50% - 0.75px);
+  transform: rotate(45deg);
+}
+.cc-burger[data-open="true"] > span:last-child {
+  top: calc(50% - 0.75px);
+  inset-inline-start: 0;
+  transform: rotate(-45deg);
+}
+.cc-menu {
+  background:
+    radial-gradient(60rem 40rem at 100% 0%, rgb(47 107 255 / 0.22), transparent 60%),
+    radial-gradient(30rem 30rem at 0% 100%, rgb(139 124 255 / 0.12), transparent 70%),
+    #05080f;
+}
+[dir="rtl"] .cc-menu {
+  background:
+    radial-gradient(60rem 40rem at 0% 0%, rgb(47 107 255 / 0.22), transparent 60%),
+    radial-gradient(30rem 30rem at 100% 100%, rgb(139 124 255 / 0.12), transparent 70%),
+    #05080f;
+}
+
+/* ------------------------------------------------------------------ hero frame */
+.cc-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-height: 100svh;
+  /* Text starts below the scene's fade, so nothing animates behind the status, name or actions. */
+  padding: calc(56svh - 4rem) 1.25rem 3rem;
+}
+.cc-hero::before {
+  /* Deep navy light behind the core, graphite falloff everywhere else. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 42% at 62% 26%, rgb(29 58 138 / 0.5), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 10% 100%, rgb(139 124 255 / 0.08), transparent 70%),
+    var(--cc-bg);
+}
+[dir="rtl"] .cc-hero::before {
+  background:
+    radial-gradient(ellipse 80% 42% at 38% 26%, rgb(29 58 138 / 0.5), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgb(139 124 255 / 0.08), transparent 70%),
+    var(--cc-bg);
+}
+
+/* Hero → next chapter: the scene sinks into the page instead of ending on an edge. */
+.cc-hero::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 9rem;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--cc-bg));
+}
+
+/* ------------------------------------------------------------------ scene */
+.cc-scene {
+  --cx: 0.6;
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  top: 0;
+  height: 56svh;
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 83%);
+  mask-image: linear-gradient(to bottom, #000 68%, transparent 83%);
+}
+[dir="rtl"] .cc-scene {
+  --cx: 0.4;
+}
+.cc-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.cc-scene[data-live="true"] .cc-canvas {
+  opacity: 1;
+}
+
+/* Poster: shares geometry with the WebGL camera (portrait = 37.9% of the scene height).
+   The WebGL portrait is complete from its first frame, so the hand-off is a pure cross-fade:
+   Eli's face stays visible the whole time. */
+.cc-poster {
+  transition: opacity 0.8s ease;
+}
+.cc-portrait {
+  transition: opacity 0.5s ease 0.45s;
+}
+.cc-scene[data-live="true"] .cc-poster,
+.cc-scene[data-live="true"] .cc-portrait {
+  opacity: 0;
+}
+.cc-poster > span,
+.cc-portrait {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--cx) * 100%);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+}
+.cc-poster-glow {
+  height: 150%;
+  background: radial-gradient(closest-side, rgb(47 107 255 / 0.35), rgb(66 213 246 / 0.06) 55%, transparent);
+}
+.cc-poster-lattice {
+  height: 64%;
+  background-image: radial-gradient(circle, rgb(127 220 255 / 0.55) 1px, transparent 1.4px);
+  background-size: 9px 9px;
+  -webkit-mask-image: radial-gradient(closest-side, transparent 52%, #000 60%, rgb(0 0 0 / 0.5) 92%, transparent);
+  mask-image: radial-gradient(closest-side, transparent 52%, #000 60%, rgb(0 0 0 / 0.5) 92%, transparent);
+}
+.cc-poster-ring {
+  border: 1px solid rgb(66 213 246 / 0.28);
+}
+.cc-poster-ring--1 {
+  height: 86%;
+  transform: translate(-50%, -50%) rotateX(68deg);
+}
+.cc-poster-ring--2 {
+  height: 101%;
+  border-color: rgb(139 124 255 / 0.24);
+  transform: translate(-50%, -50%) rotate(-28deg) scaleY(0.22);
+}
+.cc-poster-ring--3 {
+  height: 121%;
+  border-color: rgb(47 107 255 / 0.3);
+  border-style: dashed;
+  transform: translate(-50%, -50%) rotate(32deg) scaleY(0.3);
+}
+.cc-portrait {
+  height: 37.9%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgb(207 233 255 / 0.2);
+}
+.cc-portrait-img {
+  position: absolute;
+  inset-inline-start: -4.44%;
+  top: -3.33%;
+  width: 111.1%;
+  height: 111.1%;
+  max-width: none;
+  object-fit: cover;
+  filter: saturate(0.85);
+}
+[dir="rtl"] .cc-portrait-img {
+  inset-inline-start: auto;
+  left: -4.44%;
+}
+.cc-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(closest-side, transparent 66%, rgb(4 10 24 / 0.3));
+}
+
+/* Simulated-data disclosure: always present with the scene, quiet but readable
+   (12 px, contrast above 4.5:1 on the darkest and the brightest backdrop it sits on). */
+.cc-sim {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: 1.25rem;
+  top: 4.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: calc(100% - 2.5rem);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: rgb(214 226 240 / 0.66);
+}
+.cc-sim-tag {
+  flex: none;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 1px;
+  background: var(--cc-cyan); /* neutral interface label, not a pending/simulated amber mark */
+}
+
+/* ------------------------------------------------------------------ signal horizon */
+.cc-horizon {
+  position: absolute;
+  z-index: 0;
+  top: 28svh;
+  inset-inline-start: 0;
+  /* Core x = 60%; portrait radius = 18.95% of the 56svh scene. */
+  width: calc(60% - 10.6svh - 0.5rem);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(66 213 246 / 0.25) 30%, rgb(165 240 255 / 0.9));
+  transform-origin: left center;
+}
+[dir="rtl"] .cc-horizon {
+  background: linear-gradient(270deg, transparent, rgb(66 213 246 / 0.25) 30%, rgb(165 240 255 / 0.9));
+  transform-origin: right center;
+}
+.cc-horizon::before {
+  /* A pulse travelling toward the core. */
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline-start: 0;
+  width: 18%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, #fff);
+  filter: drop-shadow(0 0 6px var(--cc-cyan));
+  opacity: 0;
+}
+[dir="rtl"] .cc-horizon::before {
+  background: linear-gradient(270deg, transparent, #fff);
+}
+.cc-horizon::after {
+  /* Terminal at the core. */
+  content: "";
+  position: absolute;
+  inset-inline-end: -3px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 12px 2px var(--cc-cyan);
+}
+
+/* ------------------------------------------------------------------ identity */
+.cc-identity {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+.cc-kicker {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.55rem;
+  padding-block: 0.3rem;
+  padding-inline: 0.65rem 0.8rem;
+  border: 1px solid rgb(74 222 128 / 0.22);
+  border-radius: 999px;
+  background: rgb(74 222 128 / 0.06);
+  font-size: 0.8125rem;
+  color: rgb(220 245 255 / 0.85);
+}
+.cc-dot {
+  position: relative;
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #4ade80;
+}
+.cc-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+.cc-latin {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  color: rgb(255 255 255 / 0.62);
+}
+
+.cc-name {
+  margin-top: 0.85rem;
+  font-size: clamp(4.25rem, 23vw, 11.5rem);
+  font-weight: 800;
+  line-height: 0.86;
+}
+.cc-name-ink {
+  display: block;
+}
+/* Gradient text is painted per line: Chrome drops background-clip:text on transformed children.
+   Layer 1 is the scan band, positioned from the scene's sweep (--scan, 0..1 over both lines).
+   Layer 2 is the chrome. */
+.cc-name-line {
+  --band: calc((var(--scan, -1) * 2 - var(--i, 0)) * 100%);
+  display: block;
+  background:
+    linear-gradient(180deg, transparent calc(var(--band) - 22%), rgb(127 220 255 / 0.95) var(--band), transparent calc(var(--band) + 22%)),
+    linear-gradient(180deg, #ffffff 0%, #f4f7fb 38%, #cbd5e2 58%, #eef2f8 74%, #b4c0d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+:lang(he) .cc-name {
+  font-size: clamp(3.75rem, 21vw, 9.5rem);
+  line-height: 0.98;
+}
+:lang(ar) .cc-name {
+  font-size: clamp(3.5rem, 19vw, 9rem);
+  line-height: 1.12;
+}
+:lang(ar) .cc-name-line {
+  padding-bottom: 0.3em;
+  margin-bottom: -0.3em;
+}
+@media (forced-colors: active) {
+  .cc-name-line {
+    color: CanvasText;
+    background: none;
+  }
+}
+
+.cc-role {
+  margin-top: 1.1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #fff;
+}
+.cc-focus {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(255 255 255 / 0.62);
+}
+.cc-tagline {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 0.7);
+  max-width: 32rem;
+}
+.cc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+}
+.cc-cta {
+  position: relative;
+  display: inline-flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 1.5rem;
+  padding-inline: 1.5rem;
+  background: #fff;
+  color: #04060b;
+  font-weight: 600;
+  overflow: hidden;
+  transition: color 0.35s var(--ease-out-soft);
+}
+.cc-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--cc-cyan), var(--cc-cobalt));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out-soft);
+  z-index: 0;
+}
+[dir="rtl"] .cc-cta::before {
+  transform-origin: right;
+}
+.cc-cta > * {
+  position: relative;
+  z-index: 1;
+}
+.cc-cta:hover::before,
+.cc-cta:focus-visible::before {
+  transform: scaleX(1);
+}
+.cc-cta:hover,
+.cc-cta:focus-visible {
+  color: #fff;
+}
+.cc-cta-arrow {
+  font-family: var(--font-mono);
+  transition: transform 0.35s var(--ease-out-soft);
+}
+.cc-cta:hover .cc-cta-arrow {
+  transform: translateX(4px);
+}
+[dir="rtl"] .cc-cta-arrow {
+  transform: scaleX(-1);
+}
+[dir="rtl"] .cc-cta:hover .cc-cta-arrow {
+  transform: scaleX(-1) translateX(4px);
+}
+.cc-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border-bottom: 1px solid rgb(255 255 255 / 0.3);
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.85);
+  transition: border-color 0.25s, color 0.25s;
+}
+.cc-link:hover {
+  border-color: var(--cc-cyan);
+  color: #fff;
+}
+.cc-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+  font-size: 0.875rem;
+}
+.cc-socials a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgb(255 255 255 / 0.68);
+  transition: color 0.2s;
+}
+.cc-socials a:hover {
+  color: var(--cc-cyan-hi);
+}
+
+/* Mobile order: role and contact in the first viewport, then the tagline and profiles. */
+.cc-actions {
+  margin-top: 1.5rem;
+}
+.cc-tagline {
+  margin-top: 2rem;
+}
+.cc-socials {
+  margin-top: 1rem;
+}
+
+/* ------------------------------------------------------------------ legend and scroll cue */
+.cc-legend {
+  display: none;
+}
+.cc-scroll {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ entrance */
+@media (prefers-reduced-motion: no-preference) {
+  /* Identity content is visible from the first paint: the entrance moves it, never hides it
+     (no opacity or clip), so there is no empty gap while the scene assembles around it. */
+  .cc-in {
+    animation: cc-rise 0.8s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+  .cc-name-line {
+    animation: cc-settle 1s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .cc-horizon {
+    animation: cc-draw 1.4s cubic-bezier(0.7, 0, 0.2, 1) 0.5s both;
+  }
+  .cc-horizon::before {
+    animation: cc-pulse 7s linear 2.4s infinite;
+  }
+  .cc-scroll-line::after {
+    animation: cc-drop 2.2s ease-in-out infinite;
+  }
+}
+@keyframes cc-rise {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cc-settle {
+  from {
+    transform: translateY(0.12em);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes cc-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes cc-pulse {
+  0% {
+    inset-inline-start: 0%;
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  26% {
+    inset-inline-start: 82%;
+    opacity: 1;
+  }
+  30%,
+  100% {
+    inset-inline-start: 82%;
+    opacity: 0;
+  }
+}
+@keyframes cc-drop {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* ------------------------------------------------------------------ desktop */
+@media (min-width: 1024px) {
+  .cc-hero {
+    height: var(--hh);
+    min-height: 48rem;
+    padding: 0;
+  }
+  .cc-hero::before {
+    background:
+      radial-gradient(ellipse 42% 62% at 71% 50%, rgb(29 58 138 / 0.6), transparent 70%),
+      radial-gradient(ellipse 30% 40% at 80% 70%, rgb(124 108 255 / 0.12), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 0% 100%, rgb(139 124 255 / 0.06), transparent 70%),
+      var(--cc-bg);
+  }
+  [dir="rtl"] .cc-hero::before {
+    background:
+      radial-gradient(ellipse 42% 62% at 29% 50%, rgb(29 58 138 / 0.6), transparent 70%),
+      radial-gradient(ellipse 30% 40% at 20% 70%, rgb(124 108 255 / 0.12), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 100% 100%, rgb(139 124 255 / 0.06), transparent 70%),
+      var(--cc-bg);
+  }
+  .cc-scene {
+    --cx: 0.56;
+    inset-inline: 34% 0;
+    height: 100%;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 16%);
+    mask-image: linear-gradient(to right, transparent, #000 16%);
+  }
+  [dir="rtl"] .cc-scene {
+    --cx: 0.44;
+    -webkit-mask-image: linear-gradient(to left, transparent, #000 16%);
+    mask-image: linear-gradient(to left, transparent, #000 16%);
+  }
+  .cc-sim {
+    top: 7rem;
+    inset-inline-end: 3rem;
+  }
+  /* Horizon from the page edge to the portrait's edge on the core equator.
+     Core x = 34% + 0.56 × 66% = 70.96%; portrait radius = 18.95% of the hero height. */
+  .cc-horizon {
+    top: 50%;
+    width: calc(70.96% - 0.1895 * max(var(--hh), 48rem) - 0.75rem);
+  }
+
+  /* The name block is centred on the horizon: ELI above it, SAAD below. */
+  .cc-identity {
+    position: absolute;
+    inset-inline-start: max(3rem, calc((100% - 96rem) / 2 + 3rem));
+    top: 50%;
+    width: min(46rem, 52%);
+    transform: translateY(-50%);
+  }
+  .cc-upper {
+    position: absolute;
+    bottom: calc(100% + 1.4rem);
+    inset-inline-start: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .cc-lower {
+    position: absolute;
+    top: calc(100% + 1.35rem);
+    inset-inline-start: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .cc-name {
+    margin-top: 0;
+    font-size: clamp(6rem, 9.4vw, 10.5rem);
+  }
+  :lang(he) .cc-name {
+    font-size: clamp(5.5rem, 9.6vw, 10rem);
+  }
+  :lang(ar) .cc-name {
+    font-size: clamp(5rem, 8.6vw, 9rem);
+  }
+  .cc-role {
+    margin-top: 0;
+    font-size: 1.375rem;
+  }
+  .cc-lower > .cc-tagline {
+    order: 2;
+    margin-top: 0.9rem;
+  }
+  .cc-lower > .cc-actions {
+    order: 3;
+    margin-top: 1.4rem;
+  }
+  .cc-lower > .cc-socials {
+    order: 4;
+    margin-top: 0.5rem;
+  }
+  .cc-legend {
+    position: absolute;
+    top: 8.75rem;
+    inset-inline-end: 3rem;
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgb(255 255 255 / 0.62);
+  }
+  .cc-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  /* Scroll cue on the core's axis, below the scene (above the hero's bottom fade). */
+  .cc-scroll {
+    position: absolute;
+    z-index: 1;
+    bottom: 1.5rem;
+    left: 70.96%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgb(255 255 255 / 0.62);
+  }
+  .cc-lower > .cc-focus {
+    order: 1;
+    margin-top: 0.5rem;
+  }
+  [dir="rtl"] .cc-scroll {
+    left: 29.04%;
+  }
+  .cc-scroll-line {
+    position: relative;
+    width: 1px;
+    height: 2.25rem;
+    background: rgb(255 255 255 / 0.18);
+    overflow: hidden;
+  }
+  .cc-scroll-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--cc-cyan);
+  }
+}
+.cc-glyph-node {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #bfefff;
+  box-shadow: 0 0 6px #42d5f6;
+}
+.cc-glyph-link {
+  width: 1.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(95 227 255 / 0.2), #fff);
+}
+.cc-glyph-scan {
+  width: 1rem;
+  height: 0.4rem;
+  border: 1px solid #a5f0ff;
+  border-radius: 50%;
+}
+
+/* ------------------------------------------------------------------ next chapter */
+.v4-next {
+  position: relative;
+  padding: 4rem 1.25rem 6rem;
+  background: linear-gradient(180deg, var(--cc-bg), #060b17 40%, var(--cc-bg));
+}
+.v4-next-body {
+  margin-top: 1.75rem;
+}
+.v4-chapter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(165 240 255 / 0.85);
+}
+.v4-chapter-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(66 213 246 / 0.7), rgb(139 124 255 / 0.35) 60%, transparent);
+  transform-origin: left center;
+}
+[dir="rtl"] .v4-chapter-rule {
+  background: linear-gradient(270deg, rgb(66 213 246 / 0.7), rgb(139 124 255 / 0.35) 60%, transparent);
+  transform-origin: right center;
+}
+.v4-next-title {
+  margin-top: 2.5rem;
+  max-width: 18ch;
+  font-size: clamp(2.4rem, 9.5vw, 5.75rem);
+  font-weight: 800;
+  line-height: 0.98;
+}
+:lang(he) .v4-next-title,
+:lang(ar) .v4-next-title {
+  line-height: 1.2;
+}
+.v4-signal {
+  position: relative;
+  margin-top: 3.5rem;
+  display: grid;
+  gap: 0;
+}
+.v4-signal::before {
+  /* The career line: solid through what is done, dashed toward what is next. */
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.3rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(180deg, var(--cc-cyan) 0 74%, transparent 74%);
+}
+.v4-signal::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.3rem;
+  top: 74%;
+  bottom: 0.5rem;
+  width: 1px;
+  background: repeating-linear-gradient(180deg, rgb(255 255 255 / 0.5) 0 4px, transparent 4px 9px);
+}
+.v4-stop {
+  position: relative;
+  padding-inline-start: 2rem;
+  padding-block: 0.25rem 1.75rem;
+}
+.v4-stop::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.35rem;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: var(--cc-bg);
+  border: 1px solid var(--cc-cyan);
+}
+.v4-stop[data-kind="credential"]::before {
+  background: var(--cc-cyan);
+  box-shadow: 0 0 12px var(--cc-cyan);
+}
+.v4-stop[data-kind="next"]::before {
+  border-style: dashed;
+  border-color: rgb(255 255 255 / 0.6);
+}
+.v4-stop-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgb(165 240 255 / 0.8);
+}
+.v4-stop[data-kind="next"] .v4-stop-label {
+  color: rgb(255 255 255 / 0.62);
+}
+
+@media (min-width: 1024px) {
+  .v4-next {
+    padding: 8rem 3rem 9rem;
+  }
+  .v4-next-body {
+    margin-top: 0;
+  }
+  .v4-next-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 4rem 6rem;
+    align-items: end;
+  }
+  .v4-signal {
+    margin-top: 5rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .v4-signal::before {
+    inset-inline: 0.3rem 0;
+    top: 0.62rem;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cc-cyan) 0 75%, transparent 75%);
+  }
+  [dir="rtl"] .v4-signal::before {
+    background: linear-gradient(270deg, var(--cc-cyan) 0 75%, transparent 75%);
+  }
+  .v4-signal::after {
+    inset-inline: 75% 0;
+    top: 0.62rem;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.5) 0 4px, transparent 4px 9px);
+  }
+  .v4-stop {
+    padding-inline: 0 2rem;
+    padding-top: 2.25rem;
+  }
+  .v4-stop::before {
+    top: 0.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .v4-chapter-rule {
+      animation: cc-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+    .v4-next-reveal {
+      animation: cc-slide linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+  }
+}
+@keyframes cc-slide {
+  from {
+    transform: translateY(40px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Flow order inside the lower identity block (mobile first). */
+.cc-lower {
+  display: flex;
+  flex-direction: column;
+}
+.cc-actions {
+  order: 1;
+}
+.cc-focus {
+  order: 2;
+  margin-top: 1.5rem;
+}
+.cc-tagline {
+  order: 3;
+  margin-top: 0.6rem;
+}
+.cc-socials {
+  order: 4;
+}
+
+/* The mono face has no Arabic glyphs; fallback monospace breaks letter joining. */
+:lang(ar) .cc-focus,
+:lang(ar) .cc-legend,
+:lang(ar) .cc-scroll,
+:lang(ar) .v4-chapter,
+:lang(ar) .v4-stop-label {
+  font-family: var(--font-sans);
+}
+
+/* Mobile: the primary CTA and the certificates link share one row down to 360 px. */
+@media (max-width: 1023.98px) {
+  .cc-actions {
+    gap: 0.5rem 1rem;
+  }
+  .cc-cta {
+    gap: 0.75rem;
+    padding-inline: 1.1rem;
+  }
+  .cc-link {
+    font-size: 1rem;
+  }
+}
+
+/* Prototype label: in normal flow at the end of the page, so it never covers content.
+   Concept routes only; it is not part of any production page. */
+.cc-proto {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1.25rem 2rem;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  background: var(--cc-bg);
+}

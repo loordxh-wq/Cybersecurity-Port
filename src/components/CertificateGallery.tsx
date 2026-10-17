@@ -64,7 +64,7 @@ export function CertificateGallery({
             <li
               key={item.id}
               id={item.id}
-              className={`panel scroll-mt-28 rounded-3xl p-3 sm:p-4 ${
+              className={`panel scroll-mt-2 rounded-3xl p-3 sm:p-4 ${
                 featured ? "edge md:col-span-2 md:grid md:grid-cols-[1.25fr_1fr] md:items-center md:gap-10" : ""
               }`}
             >
@@ -84,7 +84,7 @@ export function CertificateGallery({
                   aria-hidden="true"
                   className="absolute inset-0 bg-[linear-gradient(180deg,transparent_50%,rgb(5_11_22/0.35))] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                 />
-                <span className="absolute bottom-3 end-3 inline-flex items-center gap-2 rounded-xl border border-ice/30 bg-ink/90 px-3.5 py-2 text-sm font-medium text-fg shadow-lg transition-colors group-hover:border-ice/60">
+                <span className="absolute bottom-2 end-2 inline-flex items-center gap-1.5 rounded-lg border border-ice/30 bg-ink/90 px-2.5 py-1.5 text-[0.8125rem] font-medium sm:bottom-3 sm:end-3 sm:gap-2 sm:rounded-xl sm:px-3.5 sm:py-2 sm:text-sm text-fg shadow-lg transition-colors group-hover:border-ice/60">
                   <ExpandIcon width={16} height={16} className="text-ice" />
                   {labels.view}
                 </span>
@@ -95,11 +95,8 @@ export function CertificateGallery({
                 <h2 className={`mt-4 font-semibold leading-tight text-fg ${featured ? "text-2xl sm:text-[2rem]" : "text-xl"}`}>
                   <bdi>{item.title}</bdi>
                 </h2>
-                <p className="mt-2 flex flex-wrap items-center gap-x-2 text-fg-muted">
+                <p className="mt-2 grid gap-0.5 text-fg-muted">
                   <bdi className="font-medium text-fg/80">{item.issuer}</bdi>
-                  <span aria-hidden="true" className="text-line-strong">
-                    |
-                  </span>
                   <span className="text-sm">{item.dateLabel}</span>
                 </p>
                 <p className="measure mt-4 leading-relaxed text-fg/85">{item.description}</p>
@@ -125,7 +122,7 @@ export function CertificateGallery({
         onClose={onClose}
         onClick={onBackdrop}
         aria-labelledby="cert-dialog-title"
-        className="m-auto w-[min(96vw,74rem)] max-w-none overflow-hidden rounded-3xl border border-line-strong bg-deep p-0 text-fg shadow-[0_40px_120px_-20px_rgb(0_0_0/0.95),0_0_0_1px_rgb(66_213_246/0.12)] backdrop:bg-[#02060e]/85 backdrop:backdrop-blur-md"
+        className="m-auto w-[min(96vw,74rem)] max-w-[calc(100vw-env(safe-area-inset-left)-env(safe-area-inset-right)-1rem)] overflow-hidden rounded-3xl border border-line-strong bg-deep p-0 text-fg shadow-[0_40px_120px_-20px_rgb(0_0_0/0.95),0_0_0_1px_rgb(66_213_246/0.12)] backdrop:bg-[#02060e]/85 backdrop:backdrop-blur-md"
       >
         {active ? (
           <div className="flex max-h-[92dvh] flex-col">

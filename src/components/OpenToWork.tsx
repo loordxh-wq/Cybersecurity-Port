@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { linkedin, publicCv, publicEmail, targetCities, targetRoles } from "@/content/facts";
+import { linkedin, publicEmail, targetRoles } from "@/content/facts";
 import { ui } from "@/lib/ui";
 import { ArrowIcon, CheckIcon, InfoIcon, LinkedInIcon, PinIcon } from "./icons";
 import { StatusChip } from "./StatusChip";
@@ -11,7 +11,6 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
   const tHero = await getTranslations("hero");
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const SubHeading = headingLevel === 1 ? "h2" : "h3";
-  const hasCv = Boolean(publicCv.en || publicCv.he || publicCv.ar);
 
   return (
     <section id="open-to-work" data-section aria-labelledby="otw-title" className="reveal scroll-mt-24">
@@ -66,7 +65,6 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
               <InfoIcon className="mt-0.5 shrink-0 text-ice" width={18} height={18} />
               <div className="space-y-1">
                 <p>{t("recruiterNote")}</p>
-                {!hasCv ? <p>{t("cvPending")}</p> : null}
               </div>
             </div>
           </div>
@@ -96,16 +94,10 @@ export async function OpenToWork({ headingLevel = 2 }: { headingLevel?: 1 | 2 })
             <div className="rounded-2xl border border-line bg-ink/40 p-5">
               <SubHeading className="text-sm font-semibold text-fg-muted">{t("locationTitle")}</SubHeading>
               <p className="mt-3 flex items-center gap-2.5 text-xl font-semibold text-fg">
-                <PinIcon className="text-ice" />
+                <PinIcon className="text-ice" aria-hidden="true" />
                 {t("location")}
               </p>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {targetCities.map((city) => (
-                  <li key={city} className="rounded-full border border-line-strong bg-deep/60 px-3.5 py-1 text-sm text-fg/80">
-                    {t(`cities.${city}`)}
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-3 text-sm text-fg/80">{t("locationDetail")}</p>
             </div>
           </div>
         </div>

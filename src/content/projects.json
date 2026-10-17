@@ -1,0 +1,9 @@
+{
+  "$comment": "Case studies and labs. Wording lives in messages under projects.items.<id>. Only status \"approved\" renders publicly; approved items must list evidence files that exist in src/assets/evidence and in its manifest. Run npm run check:content.",
+  "projects": [
+    { "id": "socLab", "kind": "lab", "status": "placeholder", "simulated": true, "evidence": [] },
+    { "id": "wireshark", "kind": "lab", "status": "placeholder", "simulated": false, "evidence": [] },
+    { "id": "activeDirectory", "kind": "lab", "status": "placeholder", "simulated": false, "evidence": [] },
+    { "id": "aiPortfolio", "kind": "web", "status": "placeholder", "simulated": false, "evidence": [] }
+  ]
+}

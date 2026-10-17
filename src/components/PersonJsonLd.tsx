@@ -7,12 +7,13 @@ export function PersonJsonLd({ url }: { url: string }) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: person.nameLatin,
-    alternateName: ["אילי סעד", "إيلي سعد"],
+    alternateName: ["איליא סעד", "إيلي سعد"],
     jobTitle: "Aspiring SOC Analyst",
     url,
     image: `${siteUrl}${person.portrait.src}`,
     sameAs: socials.map((s) => s.href),
-    address: { "@type": "PostalAddress", addressRegion: "Northern District", addressCountry: "IL" },
+    // Country only: Eli is open to suitable roles anywhere in Israel (flexible location).
+    address: { "@type": "PostalAddress", addressCountry: "IL" },
     knowsLanguage: ["ar", "he", "en"],
     hasCredential: credentials.map((c) => ({
       "@type": "EducationalOccupationalCredential",

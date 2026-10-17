@@ -1,0 +1,785 @@
+/*
+ * Recruiter brief: the calm editorial counterpart to the cinematic home page.
+ * Same palette, type and hairline details; no scene, no glow, no motion behind text.
+ * Body text meets AAA contrast (≥ 7:1) on the graphite background.
+ */
+.rb {
+  --rb-text: #e8eef6;
+  --rb-muted: rgb(232 238 246 / 0.76);
+  --rb-label: #93dcf0;
+  --rb-rule: rgb(148 180 220 / 0.16);
+  position: relative;
+  padding-bottom: 5.5rem; /* room for the sticky contact bar on phones */
+  background: linear-gradient(180deg, rgb(8 18 38 / 0.55), transparent 22rem), var(--cc-bg);
+  color: var(--rb-text);
+}
+@media (min-width: 1024px) {
+  .rb {
+    padding-bottom: 0;
+  }
+}
+.rb-wrap {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+@media (min-width: 640px) {
+  .rb-wrap {
+    padding-inline: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .rb-wrap {
+    padding: 4rem 3rem 6rem;
+  }
+}
+
+/* ------------------------------------------------------------------ dossier header */
+.rb-head {
+  position: relative;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border: 1px solid var(--rb-rule);
+  background: linear-gradient(180deg, rgb(12 20 36 / 0.7), rgb(5 8 15 / 0.4));
+}
+@media (min-width: 1024px) {
+  .rb-head {
+    padding: 2.5rem 2.5rem 2rem;
+  }
+}
+.rb-ticks {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  --t: rgb(127 220 255 / 0.7);
+  background:
+    linear-gradient(var(--t), var(--t)) top left / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top left / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) top right / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom left / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) bottom right / 1px 14px no-repeat;
+}
+.rb-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rb-label);
+}
+.rb-kicker::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(66 213 246 / 0.55), transparent);
+}
+[dir="rtl"] .rb-kicker::after {
+  background: linear-gradient(270deg, rgb(66 213 246 / 0.55), transparent);
+}
+.rb-kicker-node {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--cc-cyan);
+}
+.rb-name {
+  margin-top: 1rem;
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cc-head, #f2f5fa);
+}
+:lang(he) .rb-name,
+:lang(ar) .rb-name {
+  line-height: 1.2;
+}
+.rb-latin {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+}
+.rb-role {
+  margin-top: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.rb-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgb(74 222 128 / 0.3);
+  border-radius: 999px;
+  background: rgb(74 222 128 / 0.06);
+  font-size: 0.9375rem;
+}
+.rb-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #4ade80;
+}
+.rb-facts {
+  display: grid;
+  gap: 0.5rem 2rem;
+  margin-top: 1.25rem;
+}
+@media (min-width: 768px) {
+  .rb-facts {
+    grid-template-columns: repeat(2, minmax(0, auto));
+    justify-content: start;
+  }
+}
+.rb-facts > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+}
+.rb-facts dt,
+.rb-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.75rem;
+  color: var(--rb-label);
+}
+.rb-facts dd {
+  font-size: 0.9375rem;
+  line-height: 1.75rem;
+  color: var(--rb-text);
+}
+.rb-intro {
+  max-width: 60ch;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rb-rule);
+  color: var(--rb-muted);
+}
+
+/* ------------------------------------------------------------------ layout */
+.rb-layout {
+  display: grid;
+  gap: 0;
+  margin-top: 1rem;
+}
+@media (min-width: 1024px) {
+  .rb-layout {
+    grid-template-columns: minmax(0, 1fr) 19rem;
+    gap: 3.5rem;
+    align-items: start;
+    margin-top: 1.5rem;
+  }
+}
+
+/* ------------------------------------------------------------------ blocks */
+.rb-block {
+  display: grid;
+  gap: 0.85rem;
+  padding-block: 1.75rem;
+  border-bottom: 1px solid var(--rb-rule);
+}
+@media (max-width: 767.98px) {
+  .rb-block {
+    padding-block: 1.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .rb-block {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 2rem;
+    padding-block: 2rem;
+  }
+}
+.rb-block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--cc-head, #f2f5fa);
+}
+.rb-index {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--rb-label);
+}
+.rb-block-body {
+  min-width: 0;
+}
+.rb-lead {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+.rb-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.rb-roles li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgb(148 180 220 / 0.3);
+  font-size: 0.9375rem;
+}
+.rb-item-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--cc-head, #f2f5fa);
+}
+.rb-item-meta {
+  margin-top: 0.2rem;
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-points {
+  margin-top: 0.8rem;
+}
+.rb-points li {
+  position: relative;
+  max-width: 64ch;
+  padding-inline-start: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.rb-points li + li {
+  margin-top: 0.5rem;
+}
+.rb-points li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.8em;
+  width: 0.55rem;
+  height: 1px;
+  background: var(--cc-cyan);
+}
+.rb-tools-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.9rem;
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-creds li {
+  display: grid;
+  gap: 0.1rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--rb-rule);
+}
+.rb-creds li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.rb-cred-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8125rem;
+  color: var(--rb-muted);
+}
+.rb-cred-kind::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgb(232 238 246 / 0.6);
+}
+[data-kind="certification"] > .rb-cred-kind {
+  color: var(--rb-label);
+}
+[data-kind="certification"] > .rb-cred-kind::before {
+  border-color: var(--cc-cyan);
+  background: var(--cc-cyan);
+}
+.rb-cred-title {
+  font-weight: 600;
+  color: var(--cc-head, #f2f5fa);
+}
+.rb-cred-meta {
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-more {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #a8e7f8;
+  text-decoration: underline;
+  text-decoration-color: rgb(127 220 255 / 0.4);
+  text-underline-offset: 6px;
+}
+.rb-note,
+.rb-legend {
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-legend {
+  margin-top: 1rem;
+  max-width: 64ch;
+}
+.rb-skills {
+  margin-top: 0.75rem;
+}
+.rb-skills li,
+.rb-projects li {
+  display: grid;
+  gap: 0.3rem 1rem;
+  padding-block: 0.85rem;
+  border-top: 1px solid var(--rb-rule);
+}
+@media (min-width: 640px) {
+  .rb-skills li,
+  .rb-projects li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .rb-skill-detail {
+    grid-column: 1 / -1;
+  }
+}
+.rb-skill-title {
+  font-weight: 600;
+  color: var(--cc-head, #f2f5fa);
+}
+.rb-skill-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.rb-evidence,
+.rb-sim {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid rgb(148 180 220 / 0.34);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.rb-evidence::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+}
+.rb-evidence[data-type="employment"]::before {
+  background: #e8eef6;
+  border-radius: 1px;
+}
+.rb-evidence[data-type="certification"]::before {
+  background: var(--cc-cyan);
+  border-radius: 999px;
+}
+.rb-evidence[data-type="course"]::before {
+  border: 1px solid var(--cc-cyan);
+  border-radius: 999px;
+}
+.rb-evidence[data-type="project"]::before {
+  border: 1px solid var(--cc-violet);
+  transform: rotate(45deg);
+}
+.rb-sim {
+  border-color: rgb(245 181 68 / 0.5);
+  color: #f5c46b;
+}
+.rb-sim.rb-lab {
+  border-color: rgb(127 220 255 / 0.4);
+  color: #93dcf0;
+}
+.rb-skill-detail {
+  max-width: 64ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--rb-muted);
+}
+
+/* ------------------------------------------------------------------ contact */
+.rb-aside {
+  padding-block: 1.75rem;
+}
+@media (min-width: 1024px) {
+  .rb-aside {
+    position: sticky;
+    top: 6.5rem;
+    padding-block: 2rem 0;
+  }
+}
+.rb-aside-inner {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 1024px) {
+  .rb-aside-inner {
+    padding: 1.5rem;
+    border: 1px solid var(--rb-rule);
+    background: rgb(10 16 28 / 0.6);
+  }
+}
+.rb-contact-actions {
+  display: grid;
+  gap: 0.6rem;
+}
+.rb-cv {
+  justify-content: center;
+  min-height: 3.25rem;
+}
+.rb-linkedin {
+  display: inline-flex;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  font-weight: 500;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.rb-linkedin:hover {
+  border-color: var(--cc-cyan);
+  background: rgb(66 213 246 / 0.06);
+}
+.rb-contact-note {
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-contact-links {
+  display: grid;
+  border-top: 1px solid var(--rb-rule);
+}
+.rb-contact-links a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border-bottom: 1px solid var(--rb-rule);
+  font-size: 0.9375rem;
+  color: #c9eef9;
+}
+.rb-contact-links a:hover {
+  color: #fff;
+}
+.rb-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+.rb-tool {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9375rem;
+  color: var(--rb-muted);
+}
+.rb-tool:hover {
+  color: #fff;
+}
+.rb-tool-status {
+  flex-basis: 100%;
+  min-height: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--cc-cyan-hi);
+}
+
+/* Sticky contact bar: phones only; the page reserves its height. */
+.rb-bar {
+  position: fixed;
+  z-index: 30;
+  inset-inline: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.6rem max(1rem, env(safe-area-inset-right)) calc(0.6rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  border-top: 1px solid var(--rb-rule);
+  background: rgb(5 8 15 / 0.96);
+}
+@media (min-width: 1024px) {
+  .rb-bar {
+    display: none;
+  }
+}
+.rb-bar-cv {
+  justify-content: center;
+  min-height: 3rem;
+  gap: 0.5rem;
+  padding-inline: 0.6rem;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+.rb-bar-link {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  font-weight: 500;
+}
+:lang(ar) .rb-kicker,
+:lang(ar) .rb-facts dt,
+:lang(ar) .rb-label,
+:lang(ar) .rb-index {
+  font-family: var(--font-sans);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.rb-print-foot {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ print: one A4 page */
+@media print {
+  @page {
+    size: A4;
+    margin: 11mm 12mm;
+  }
+  html {
+    color-scheme: light !important; /* dark scheme would paint the page margins dark */
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #16191f !important;
+  }
+  .atmosphere,
+  .site-header,
+  .site-footer,
+  .rb-bar,
+  .rb-aside,
+  .rb-ticks,
+  .rb-more,
+  dialog,
+  a[href="#main"] {
+    display: none !important;
+  }
+  .site-main {
+    padding-top: 0 !important;
+  }
+  .rb {
+    --rb-text: #16191f;
+    --rb-muted: #3e4652;
+    --rb-label: #0c5b74;
+    --rb-rule: #cfd6df;
+    --cc-head: #0b0e14;
+    padding: 0;
+    background: #fff;
+    font-size: 9.6pt;
+    line-height: 1.42;
+  }
+  .rb-wrap {
+    max-width: none;
+    padding: 0;
+  }
+  .rb-head {
+    padding: 0 0 2.5mm;
+    border: 0;
+    border-bottom: 1.2pt solid #0c5b74;
+    background: none;
+  }
+  .rb-kicker {
+    font-size: 7.5pt;
+  }
+  .rb-kicker::after {
+    background: #cfd6df;
+  }
+  .rb-name {
+    margin-top: 1.5mm;
+    font-size: 22pt;
+  }
+  .rb-latin {
+    font-size: 7.5pt;
+  }
+  .rb-role {
+    margin-top: 1mm;
+    font-size: 11pt;
+  }
+  .rb-status {
+    margin-top: 1.5mm;
+    padding: 0.4mm 2.2mm;
+    font-size: 9pt;
+    border-color: #2f8f55;
+    background: none;
+  }
+  .rb-dot {
+    background: #2f8f55;
+  }
+  .rb-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 6mm;
+    margin-top: 1.5mm;
+  }
+  .rb-facts dt,
+  .rb-facts dd,
+  .rb-label {
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+  .rb-intro {
+    margin-top: 1.5mm;
+    padding-top: 0;
+    border: 0;
+    font-size: 9pt;
+  }
+  .rb-layout {
+    display: block;
+    margin-top: 0;
+  }
+  /* Full-width blocks with a small heading row: fewer wrapped lines, one page. */
+  .rb-block {
+    display: block;
+    padding-block: 1.8mm;
+    break-inside: avoid;
+  }
+  .rb-block-title {
+    margin-bottom: 0.8mm;
+    font-size: 8pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0c5b74;
+  }
+  :lang(he) .rb-block-title,
+  :lang(ar) .rb-block-title {
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 9pt;
+  }
+  .rb-index {
+    font-size: 7pt;
+  }
+  .rb-lead,
+  .rb-points li,
+  .rb-item-title {
+    font-size: 9pt;
+  }
+  .rb-lead {
+    display: inline;
+  }
+  .rb-roles {
+    display: block;
+    margin: 0.4mm 0 0;
+  }
+  .rb-roles li:first-child::before {
+    content: "";
+  }
+  .rb-roles li {
+    display: inline;
+    padding: 0;
+    border: 0;
+    font-size: 9pt;
+  }
+  .rb-roles li::before {
+    content: " · ";
+    color: #8a94a3;
+  }
+  .rb-item-title {
+    display: inline;
+  }
+  .rb-item-meta {
+    display: inline;
+    margin: 0;
+  }
+  .rb-item-meta::before {
+    content: " — ";
+  }
+  .rb-item-meta,
+  .rb-tools-line,
+  .rb-cred-meta,
+  .rb-skill-detail,
+  .rb-legend {
+    font-size: 8.3pt;
+  }
+  .rb-points {
+    margin-top: 0.6mm;
+    columns: 1;
+  }
+  .rb-points li {
+    max-width: none;
+    padding-inline-start: 3.2mm;
+    line-height: 1.32;
+  }
+  .rb-points li + li {
+    margin-top: 0.2mm;
+  }
+  .rb-points li::before {
+    width: 1.8mm;
+  }
+  .rb-tools-line {
+    margin-top: 0.6mm;
+  }
+  .rb-creds li {
+    grid-template-columns: 33mm minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 3mm;
+    padding-block: 0.4mm;
+    border: 0;
+  }
+  .rb-cred-kind {
+    font-size: 7.8pt;
+  }
+  .rb-cred-title {
+    font-size: 9pt;
+  }
+  .rb-skills {
+    margin-top: 0.4mm;
+  }
+  .rb-skills li,
+  .rb-projects li {
+    grid-template-columns: 44mm 50mm minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0 3mm;
+    padding-block: 0.45mm;
+    border: 0;
+  }
+  .rb-skill-title {
+    font-size: 8.8pt;
+  }
+  .rb-skill-detail {
+    grid-column: auto;
+    max-width: none;
+    line-height: 1.3;
+  }
+  .rb-evidence,
+  .rb-sim {
+    padding: 0 1mm;
+    font-size: 7pt;
+  }
+  .rb-skill-evidence {
+    flex-wrap: nowrap;
+  }
+  .rb-note {
+    display: none;
+  }
+  .rb-legend {
+    max-width: none;
+    margin-top: 0.8mm;
+    font-size: 7.3pt;
+  }
+  .rb-print-foot {
+    display: block;
+    margin-top: 2.5mm;
+    padding-top: 2mm;
+    border-top: 1.2pt solid #0c5b74;
+    font-size: 8.5pt;
+    color: #3e4652;
+  }
+  :lang(he) .rb,
+  :lang(ar) .rb {
+    line-height: 1.5;
+  }
+}

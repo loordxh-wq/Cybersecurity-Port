@@ -10,3 +10,7 @@ next-env.d.ts
 .DS_Store
 # Private source material: never commit (original CV, certificates with IDs)
 private/
+
+# Playwright
+/test-results/
+/playwright-report/

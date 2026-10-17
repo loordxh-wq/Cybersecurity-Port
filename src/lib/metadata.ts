@@ -3,13 +3,14 @@ import { getTranslations } from "next-intl/server";
 import { locales, ogLocale, type Locale } from "@/i18n/routing";
 import { siteUrl } from "./site";
 
-export type PageKey = "home" | "about" | "certifications" | "contact";
+export type PageKey = "home" | "about" | "certifications" | "contact" | "recruiter";
 
 export const pagePaths: Record<PageKey, string> = {
   home: "",
   about: "/about",
   certifications: "/certifications",
   contact: "/contact",
+  recruiter: "/recruiter",
 };
 
 export function localizedUrl(locale: Locale, path: string): string {

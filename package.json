@@ -3,29 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20.9" },
+  "engines": {
+    "node": ">=20.9"
+  },
   "scripts": {
     "dev": "next dev",
     "check:i18n": "node scripts/check-messages.mjs",
-    "lint": "npm run check:i18n && next lint --max-warnings 0",
-    "typecheck": "tsc --noEmit",
-    "build": "npm run check:i18n && next build",
+    "lint": "npm run check:i18n && npm run check:content && next lint --max-warnings 0",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "build": "npm run check:i18n && npm run check:content && next build",
     "start": "next start",
-    "verify": "npm run lint && npm run typecheck && npm run build"
+    "verify": "npm run lint && npm run typecheck && npm run build",
+    "check:content": "node scripts/check-content.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:preview": "E2E_STAGE=preview playwright test tests/e2e/preview.spec.ts",
+    "test:guard": "node --test tests/unit/*.test.mjs"
   },
   "dependencies": {
     "motion": "12.12.1",
     "next": "15.5.28",
     "next-intl": "4.14.9",
     "react": "19.1.10",
-    "react-dom": "19.1.10"
+    "react-dom": "19.1.10",
+    "three": "0.186.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
     "@eslint/eslintrc": "3.3.1",
+    "@playwright/test": "1.56.1",
     "@tailwindcss/postcss": "4.1.8",
     "@types/node": "22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
+    "@types/three": "0.186.0",
     "eslint": "9.28.0",
     "eslint-config-next": "15.5.28",
     "tailwindcss": "4.1.8",
@@ -35,6 +45,9 @@
     "sharp": "0.35.5",
     "next": {
       "postcss": "8.5.30"
+    },
+    "@axe-core/playwright": {
+      "playwright-core": "1.56.1"
     }
   }
 }

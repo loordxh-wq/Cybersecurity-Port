@@ -17,7 +17,6 @@ import portraitImage from "@/assets/portrait/eli-saad-portrait.jpg";
 export const person = {
   nameLatin: "Eli Saad",
   portrait: portraitImage,
-  region: "Northern Israel",
 } as const;
 
 export type SocialId = "linkedin" | "instagram" | "facebook";
@@ -102,19 +101,20 @@ export const timeline: readonly TimelineEntry[] = [
  */
 export const cellcomMetrics = { approved: false } as const;
 
-/** Roles Eli is open to. Labels live in messages under `openToWork.roles`. */
-export const targetRoles = ["socTrainee", "helpDesk", "desktopSupport", "noc"] as const;
-export const targetCities = ["haifa", "nahariya", "karmiel"] as const;
+/**
+ * Roles Eli is open to. Labels live in messages under `openToWork.roles`.
+ * Location is flexible: suitable roles across Israel. No relocation abroad or
+ * international work authorization is claimed.
+ */
+export const targetRoles = ["socTrainee", "blueTeam", "helpDesk", "desktopSupport", "noc"] as const;
 
 /**
- * Public CV file. Stays null until Eli approves a redacted version and which
- * contact fields it shows. While null, no "Download CV" button is rendered.
+ * CV policy: the CV is never published. It is not in the repository, not in public
+ * assets, not in any bundle and has no download endpoint. Recruiters request it
+ * (see the CV request dialog) and Eli sends it personally.
+ * `npm run check:content` fails if a document file appears in the repository.
  */
-export const publicCv: { en: string | null; he: string | null; ar: string | null } = {
-  en: null,
-  he: null,
-  ar: null,
-};
+export const cvAvailability = "onRequest" as const;
 
 /** Public email for a mailto link. Null until Eli confirms which address to publish. */
 export const publicEmail: string | null = null;
