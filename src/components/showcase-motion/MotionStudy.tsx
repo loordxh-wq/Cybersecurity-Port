@@ -1,9 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
-import { Ch2Desk, Ch2Mobile, Contrast } from "./Ch2";
-import { Ch3Desk, Ch3Mobile, Ch3Strip } from "./Ch3";
+import { Ch2Desk as Ch2DeskScene, Ch2Mobile as Ch2MobileScene, Contrast } from "./Ch2";
+import { Ch3Desk as Ch3DeskScene, Ch3Mobile as Ch3MobileScene, Ch3Strip } from "./Ch3";
+
+// Scenes re-render only when their discrete content changes (typed text, counts), never per frame.
+const same = (a: SceneProps, b: SceneProps) =>
+  a.typed === b.typed && a.count === b.count && a.counters.s45 === b.counters.s45 && a.counters.s77 === b.counters.s77 && a.m === b.m && a.lab === b.lab;
+const Ch2Desk = memo(Ch2DeskScene, same);
+const Ch2Mobile = memo(Ch2MobileScene, same);
+const Ch3Desk = memo(Ch3DeskScene, same);
+const Ch3Mobile = memo(Ch3MobileScene, same);
 import type { MotionCopy } from "./copy";
 import { axisTime, ch2, ch3, failedSoFar, type Layout } from "./script";
 import { cameraAt, cursorAt, latest, valueAt, type Rect } from "./timeline";
@@ -48,7 +56,21 @@ declare global {
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
-function Viewport({ layout, children, overlay, vpRef, layerRef, cursorRef }: { layout: Layout; children: ReactNode; overlay: ReactNode; vpRef: React.RefObject<HTMLDivElement | null>; layerRef: React.RefObject<HTMLDivElement | null>; cursorRef: React.RefObject<HTMLDivElement | null> }) {
+function Viewport({
+  layout,
+  children,
+  overlay,
+  vpRef,
+  layerRef,
+  cursorRef,
+}: {
+  layout: Layout;
+  children: ReactNode;
+  overlay: ReactNode;
+  vpRef: React.RefObject<HTMLDivElement | null>;
+  layerRef: React.RefObject<HTMLDivElement | null>;
+  cursorRef: React.RefObject<HTMLDivElement | null>;
+}) {
   return (
     <div className={`ms-vp ms-vp--${layout}`} ref={vpRef}>
       <div className="ms-layer" ref={layerRef}>
@@ -80,7 +102,11 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
   const [reduced, setReduced] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(capture);
-  const [view, setView] = useState({ caption: "", label: "" as string, typed: "", count: 0, s45: 0, s77: 0, ph: 0, sec: 0, capAt: 0 });
+  const [view, setView] = useState({ caption: "", label: "" as string, typed: "", count: 0, s45: 0, s77: 0, ph: 0, capAt: 0 });
+  const vars = useRef(new Map<string, string>());
+  const clockRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const lastSec = useRef(-1);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -111,7 +137,10 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
   }, []);
 
   const rectOf = (layout: Layout) => (id: string) => {
-    const parts = id.split("+").map((p) => rects.current[layout].get(p)).filter(Boolean) as Rect[];
+    const parts = id
+      .split("+")
+      .map((p) => rects.current[layout].get(p))
+      .filter(Boolean) as Rect[];
     if (!parts.length) return null;
     const x = Math.min(...parts.map((r) => r.x));
     const y = Math.min(...parts.map((r) => r.y));
@@ -123,12 +152,32 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
     (t: number) => {
       const el = root.current;
       if (!el) return;
-      for (const [name, track] of Object.entries(script.tracks)) el.style.setProperty(`--${name}`, valueAt(track, t, reduced).toFixed(4));
-      el.style.setProperty("--progress", (t / script.duration).toFixed(4));
+      // Write only the properties that changed since the last frame, to keep style work small.
+      // Values that change every frame are scoped to the one element that reads them; writing them on
+      // the root would restyle the whole scene each frame.
+      const scoped: Record<string, () => Iterable<HTMLElement>> = {
+        "--progress": () => (barRef.current ? [barRef.current] : []),
+        "--ph": () => el.querySelectorAll<HTMLElement>(".g-axis-track"),
+      };
+      const put = (name: string, value: string) => {
+        if (vars.current.get(name) === value) return;
+        vars.current.set(name, value);
+        const targets = scoped[name];
+        if (targets) for (const n of targets()) n.style.setProperty(name, value);
+        else el.style.setProperty(name, value);
+      };
+      for (const [name, track] of Object.entries(script.tracks)) put(`--${name}`, valueAt(track, t, reduced).toFixed(4));
+      put("--progress", (t / script.duration).toFixed(4));
+      const sec = Math.floor(t);
+      if (sec !== lastSec.current) {
+        lastSec.current = sec;
+        if (clockRef.current) clockRef.current.textContent = `${clock(sec)} / ${clock(script.duration)}`;
+        barRef.current?.setAttribute("aria-valuenow", String(sec));
+      }
       const cap = latest(script.captions as { at: number; key: string }[], t);
       const lab = latest(script.labels as { at: number; key: string | null }[], t);
-      el.style.setProperty("--capIn", reduced || !cap ? "1" : Math.min(1, (t - cap.at) / 0.3).toFixed(3));
-      el.style.setProperty("--labIn", reduced || !lab ? "1" : Math.min(1, (t - lab.at) / 0.3).toFixed(3));
+      put("--capIn", reduced || !cap ? "1" : Math.min(1, (t - cap.at) / 0.3).toFixed(3));
+      put("--labIn", reduced || !lab ? "1" : Math.min(1, (t - lab.at) / 0.3).toFixed(3));
 
       for (const layout of ["desk", "mobile"] as const) {
         const { vp, layer, cursor } = refs[layout];
@@ -138,7 +187,11 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
         const cw = layer.current.offsetWidth;
         const ch = layer.current.offsetHeight;
         const cam = cameraAt(script.camera[layout], t, rectOf(layout), vw, vh, cw, ch, reduced);
-        layer.current.style.transform = `translate3d(${cam.x.toFixed(2)}px, ${cam.y.toFixed(2)}px, 0) scale(${cam.k.toFixed(4)})`;
+        const tf = `translate3d(${cam.x.toFixed(2)}px, ${cam.y.toFixed(2)}px, 0) scale(${cam.k.toFixed(4)})`;
+        if (vars.current.get(`cam-${layout}`) !== tf) {
+          vars.current.set(`cam-${layout}`, tf);
+          layer.current.style.transform = tf;
+        }
         if (cursor.current) {
           const c = reduced ? { pos: null, click: 0 } : cursorAt(script.cursor[layout], t, rectOf(layout));
           cursor.current.style.opacity = c.pos ? "1" : "0";
@@ -160,7 +213,7 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
       }
       const f = chapter === 3 ? failedSoFar(t, reduced) : { s45: 0, s77: 0, ph: 0 };
       if (chapter === 3) el.querySelectorAll("[data-ph-label]").forEach((n) => (n.textContent = axisTime(f.ph)));
-      const next = { caption: cap?.key ?? "", label: lab?.key ?? "", typed, count, s45: f.s45, s77: f.s77, ph: f.ph, sec: Math.floor(t), capAt: cap?.at ?? 0 };
+      const next = { caption: cap?.key ?? "", label: lab?.key ?? "", typed, count, s45: f.s45, s77: f.s77, ph: f.ph, capAt: cap?.at ?? 0 };
       const prev = last.current;
       if (Object.keys(next).some((k) => next[k as keyof typeof next] !== prev[k as keyof typeof prev] && k !== "ph")) {
         last.current = next;
@@ -295,13 +348,15 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
           </h1>
         </header>
 
-        <div className="ms-stage" role="img" aria-label={`${lab.chapterTitles[chapter - 2]}. ${lab.sim}. ${lab.notReal}`}>
-          <Viewport layout="desk" vpRef={refs.desk.vp} layerRef={refs.desk.layer} cursorRef={refs.desk.cursor} overlay={overlay("desk")}>
-            {chapter === 2 ? <Ch2Desk {...scene} /> : <Ch3Desk {...scene} />}
-          </Viewport>
-          <Viewport layout="mobile" vpRef={refs.mobile.vp} layerRef={refs.mobile.layer} cursorRef={refs.mobile.cursor} overlay={overlay("mobile")}>
-            {chapter === 2 ? <Ch2Mobile {...scene} /> : <Ch3Mobile {...scene} />}
-          </Viewport>
+        <div className="ms-stage">
+          <div role="img" aria-label={`${lab.chapterTitles[chapter - 2]}. ${lab.sim}. ${lab.notReal}`}>
+            <Viewport layout="desk" vpRef={refs.desk.vp} layerRef={refs.desk.layer} cursorRef={refs.desk.cursor} overlay={overlay("desk")}>
+              {chapter === 2 ? <Ch2Desk {...scene} /> : <Ch3Desk {...scene} />}
+            </Viewport>
+            <Viewport layout="mobile" vpRef={refs.mobile.vp} layerRef={refs.mobile.layer} cursorRef={refs.mobile.cursor} overlay={overlay("mobile")}>
+              {chapter === 2 ? <Ch2Mobile {...scene} /> : <Ch3Mobile {...scene} />}
+            </Viewport>
+          </div>
           {!started ? (
             <button type="button" className="ms-start" onClick={play}>
               <span className="ms-start-btn" aria-hidden="true">
@@ -315,7 +370,7 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
           ) : null}
         </div>
 
-        <p className="ms-caption" aria-live={playing ? "polite" : "off"} aria-label={m.captionsLabel} key={view.capAt}>
+        <p className="ms-caption" aria-live={playing ? "polite" : "off"} key={view.capAt}>
           {captionText}
         </p>
 
@@ -330,25 +385,25 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
               <path d={playing || capture ? "M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z" : "M7 4.5v15l12-7.5z"} />
             </svg>
           </button>
-          <div className="ms-bar" role="progressbar" aria-label={m.progress} aria-valuemin={0} aria-valuemax={Math.round(script.duration)} aria-valuenow={view.sec}>
+          <div className="ms-bar" role="progressbar" aria-label={m.progress} aria-valuemin={0} aria-valuemax={Math.round(script.duration)} aria-valuenow={0} ref={barRef}>
             <i />
             {script.captions.map((c) => (
               <b key={c.at} style={{ insetInlineStart: `${(c.at / script.duration) * 100}%` }} />
             ))}
           </div>
-          <span className="ms-clock">
-            {clock(view.sec)} / {clock(script.duration)}
+          <span className="ms-clock" ref={clockRef}>
+            {clock(0)} / {clock(script.duration)}
           </span>
         </div>
 
         <nav className="ms-chapters" aria-label={m.chapters}>
-            {([2, 3] as const).map((c) => (
-              <a key={c} href={`?chapter=${c}`} aria-current={c === chapter ? "page" : undefined}>
-                <span className="ms-chip-n">{`0${c}`}</span>
-                {lab.chapterTitles[c - 2]}
-              </a>
-            ))}
-          </nav>
+          {([2, 3] as const).map((c) => (
+            <a key={c} href={`?chapter=${c}`} aria-current={c === chapter ? "page" : undefined}>
+              <span className="ms-chip-n">{`0${c}`}</span>
+              {lab.chapterTitles[c - 2]}
+            </a>
+          ))}
+        </nav>
         <p className="ms-note">{lab.disclosure}</p>
         <p className="ms-note ms-note--draft">{lab.draft}</p>
       </div>
@@ -360,8 +415,27 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
 function FocusValue({ chapter, k }: { chapter: Chapter; k: string }) {
   const values: Record<string, string> =
     chapter === 2
-      ? { query: "ip:203.0.113.45 · 01:45–02:45 UTC", time: "02:10:05 → 02:16:40 · 6 min 35 s", ip: "203.0.113.45 · 19 / 19", acct: "18 · 1 × each", evt: "4625 ×17 · 4624 ×2", e0193: "e-0193 · 4624 · 02:14:37", base: "e-0071 · 10 Mar 16:58:12", rdp: "e-0194 · 4624 · type 10 · +15 s", sum: "" }
-      : { spray: "4625 · 02:10:05–02:16:40", success: "4624 · type 3 · NTLM", rdp: "4624 · type 10 · Negotiate", lateral: "4624 · Kerberos · 198.51.100.10", second: "4625 · 02:31:08–02:34:02", indicator: "DESKTOP-7Q2M4", gap: "SRV-FILE01", sum: "" };
+      ? {
+          query: "ip:203.0.113.45 · 01:45–02:45 UTC",
+          time: "02:10:05 → 02:16:40 · 6 min 35 s",
+          ip: "203.0.113.45 · 19 / 19",
+          acct: "18 · 1 × each",
+          evt: "4625 ×17 · 4624 ×2",
+          e0193: "e-0193 · 4624 · 02:14:37",
+          base: "e-0071 · 10 Mar 16:58:12",
+          rdp: "e-0194 · 4624 · type 10 · +15 s",
+          sum: "",
+        }
+      : {
+          spray: "4625 · 02:10:05–02:16:40",
+          success: "4624 · type 3 · NTLM",
+          rdp: "4624 · type 10 · Negotiate",
+          lateral: "4624 · Kerberos · 198.51.100.10",
+          second: "4625 · 02:31:08–02:34:02",
+          indicator: "DESKTOP-7Q2M4",
+          gap: "SRV-FILE01",
+          sum: "",
+        };
   const v = values[k];
   return v ? (
     <bdi dir="ltr" className="ms-focus-v">

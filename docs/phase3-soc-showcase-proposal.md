@@ -802,34 +802,66 @@ was deployed or merged. This is not the full player.
 - iPhone at 360, 390 and 430: fixed viewport height through both chapters, no horizontal overflow,
   transport visible without scrolling (tested).
 
-**Performance (measured; see the table in the delivery message)**
-- The route adds about 12 kB of JavaScript; first load ≈ 115 kB, shared with the site. No video,
-  canvas or WebGL in the study.
-- Each frame updates about 30 custom properties and two transforms; no layout animation;
-  cumulative layout shift during playback measured at 0.
-- Measured in this container with software rendering (no GPU), which is pessimistic. A real
-  iPhone in Safari still needs checking.
+**Performance (measured in this container: Chromium with software rendering, no GPU, 14 s of playback; a real iPhone in Safari still needs checking)**
+
+| Run | Normal CPU | 4× slower CPU |
+|---|---|---|
+| Idle page, nothing animating (baseline) | 60 fps | — |
+| Desktop, chapter 2 | 53 fps · p95 frame 33 ms · 2.9 % of frames over 33 ms · 0 long tasks | 44 fps · 10.6 % over 33 ms · 53 long tasks |
+| Desktop, chapter 3 | **14 fps** · p95 133 ms · 83 % over 33 ms · 0 long tasks | 10 fps |
+| iPhone 390, chapter 2 | 57 fps · 2 % over 33 ms · 2 long tasks | 46 fps · 9.8 % over 33 ms |
+| iPhone 390, chapter 3 | 60 fps · 0 % over 33 ms | 54 fps · 2.9 % over 33 ms |
+
+- **Fixed during measurement:** the first build re-styled the whole scene every frame (chapter 2
+  spent 743 ms of every second on style recalculation; 915 ms on iPhone). The cause was two
+  per-frame values (progress, playhead) written on the study root. They are now scoped to the
+  one element that reads them. Chapter 2 desktop went from 32 → 53 fps; iPhone chapter 2 from 30 → 57 fps.
+  No visual change.
+- **Open — desktop chapter 3.** Main-thread work is small (≈ 66 ms per second), so the limit is
+  painting.
+  - A diagnostic run gave 12.8 fps as built, 20.2 fps without the SVG masks and 27 fps with the
+    camera frozen.
+  - So the cost is re-painting the large animated SVG while it is zoomed, made worse by the masks
+    used for the dashed lines.
+  - Software rendering exaggerates this; a GPU device will do better, but it must be fixed before
+    the full player (§24, item 1).
+- Layout shift during playback: ≤ 0.0045 (iPhone chapter 2), 0 elsewhere.
+- The route adds about 12 kB of JavaScript (first load ≈ 115 kB shared with the site). No video,
+  canvas or WebGL.
+- **The recordings are unaffected by playback speed.** They are rendered frame by frame from the
+  timeline at exactly 30 fps, with no dropped or duplicated frames.
 
 ## 24. Issues to fix before the full player
 
 1. **Length.** Readable captions make chapter 2 ≈ 54 s and chapter 3 ≈ 64 s. Either accept about
    4 min 30 s for five chapters, or tighten the narration when you rewrite it (shorter captions at
    the same reading speed).
-2. **Reading speed.** Five captions run slightly above the 17 characters/s target (17.0–18.9;
-   Arabic "lateral" is the longest). Fix by shortening or adding 0.5–1 s.
-3. **Chapter 3 opening.** The first 4.8 s show only the column titles, one node and the axis. Use
+2. **Desktop chapter 3 paint cost** (§23): replace the SVG masks with plain dashed strokes revealed by opacity, and
+   draw the graph at the zoomed scale or zoom with the SVG `viewBox` instead of a CSS scale. Target ≥ 50 fps
+   on a mid-range laptop and in Safari on iPhone.
+3. **Reading speed.** Five captions run above the 17 characters/s target:
+   - chapter 2 "evt" (EN 17.3);
+   - chapter 2 "base" (AR 17.1);
+   - chapter 3 "spray" (AR 17.6);
+   - chapter 3 "lateral" (EN 17.0, AR 18.9).
+
+   All stay under 20 characters/s (the test limit). Fix by shortening when you rewrite the
+   narration, or by adding 0.5–1 s.
+4. **Chapter 3 opening.** The first 4.8 s show only the column titles, one node and the axis. Use
    that time to show the alert-window axis more prominently, or start the playhead sooner.
-4. **Desktop overview scale.** Whole-scene shots are about 0.75–0.96 zoom, so table text in the
+5. **Desktop overview scale.** Whole-scene shots are about 0.75–0.96 zoom, so table text in the
    overview is small. Detail always comes from zoomed shots; a denser table or a taller stage would
    help.
-5. **Camera crop at the edges.** Some zoomed shots cut a label at the frame edge (for example the
+6. **Camera crop at the edges.** Some zoomed shots cut a label at the frame edge (for example the
    asset-inventory tag in the indicator shot). Tune the target rectangles.
-6. **iPhone chapter 2:** while the event sheet is up, the rows behind are only partly visible
+7. **iPhone chapter 2:** while the event sheet is up, the rows behind are only partly visible
    (intended), but the sheet could show the event time more prominently.
-7. **Technical labels in English inside the graph** ("type 3 · NTLM", "type 10 · RDP"): treated as
+8. **Technical labels in English inside the graph** ("type 3 · NTLM", "type 10 · RDP"): treated as
    technical values, but HE/AR readers may prefer localized "Logon type" labels.
-8. **Text-version parity:** the full player must offer the same captions as a transcript and keep
+9. **Text-version parity:** the full player must offer the same captions as a transcript and keep
    the static text version (§7) in sync.
-9. **Real-device check:** Safari on iPhone (safe areas, the shrinking toolbar, performance).
-10. **Narration review (D3):** every caption is draft text for you to correct, in all three
+10. **Real-device check:** Safari on iPhone (safe areas, the shrinking toolbar, performance).
+11. **Narration review (D3):** every caption is draft text for you to correct, in all three
     languages.
+12. **iPhone chapter 3 opening:** at the start, the legend line sits partly under the pinned path
+    strip. Push the opening frame down, or fold the legend into the strip.

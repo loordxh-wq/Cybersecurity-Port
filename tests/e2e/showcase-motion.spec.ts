@@ -12,6 +12,12 @@ import { axe, dirOf, locales, viewports } from "./helpers";
  */
 const preview = process.env.E2E_STAGE === "preview";
 
+declare global {
+  interface Window {
+    __motion?: { duration: number; seek: (s: number) => void };
+  }
+}
+
 async function seek(page: Page, t: number) {
   await page.waitForFunction(() => !!window.__motion);
   await page.evaluate((s) => window.__motion!.seek(s), t);
@@ -76,7 +82,7 @@ test.describe("motion study · protected preview", () => {
     [360, 800],
     [390, 844],
     [430, 932],
-  ]) {
+  ] as const) {
     test(`iPhone ${w}: fixed viewport, transport on screen, nothing overflows through either chapter`, async ({ page }) => {
       await page.setViewportSize({ width: w, height: h });
       for (const ch of [2, 3]) {

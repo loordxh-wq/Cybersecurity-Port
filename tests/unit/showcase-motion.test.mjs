@@ -67,7 +67,10 @@ test("every number in the captions matches the synthetic dataset", () => {
   assert.equal(fails.length, 17);
   assert.equal(oks.length, 2);
   assert.equal(new Set(spray.map((e) => e.user)).size, 18, "18 different accounts");
-  assert.ok(spray.every((e) => e.ip === "203.0.113.45"), "one source address");
+  assert.ok(
+    spray.every((e) => e.ip === "203.0.113.45"),
+    "one source address",
+  );
   assert.equal(fails.filter((e) => e.sub === "0xC000006A").length, 12, "wrong password ×12");
   assert.equal(fails.filter((e) => e.sub === "0xC0000064").length, 5, "no such account ×5");
   const sec = (t) => Number(t.slice(0, 2)) * 3600 + Number(t.slice(3, 5)) * 60 + Number(t.slice(6, 8));
