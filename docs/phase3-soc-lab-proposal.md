@@ -1,5 +1,7 @@
 # Phase 3: Interactive SOC Investigation Lab — architecture and visual proposal
 
+> **Direction changed (2026-10-17).** Eli corrected the product direction: visitors observe, they do not investigate. This visitor-driven lab is preserved as research and reusable components; the current Phase 3 proposal is `docs/phase3-soc-showcase-proposal.md` (SOC Investigation Showcase — See How I Investigate).
+
 Status: **direction approved (M0); M1/M1.1 approved as the design foundation; M1.2 mobile refinement in review (§15). No interactive lab logic has been written.**
 Branch: `proposal/phase3-soc-lab` (from `feature/case-files-cf01-03` at `94a4ca3`). Phase 1 and Phase 2 code is unchanged.
 Rules carried over:
