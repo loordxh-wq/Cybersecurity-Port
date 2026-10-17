@@ -105,6 +105,26 @@ test.describe("motion study · protected preview", () => {
     });
   }
 
+  test("framing depends only on time: a direct seek matches playing through", async ({ page }) => {
+    for (const [w, h, sel] of [
+      [1440, 900, ".ms-vp--desk .ms-layer"],
+      [390, 844, ".ms-vp--mobile .ms-layer"],
+    ] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      for (const ch of [2, 3]) {
+        const at = ch === 2 ? 38 : 40;
+        await page.goto(`/en/showcase/motion?chapter=${ch}&capture=1`);
+        await seek(page, at);
+        const direct = await page.locator(sel).evaluate((el) => (el as HTMLElement).style.transform);
+        await page.goto(`/en/showcase/motion?chapter=${ch}&capture=1`);
+        for (let t = 0; t <= at; t += 0.5) await seek(page, t);
+        await page.waitForTimeout(200);
+        const played = await page.locator(sel).evaluate((el) => (el as HTMLElement).style.transform);
+        expect(played, `${w}px chapter ${ch}`).toBe(direct);
+      }
+    }
+  });
+
   test("the closing frames state what the evidence supports and what remains uncertain", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     for (const [ch, k] of [

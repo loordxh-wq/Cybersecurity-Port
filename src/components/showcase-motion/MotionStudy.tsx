@@ -121,6 +121,8 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
     for (const layout of ["desk", "mobile"] as const) {
       const layer = refs[layout].layer.current;
       if (!layer || !layer.offsetParent) continue;
+      // Measure every element at rest (no camera, no entrance offsets), so framing never depends on when this ran.
+      root.current?.classList.add("ms-measuring");
       const prev = layer.style.transform;
       layer.style.transform = "none";
       const base = layer.getBoundingClientRect();
@@ -130,6 +132,7 @@ export function MotionStudy({ chapter, m, lab, capture }: { chapter: Chapter; m:
         map.set(el.getAttribute("data-cam")!, { x: r.left - base.left, y: r.top - base.top, w: r.width, h: r.height });
       });
       layer.style.transform = prev;
+      root.current?.classList.remove("ms-measuring");
       rects.current[layout] = map;
     }
     // refs are stable objects created once per render of this component

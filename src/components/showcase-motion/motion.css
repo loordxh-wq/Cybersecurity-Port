@@ -1158,6 +1158,12 @@
   font-size: 0.6875rem;
 }
 
+/* measuring pass: elements at their resting position (see MotionStudy measure) */
+.ms-measuring .ms-layer *,
+.ms-measuring .ms-layer {
+  transform: none !important;
+}
+
 /* capture mode: no start overlay (recordings drive the clock frame by frame) */
 .ms[data-capture] .ms-start {
   display: none;
