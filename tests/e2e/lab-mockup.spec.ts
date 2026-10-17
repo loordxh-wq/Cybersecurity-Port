@@ -5,14 +5,15 @@ import { copyFor } from "../../src/components/lab-mockup/copy";
 import { axe, dirOf, locales, viewports } from "./helpers";
 
 /**
- * Phase 3 M1.1 mockups (proposal branch). Preview build: every screen renders in three
+ * Phase 3 M1.1/M1.2 mockups (proposal branch). Preview build: every screen renders in three
  * languages and two layouts, passes axe, does not overflow, isolates technical values
  * left-to-right, and never shows the answer key, debrief or model notes before the
  * debrief (submitted) screen. Public build: the lab does not exist.
  */
 const preview = process.env.E2E_STAGE === "preview";
 const deskViews = ["briefing", "logs", "entities", "timeline", "verdict", "debrief"] as const;
-const mobileViews = ["briefing", "queue", "logs", "filters", "event", "entities", "entity", "evidence", "verdict", "findings", "debrief"] as const;
+const mobileViews = ["briefing", "queue", "logs", "filters", "event", "event-pinned", "event-linked", "unpin", "entities", "entity", "map", "evidence", "evidence-empty", "verdict", "findings", "debrief"] as const;
+const sheetViews = ["filters", "event", "event-pinned", "event-linked", "unpin", "map"] as const;
 
 /** Text that may only exist after submission. */
 const answerText = (l: (typeof locales)[number]) => [copyFor[l].debrief.notes[0], copyFor[l].debrief.hWhy.h2, copyFor[l].debrief.summary, copyFor[l].debrief.limits[0]];
@@ -102,7 +103,7 @@ test.describe("lab mockup · protected preview", () => {
     }
     // 2. HTML and RSC payloads: absent on every pre-submission screen, present on the debrief (control).
     for (const l of locales) {
-      for (const v of ["briefing", "queue", "logs", "filters", "event", "entities", "entity", "evidence", "timeline", "verdict", "findings"]) {
+      for (const v of [...mobileViews.filter((x) => x !== "debrief"), "timeline"]) {
         for (const headers of [{} as Record<string, string>, { RSC: "1" }]) {
           const body = await (await request.get(`/${l}/lab/soc-01?view=${v}`, { headers })).text();
           for (const m of markers) expect(body.includes(m), `${l} ${v} ${headers.RSC ? "RSC" : "HTML"}`).toBe(false);
@@ -130,6 +131,105 @@ test.describe("lab mockup · protected preview", () => {
     }
     expect(seen.length).toBeGreaterThan(5);
     expect(seen.filter((u) => /view=(debrief|report)/.test(u))).toEqual([]);
+  });
+
+  test.describe("M1.2 iPhone layout", () => {
+    for (const width of [360, 390, 430] as const) {
+      test(`${width}px: chrome budget, no overflow, sticky bars never cover content`, async ({ page }) => {
+        await page.setViewportSize({ width, height: width === 430 ? 932 : 844 });
+        for (const l of locales) {
+          for (const v of mobileViews) {
+            await page.goto(`/${l}/lab/soc-01?view=${v}`);
+            const ow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+            expect(ow, `${l} ${v} overflow`).toBeLessThanOrEqual(0);
+            if ((sheetViews as readonly string[]).includes(v)) continue;
+            const m = await page.evaluate(async () => {
+              const r = (s: string) => document.querySelector(s)?.getBoundingClientRect() ?? null;
+              const top = r(".lm-mobile .lm-m-top")!;
+              const header = r(".site-header")!;
+              const firstContent = document.querySelector(".lm-mobile .lm-m-top")?.nextElementSibling?.getBoundingClientRect() ?? null;
+              window.scrollTo({ top: 260, behavior: "instant" });
+              await new Promise((res) => requestAnimationFrame(() => res(null)));
+              const stuck = r(".lm-mobile .lm-m-top")!;
+              window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+              await new Promise((res) => setTimeout(res, 50));
+              const tab = r(".lm-mobile .lm-m-tabbar");
+              const step = r(".lm-mobile .lm-m-stepnav");
+              const links = [...document.querySelectorAll("footer a")].map((a) => a.getBoundingClientRect().bottom);
+              return { header: header.height, top: top.height, topY: top.top, firstY: firstContent?.top ?? 9999, stuckY: stuck.top, headerBottom: header.bottom, tabTop: tab?.top ?? innerHeight, tabH: tab?.height ?? 0, stepBottom: step?.bottom ?? 0, lastLink: Math.max(...links) };
+            });
+            expect(m.header, "compact site header").toBeLessThanOrEqual(53);
+            expect(m.top, "single-row workspace bar").toBeLessThanOrEqual(56);
+            if (v !== "briefing") expect(m.tabH, "tab bar").toBeLessThanOrEqual(56);
+            expect(m.firstY, `${l} ${v}: content starts below the workspace bar`).toBeGreaterThanOrEqual(m.topY + m.top - 0.5);
+            expect(Math.abs(m.stuckY - m.headerBottom), `${l} ${v}: bar sticks directly under the site header`).toBeLessThanOrEqual(1);
+            expect(m.lastLink, `${l} ${v}: footer links stay above the tab bar`).toBeLessThanOrEqual(m.tabTop + 0.5);
+            if (m.stepBottom) expect(m.stepBottom, `${l} ${v}: step bar above the tab bar`).toBeLessThanOrEqual(m.tabTop + 0.5);
+          }
+        }
+      });
+    }
+
+    test("sheets: modal, dismissible by a labelled control, focus starts inside, background inert", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      for (const l of locales) {
+        for (const v of sheetViews) {
+          await page.goto(`/${l}/lab/soc-01?view=${v}`);
+          const dialog = page.locator('.lm-mobile [role="dialog"]');
+          await expect(dialog).toHaveAttribute("aria-modal", "true");
+          await expect(page.locator(".lm-mobile .lm-m-under")).toHaveAttribute("inert", "");
+          if (v === "unpin") {
+            await expect(page.locator('.lm-mobile [role="alertdialog"]')).toBeVisible();
+            await expect(page.locator('.lm-mobile [role="alertdialog"] a:focus')).toHaveText(copyFor[l].m12.keep);
+          } else {
+            await expect(dialog.getByRole("link", { name: copyFor[l].m12.nav.close })).toBeVisible();
+            await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), { message: `${l} ${v} focus inside the sheet` }).toBe(true);
+          }
+        }
+      }
+    });
+
+    test("event inspector: summary first, neutral Learn panels, pin states; mockup says nothing is saved", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto("/en/lab/soc-01?view=event");
+      const sheet = page.locator(".lm-mobile .lm-m-sheet");
+      await expect(sheet.locator(".lm-insp-summary h3")).toHaveText(copyFor.en.insp.name[4624]);
+      await expect(sheet.locator(".lm-sumfacts")).toContainText("j.morgan");
+      await expect(sheet.locator(".lm-learn details")).toHaveCount(2);
+      await expect(sheet.getByRole("link", { name: /Pin as evidence/ })).toBeVisible();
+      await expect(page.locator(".lm-review--ws")).toContainText("nothing is saved");
+      await page.goto("/en/lab/soc-01?view=event-pinned");
+      await expect(page.locator('.lm-mobile .lm-toast[role="status"]')).toContainText("7 pinned");
+      await page.goto("/en/lab/soc-01?view=event-linked");
+      await expect(page.locator(".lm-mobile .lm-pin-links .lm-ftag")).toHaveText(["F2", "F3"]);
+      await page.goto("/en/lab/soc-01?view=evidence-empty");
+      await expect(page.locator(".lm-mobile .lm-m-pins")).toHaveAccessibleName("0 pinned");
+      await expect(page.locator(".lm-mobile .lm-obs-card")).toHaveCount(0);
+    });
+
+    test("reduced motion: the pin feedback does not animate", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto("/en/lab/soc-01?view=event-pinned");
+      expect(await page.locator(".lm-mobile .lm-toast").evaluate((e) => getComputedStyle(e).animationName)).toBe("lm-toast-in");
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.reload();
+      expect(await page.locator(".lm-mobile .lm-toast").evaluate((e) => getComputedStyle(e).animationName)).toBe("none");
+      // the site-wide reduced-motion rule sets durations to 0.01 ms (effectively none)
+      expect(parseFloat(await page.locator(".lm-mobile .lm-btn").first().evaluate((e) => getComputedStyle(e).transitionDuration))).toBeLessThan(0.001);
+    });
+
+    test("keyboard: the event sheet's controls are reachable in order and named", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto("/en/lab/soc-01?view=event-linked");
+      const names: string[] = [];
+      for (let i = 0; i < 6; i++) {
+        names.push(await page.evaluate(() => { const e = document.activeElement as HTMLElement | null; return e?.getAttribute("aria-label") ?? e?.textContent?.trim() ?? ""; }));
+        await page.keyboard.press("Tab");
+      }
+      expect(names[0]).toBe("Close");
+      expect(names.join("|")).toContain("Unpin");
+    });
   });
 
   test("the landing page renders in all languages", async ({ page }) => {

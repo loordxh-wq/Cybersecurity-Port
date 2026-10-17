@@ -30,6 +30,31 @@ type Copy = {
   mobile: { sheetHint: string; viewAll: string };
   day: Record<"d10" | "d11", string>;
   gaps: [string, string];
+  m12: {
+    review: string;
+    showing: string;
+    state: Record<"initial" | "example" | "submitted" | "beforePin" | "justPinned" | "linked" | "confirmUnpin" | "empty" | "returned" | "map", string>;
+    sum: Record<"account" | "computer" | "time" | "source", string>;
+    groups: Record<"account" | "source" | "logon" | "session", string>;
+    learnTitle: string;
+    learn: Record<"e4624" | "e4625" | "lt3" | "lt10", { title: string; body: string }>;
+    learnSource: string;
+    nav: Record<"results" | "prev" | "next" | "close" | "pos", string>;
+    toastPinned: string;
+    toastRemoved: string;
+    undo: string;
+    linkedTo: string;
+    unpinTitle: string;
+    unpinBody: string;
+    keep: string;
+    unpinConfirm: string;
+    intro: Record<"queue" | "logs" | "entities" | "entity" | "evidence", string>;
+    goVerdict: string;
+    lastViewed: string;
+    mapTitle: string;
+    mapHint: string;
+    reference: string;
+  };
 };
 
 const en: Copy = {
@@ -282,6 +307,36 @@ const en: Copy = {
   mobile: { sheetHint: "Swipe down to close", viewAll: "All 19 events" },
   day: { d10: "10 Mar", d11: "11 Mar" },
   gaps: ["9 h 12 min", "9 min 55 s"],
+  m12: {
+    review: "M1.2 design mockup · static screens, nothing is saved",
+    showing: "Showing: {s}",
+    state: { initial: "initial state", example: "example state after 7 pins", submitted: "review-only screen after submission", beforePin: "example, before pinning", justPinned: "example, just pinned", linked: "example, pinned and linked", confirmUnpin: "example, confirm unpin", empty: "initial state, no evidence", returned: "example, back from an event", map: "example map" },
+    sum: { account: "Account", computer: "Computer", time: "Time (UTC)", source: "Source" },
+    groups: { account: "Account", source: "Source", logon: "Logon", session: "Session" },
+    learnTitle: "Learn",
+    learn: {
+      e4624: { title: "Event 4624: an account was successfully logged on", body: "Windows records 4624 on the computer where a logon session is created. It names the account, the logon type, the authentication package and, for network logons, the source address. A successful logon is not good or bad by itself; the context decides." },
+      e4625: { title: "Event 4625: an account failed to log on", body: "Windows records 4625 on the computer where a logon attempt fails. Status and Sub-status give the reason, for example 0xC000006A for a wrong password or 0xC0000064 for an account name that does not exist. Failures are common; patterns and context decide whether they matter." },
+      lt3: { title: "Logon type 3: network", body: "The account was authenticated from across the network, for example to open a shared folder. Remote Desktop with Network Level Authentication also checks the credentials with a type 3 logon before the session starts." },
+      lt10: { title: "Logon type 10: remote interactive", body: "An interactive session through Remote Desktop Services, such as an RDP connection. The source address is the connecting client." },
+    },
+    learnSource: "Based on Microsoft's Windows security auditing documentation.",
+    nav: { results: "Results", prev: "Previous event", next: "Next event", close: "Close", pos: "{i} of {n}" },
+    toastPinned: "Pinned as evidence · {n} pinned",
+    toastRemoved: "Removed from evidence · {n} pinned",
+    undo: "Undo",
+    linkedTo: "Linked to",
+    unpinTitle: "Unpin this event?",
+    unpinBody: "{id} supports {f}. Unpinning it also removes those links.",
+    keep: "Keep pinned",
+    unpinConfirm: "Unpin",
+    intro: { queue: "Pick an alert to open its logs.", logs: "Open an event to inspect it and pin it as evidence.", entities: "Select an entity to see its connections and the events behind each one.", entity: "Each relationship lists the events that support it.", evidence: "Link each pinned event to the findings it supports, then go to the verdict." },
+    goVerdict: "Go to verdict",
+    lastViewed: "Last viewed",
+    mapTitle: "Relationship map",
+    mapHint: "Scroll sideways to see the whole map.",
+    reference: "Reference",
+  },
 };
 
 const he: Copy = {
@@ -534,6 +589,36 @@ const he: Copy = {
   mobile: { sheetHint: "החליקו למטה לסגירה", viewAll: "כל 19 האירועים" },
   day: { d10: "10 במרץ", d11: "11 במרץ" },
   gaps: ["9 שע׳ 12 דק׳", "9 דק׳ 55 שנ׳"],
+  m12: {
+    review: "אב־טיפוס עיצובי M1.2 · מסכים סטטיים, שום דבר לא נשמר",
+    showing: "מוצג: {s}",
+    state: { initial: "מצב התחלתי", example: "מצב לדוגמה אחרי 7 הצמדות", submitted: "מסך לסקירה בלבד אחרי הגשה", beforePin: "דוגמה, לפני הצמדה", justPinned: "דוגמה, מיד אחרי הצמדה", linked: "דוגמה, מוצמד ומקושר", confirmUnpin: "דוגמה, אישור ביטול הצמדה", empty: "מצב התחלתי, בלי ראיות", returned: "דוגמה, חזרה מאירוע", map: "מפה לדוגמה" },
+    sum: { account: "חשבון", computer: "מחשב", time: "שעה (UTC)", source: "מקור" },
+    groups: { account: "חשבון", source: "מקור", logon: "התחברות", session: "סשן" },
+    learnTitle: "הסבר",
+    learn: {
+      e4624: { title: "אירוע 4624: חשבון התחבר בהצלחה", body: "‏Windows רושם 4624 במחשב שבו נוצר סשן התחברות. האירוע מציין את החשבון, את סוג ההתחברות, את חבילת האימות, ובהתחברויות רשת גם את כתובת המקור. התחברות מוצלחת אינה טובה או רעה כשלעצמה; ההקשר קובע." },
+      e4625: { title: "אירוע 4625: חשבון נכשל בהתחברות", body: "‏Windows רושם 4625 במחשב שבו ניסיון התחברות נכשל. השדות Status ו־Sub-status מציינים את הסיבה, למשל 0xC000006A לסיסמה שגויה או 0xC0000064 לשם חשבון שלא קיים. כישלונות נפוצים; דפוסים והקשר קובעים אם הם חשובים." },
+      lt3: { title: "סוג התחברות 3: רשת", body: "החשבון אומת דרך הרשת, למשל כדי לפתוח תיקייה משותפת. גם שולחן עבודה מרוחק עם Network Level Authentication בודק את פרטי הגישה בהתחברות מסוג 3 לפני שהסשן מתחיל." },
+      lt10: { title: "סוג התחברות 10: אינטראקטיבית מרוחקת", body: "סשן אינטראקטיבי דרך Remote Desktop Services, כמו חיבור RDP. כתובת המקור היא של הלקוח המתחבר." },
+    },
+    learnSource: "מבוסס על התיעוד של Microsoft לביקורת אבטחה ב־Windows.",
+    nav: { results: "תוצאות", prev: "האירוע הקודם", next: "האירוע הבא", close: "סגירה", pos: "{i} מתוך {n}" },
+    toastPinned: "הוצמד כראיה · {n} מוצמדים",
+    toastRemoved: "הוסר מהראיות · {n} מוצמדים",
+    undo: "ביטול",
+    linkedTo: "מקושר ל־",
+    unpinTitle: "לבטל את הצמדת האירוע?",
+    unpinBody: "‏{id} תומך ב־{f}. ביטול ההצמדה מסיר גם את הקישורים האלה.",
+    keep: "להשאיר מוצמד",
+    unpinConfirm: "לבטל הצמדה",
+    intro: { queue: "בחרו התראה כדי לפתוח את הלוגים שלה.", logs: "פתחו אירוע כדי לבדוק אותו ולהצמיד אותו כראיה.", entities: "בחרו ישות כדי לראות את הקשרים שלה ואת האירועים שמאחורי כל אחד.", entity: "כל קשר מציג את האירועים שתומכים בו.", evidence: "קשרו כל אירוע מוצמד לממצאים שהוא תומך בהם, ואז עברו להכרעה." },
+    goVerdict: "מעבר להכרעה",
+    lastViewed: "נצפה לאחרונה",
+    mapTitle: "מפת קשרים",
+    mapHint: "גללו הצידה כדי לראות את כל המפה.",
+    reference: "מקורות עזר",
+  },
 };
 
 const ar: Copy = {
@@ -786,6 +871,36 @@ const ar: Copy = {
   mobile: { sheetHint: "اسحب للأسفل للإغلاق", viewAll: "الأحداث الـ19 كلها" },
   day: { d10: "10 مارس", d11: "11 مارس" },
   gaps: ["9 س 12 د", "9 د 55 ث"],
+  m12: {
+    review: "نموذج تصميم M1.2 · شاشات ثابتة، لا يُحفظ شيء",
+    showing: "المعروض: {s}",
+    state: { initial: "الحالة الأولية", example: "حالة مثال بعد تثبيت 7 أحداث", submitted: "شاشة للمراجعة فقط بعد التقديم", beforePin: "مثال، قبل التثبيت", justPinned: "مثال، بعد التثبيت مباشرة", linked: "مثال، مثبّت ومربوط", confirmUnpin: "مثال، تأكيد إلغاء التثبيت", empty: "الحالة الأولية، بلا أدلة", returned: "مثال، بعد العودة من حدث", map: "خريطة مثال" },
+    sum: { account: "الحساب", computer: "الجهاز", time: "الوقت (UTC)", source: "المصدر" },
+    groups: { account: "الحساب", source: "المصدر", logon: "الدخول", session: "الجلسة" },
+    learnTitle: "شرح",
+    learn: {
+      e4624: { title: "الحدث 4624: تم تسجيل دخول حساب بنجاح", body: "يسجّل Windows الحدث 4624 على الجهاز الذي تُنشأ عليه جلسة الدخول. يذكر الحساب ونوع الدخول وحزمة المصادقة، وعنوان المصدر في عمليات الدخول عبر الشبكة. الدخول الناجح ليس جيدًا أو سيئًا بحد ذاته؛ السياق هو الذي يحدّد." },
+      e4625: { title: "الحدث 4625: فشل حساب في تسجيل الدخول", body: "يسجّل Windows الحدث 4625 على الجهاز الذي فشلت عليه محاولة الدخول. يبيّن الحقلان Status وSub-status السبب، مثل 0xC000006A لكلمة مرور خاطئة أو 0xC0000064 لاسم حساب غير موجود. حالات الفشل شائعة؛ والأنماط والسياق تحدّد أهميتها." },
+      lt3: { title: "نوع الدخول 3: شبكة", body: "جرت مصادقة الحساب عبر الشبكة، مثل فتح مجلد مشترك. ويتحقق سطح المكتب البعيد مع Network Level Authentication أيضًا من بيانات الاعتماد بدخول من النوع 3 قبل بدء الجلسة." },
+      lt10: { title: "نوع الدخول 10: تفاعلي عن بُعد", body: "جلسة تفاعلية عبر Remote Desktop Services، مثل اتصال RDP. عنوان المصدر هو عنوان العميل المتصل." },
+    },
+    learnSource: "استنادًا إلى توثيق Microsoft لتدقيق الأمان في Windows.",
+    nav: { results: "النتائج", prev: "الحدث السابق", next: "الحدث التالي", close: "إغلاق", pos: "{i} من {n}" },
+    toastPinned: "ثُبّت كدليل · {n} مثبّتة",
+    toastRemoved: "أُزيل من الأدلة · {n} مثبّتة",
+    undo: "تراجع",
+    linkedTo: "مربوط بـ",
+    unpinTitle: "إلغاء تثبيت هذا الحدث؟",
+    unpinBody: "‏{id} يدعم {f}. يؤدي إلغاء التثبيت إلى إزالة هذه الروابط أيضًا.",
+    keep: "أبقِه مثبّتًا",
+    unpinConfirm: "إلغاء التثبيت",
+    intro: { queue: "اختر تنبيهًا لفتح سجلاته.", logs: "افتح حدثًا لفحصه وتثبيته كدليل.", entities: "اختر كيانًا لرؤية صلاته والأحداث التي تقوم عليها كل صلة.", entity: "تذكر كل علاقة الأحداث التي تدعمها.", evidence: "اربط كل حدث مثبّت بالنتائج التي يدعمها، ثم انتقل إلى الحكم." },
+    goVerdict: "انتقل إلى الحكم",
+    lastViewed: "آخر ما عُرض",
+    mapTitle: "خريطة العلاقات",
+    mapHint: "مرّر جانبيًا لرؤية الخريطة كاملة.",
+    reference: "مراجع",
+  },
 };
 
 export const copyFor = { en, he, ar } as const;

@@ -2,10 +2,46 @@ import { SimLabel } from "@/components/cc/SimTag";
 import type { Copy } from "./copy";
 import { alerts, draftFindings, findingIds, linkedEvidence, results, selectedId, stageState, type Stage } from "./data";
 import { BriefingBody, DebriefBody, dispOrder, FilterChips, FindingTag, InspectorBody, ObservedList, stageOf, Stepper, WorkingHypotheses } from "./Desktop";
-import { EntityCards, EntityDetail } from "./Entities";
+import { EntityCards, EntityDetail, EntityGraph } from "./Entities";
 import { fill, Histogram, Outcome, Sev, V } from "./parts";
 
-export type MobileView = "briefing" | "queue" | "logs" | "filters" | "event" | "entities" | "entity" | "evidence" | "verdict" | "findings" | "debrief";
+export type MobileView =
+  | "briefing"
+  | "queue"
+  | "logs"
+  | "filters"
+  | "event"
+  | "event-pinned"
+  | "event-linked"
+  | "unpin"
+  | "entities"
+  | "entity"
+  | "map"
+  | "evidence"
+  | "evidence-empty"
+  | "verdict"
+  | "findings"
+  | "debrief";
+
+/** Review-strip label for each screen: which example state the static mockup shows. */
+export const mobileState: Record<MobileView, keyof Copy["m12"]["state"]> = {
+  briefing: "initial",
+  queue: "initial",
+  logs: "returned",
+  filters: "example",
+  event: "beforePin",
+  "event-pinned": "justPinned",
+  "event-linked": "linked",
+  unpin: "confirmUnpin",
+  entities: "example",
+  entity: "example",
+  map: "map",
+  evidence: "example",
+  "evidence-empty": "empty",
+  verdict: "example",
+  findings: "example",
+  debrief: "submitted",
+};
 
 const bar = [
   ["queue", "alerts"],
@@ -14,10 +50,11 @@ const bar = [
   ["evidence", "evidence"],
   ["verdict", "verdict"],
 ] as const;
-const tabOf: Record<MobileView, (typeof bar)[number][0] | null> = { briefing: null, queue: "queue", logs: "logs", filters: "logs", event: "logs", entities: "entities", entity: "entities", evidence: "evidence", verdict: "verdict", findings: "verdict", debrief: "verdict" };
+const tabOf = (v: MobileView) => (v === "briefing" ? null : v === "queue" ? "queue" : v.startsWith("event") || v === "filters" || v === "unpin" || v === "logs" ? "logs" : v === "entity" || v === "map" || v === "entities" ? "entities" : v.startsWith("evidence") ? "evidence" : "verdict");
+const pinnedFor = (v: MobileView, stage: Stage) => (v === "event" ? 6 : v === "evidence-empty" ? 0 : stageState[stage].pinned);
 
 function TabBar({ t, view, pinned }: { t: Copy; view: MobileView; pinned: number }) {
-  const active = tabOf[view];
+  const active = tabOf(view);
   return (
     <nav className="lm-m-tabbar" aria-label={t.sim}>
       {bar.map(([v, k]) => (
@@ -31,7 +68,7 @@ function TabBar({ t, view, pinned }: { t: Copy; view: MobileView; pinned: number
   );
 }
 
-/** Sticky workspace bar: back, title, and the pin counter (derived from the visitor's pins in the real lab). */
+/** One compact row: back, simulation label over the screen title, and the pin counter. */
 function TopBar({ t, title, back, pinned }: { t: Copy; title: string; back?: string; pinned: number }) {
   return (
     <div className="lm-m-top">
@@ -47,26 +84,47 @@ function TopBar({ t, title, back, pinned }: { t: Copy; title: string; back?: str
         <SimLabel className="lm-sim">{t.sim}</SimLabel>
         <h1 className="lm-m-top-title">{title}</h1>
       </div>
-      <span className="lm-m-pins" aria-label={fill(t.ev.count, { n: pinned })}>
+      <span className="lm-m-pins" role="img" aria-label={fill(t.ev.count, { n: pinned })}>
         <span aria-hidden="true">◆</span> <V>{pinned}</V>
       </span>
     </div>
   );
 }
 
+const Intro = ({ children }: { children: string }) => <p className="lm-m-intro">{children}</p>;
+
+function NextStep({ label, href }: { label: string; href: string }) {
+  return (
+    <a className="lm-btn lm-btn--wide lm-btn--tall lm-m-next" href={href}>
+      {label}
+      <span aria-hidden="true" className="lm-arrow">
+        →
+      </span>
+    </a>
+  );
+}
+
 function BriefingScreen({ t }: { t: Copy }) {
   return (
     <>
-      <TopBar t={t} title={t.scenario} pinned={0} />
-      <h2 className="lm-m-title">{t.brief.title}</h2>
-      <p className="lm-m-shift">{t.shift}</p>
-      <BriefingBody t={t} />
-      <a className="lm-btn lm-btn--solid lm-btn--wide lm-btn--tall" href="?view=queue">
-        {t.brief.start}
-        <span aria-hidden="true" className="lm-arrow">
-          →
-        </span>
-      </a>
+      <TopBar t={t} title={t.brief.title} pinned={0} />
+      <p className="lm-m-shift">
+        <V>SOC-01</V> · {t.shift}
+      </p>
+      <BriefingBody t={t} level={2} />
+      <details className="lm-m-ref">
+        <summary>{t.m12.reference}</summary>
+        <ul>
+          {(["e4624", "e4625", "lt3", "lt10"] as const).map((k) => (
+            <li key={k}>
+              <p className="lm-m-ref-title">{t.m12.learn[k].title}</p>
+              <p>{t.m12.learn[k].body}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="lm-learn-src">{t.m12.learnSource}</p>
+      </details>
+      <NextStep label={t.brief.start} href="?view=queue" />
     </>
   );
 }
@@ -75,16 +133,16 @@ function QueueScreen({ t, stage }: { t: Copy; stage: Stage }) {
   const statuses = stageState[stage].statuses;
   return (
     <>
-      <TopBar t={t} title={t.scenario} pinned={stageState[stage].pinned} />
+      <TopBar t={t} title={t.queue.title} pinned={stageState[stage].pinned} />
       <div className="lm-m-row">
-        <p className="lm-m-shift">{t.shift}</p>
+        <Intro>{t.m12.intro.queue}</Intro>
         <a className="lm-link" href="?view=briefing">
           {t.briefingBtn}
         </a>
       </div>
-      <h2 className="lm-m-h">
-        {t.queue.title} · {t.queue.sorted}
-      </h2>
+      <p className="lm-m-shift">
+        {t.queue.sorted} · {t.shift}
+      </p>
       <ul className="lm-m-alerts">
         {alerts.map((a) => (
           <li key={a.id}>
@@ -108,12 +166,12 @@ function QueueScreen({ t, stage }: { t: Copy; stage: Stage }) {
   );
 }
 
-function LogCards({ t }: { t: Copy }) {
+function LogCards({ t, lastViewed }: { t: Copy; lastViewed?: boolean }) {
   return (
     <ol className="lm-m-cards">
       {results.slice(9, 16).map((e) => (
         <li key={e.id}>
-          <a href="?view=event" className="lm-m-card" data-ok={e.eventId === 4624 || undefined} aria-current={e.id === selectedId || undefined}>
+          <a href="?view=event" className="lm-m-card" data-ok={e.eventId === 4624 || undefined} aria-current={lastViewed && e.id === selectedId ? "true" : undefined}>
             <span className="lm-m-card-top">
               <V className="lm-m-card-time">{e.time}</V>
               <span className="lm-m-card-ev">
@@ -133,6 +191,7 @@ function LogCards({ t }: { t: Copy }) {
                 </>
               ) : null}
             </span>
+            {lastViewed && e.id === selectedId ? <span className="lm-m-lastviewed">{t.m12.lastViewed}</span> : null}
           </a>
         </li>
       ))}
@@ -140,10 +199,11 @@ function LogCards({ t }: { t: Copy }) {
   );
 }
 
-function LogsScreen({ t, pinned }: { t: Copy; pinned: number }) {
+function LogsScreen({ t, pinned, lastViewed = false }: { t: Copy; pinned: number; lastViewed?: boolean }) {
   return (
     <>
-      <TopBar t={t} title={`ALR-0418 · ${t.logs.title}`} back="queue" pinned={pinned} />
+      <TopBar t={t} title={`${t.logs.title} · ALR-0418`} back="queue" pinned={pinned} />
+      <Intro>{t.m12.intro.logs}</Intro>
       <div className="lm-m-search">
         <div className="lm-query lm-query--m">
           <span aria-hidden="true" className="lm-query-icon">
@@ -180,7 +240,7 @@ function LogsScreen({ t, pinned }: { t: Copy; pinned: number }) {
       <p className="lm-m-count" role="status">
         {t.logs.results} · {t.logs.sorted}
       </p>
-      <LogCards t={t} />
+      <LogCards t={t} lastViewed={lastViewed} />
       <p className="lm-m-more">{t.mobile.viewAll}</p>
     </>
   );
@@ -189,9 +249,10 @@ function LogsScreen({ t, pinned }: { t: Copy; pinned: number }) {
 function FiltersSheet({ t }: { t: Copy }) {
   return (
     <div className="lm-m-sheet-layer">
-      <div className="lm-m-under" aria-hidden="true">
+      <div className="lm-m-under" aria-hidden="true" inert>
         <LogsScreen t={t} pinned={7} />
       </div>
+      <div className="lm-m-scrim" aria-hidden="true" />
       <section className="lm-m-sheet lm-m-sheet--form" role="dialog" aria-modal="true" aria-labelledby="lm-m-flt-title">
         <span aria-hidden="true" className="lm-m-grab" />
         <div className="lm-m-sheet-head">
@@ -199,6 +260,9 @@ function FiltersSheet({ t }: { t: Copy }) {
             {t.flt.title}
           </h2>
           <span className="lm-link">{t.flt.clear}</span>
+          <a className="lm-m-iconbtn" href="?view=logs" aria-label={t.m12.nav.close} autoFocus>
+            <span aria-hidden="true">×</span>
+          </a>
         </div>
         <div className="lm-m-sheet-body" tabIndex={0} aria-label={t.flt.title}>
           <label className="lm-field">
@@ -259,35 +323,117 @@ function FiltersSheet({ t }: { t: Copy }) {
           </fieldset>
         </div>
         <div className="lm-m-sheet-foot">
-          <span className="lm-btn lm-btn--wide lm-btn--solid lm-btn--tall">{t.flt.apply}</span>
+          <a className="lm-btn lm-btn--wide lm-btn--solid lm-btn--tall" href="?view=logs">
+            {t.flt.apply}
+          </a>
         </div>
       </section>
     </div>
   );
 }
 
-function EventSheet({ t }: { t: Copy }) {
+type PinState = "before" | "pinned" | "linked" | "unpin";
+
+function SheetNav({ t }: { t: Copy }) {
+  const pos = results.findIndex((e) => e.id === selectedId) + 1;
+  return (
+    <div className="lm-m-sheetnav">
+      <a className="lm-m-textbtn" href="?view=logs">
+        <span aria-hidden="true" className="lm-arrow-back">
+          ‹
+        </span>{" "}
+        {t.m12.nav.results}
+      </a>
+      <span className="lm-m-pos">{fill(t.m12.nav.pos, { i: pos, n: results.length })}</span>
+      <span className="lm-m-navbtns">
+        <a className="lm-m-iconbtn" href="?view=event" aria-label={t.m12.nav.prev}>
+          <span aria-hidden="true">▲</span>
+        </a>
+        <a className="lm-m-iconbtn" href="?view=event" aria-label={t.m12.nav.next}>
+          <span aria-hidden="true">▼</span>
+        </a>
+        <a className="lm-m-iconbtn" href="?view=logs" aria-label={t.m12.nav.close} autoFocus>
+          <span aria-hidden="true">×</span>
+        </a>
+      </span>
+    </div>
+  );
+}
+
+function PinFooter({ t, state }: { t: Copy; state: PinState }) {
+  if (state === "before")
+    return (
+      <div className="lm-m-sheet-foot">
+        <a className="lm-btn lm-btn--wide lm-btn--tall lm-pinbtn" href="?view=event-pinned">
+          <span aria-hidden="true">◇</span> {t.insp.pin}
+        </a>
+        <p className="lm-col-hint lm-center-text">{fill(t.ev.count, { n: 6 })}</p>
+      </div>
+    );
+  return (
+    <div className="lm-m-sheet-foot">
+      {state === "pinned" ? (
+        <p className="lm-toast" role="status">
+          <span aria-hidden="true" className="lm-toast-mark">
+            ◆
+          </span>
+          <span>{fill(t.m12.toastPinned, { n: 7 })}</span>
+          <a className="lm-toast-undo" href="?view=event">
+            {t.m12.undo}
+          </a>
+        </p>
+      ) : null}
+      <div className="lm-pinrow lm-pinrow--m">
+        <span className="lm-pinstate">
+          <span aria-hidden="true">◆</span> {t.insp.pinnedState}
+        </span>
+        {state !== "pinned" ? (
+          <span className="lm-pin-links">
+            {t.m12.linkedTo} <FindingTag t={t} id="f2" /> <FindingTag t={t} id="f3" />
+          </span>
+        ) : null}
+        <a className="lm-btn lm-btn--ghost lm-btn--tall" href={state === "pinned" ? "?view=event" : "?view=unpin"}>
+          {t.insp.unpin}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function EventSheet({ t, state }: { t: Copy; state: PinState }) {
   return (
     <div className="lm-m-sheet-layer">
-      <div className="lm-m-under" aria-hidden="true">
-        <LogsScreen t={t} pinned={6} />
+      <div className="lm-m-under" aria-hidden="true" inert>
+        <LogsScreen t={t} pinned={state === "before" ? 6 : 7} />
       </div>
-      <section className="lm-m-sheet" role="dialog" aria-modal="true" aria-labelledby="lm-m-sheet-title">
+      <div className="lm-m-scrim" aria-hidden="true" />
+      <section className="lm-m-sheet" role="dialog" aria-modal="true" aria-labelledby="lm-m-sheet-title" inert={state === "unpin" || undefined}>
         <span aria-hidden="true" className="lm-m-grab" />
-        <p className="sr-only">{t.mobile.sheetHint}</p>
         <h2 id="lm-m-sheet-title" className="sr-only">
           {t.insp.title}
         </h2>
+        <SheetNav t={t} />
         <div className="lm-m-sheet-body" tabIndex={0} aria-label={t.insp.title}>
           <InspectorBody t={t} />
         </div>
-        <div className="lm-m-sheet-foot">
-          <span className="lm-btn lm-btn--wide lm-btn--solid lm-btn--tall">
-            <span aria-hidden="true">◆</span> {t.insp.pin}
-          </span>
-          <p className="lm-col-hint lm-center-text">{fill(t.ev.count, { n: 6 })}</p>
-        </div>
+        <PinFooter t={t} state={state} />
       </section>
+      {state === "unpin" ? (
+        <section className="lm-m-confirm" role="alertdialog" aria-modal="true" aria-labelledby="lm-m-unpin-title" aria-describedby="lm-m-unpin-body">
+          <h2 id="lm-m-unpin-title" className="lm-m-title">
+            {t.m12.unpinTitle}
+          </h2>
+          <p id="lm-m-unpin-body">{fill(t.m12.unpinBody, { id: selectedId, f: "F2, F3" })}</p>
+          <div className="lm-m-confirm-actions">
+            <a className="lm-btn lm-btn--solid lm-btn--tall" href="?view=event-linked" autoFocus>
+              {t.m12.keep}
+            </a>
+            <a className="lm-btn lm-btn--tall lm-btn--danger" href="?view=event">
+              {t.m12.unpinConfirm}
+            </a>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -296,12 +442,43 @@ function EntitiesScreen({ t }: { t: Copy }) {
   return (
     <>
       <TopBar t={t} title={t.ent.title} pinned={7} />
+      <Intro>{t.m12.intro.entities}</Intro>
       <p className="lm-m-shift">
         <V>{t.ent.scope}</V>
       </p>
-      <span className="lm-btn lm-btn--wide">{t.ent.viewMap}</span>
+      <a className="lm-btn lm-btn--wide lm-btn--tall" href="?view=map">
+        {t.ent.viewMap}
+      </a>
       <EntityCards t={t} />
     </>
+  );
+}
+
+function MapScreen({ t }: { t: Copy }) {
+  return (
+    <div className="lm-m-sheet-layer">
+      <div className="lm-m-under" aria-hidden="true" inert>
+        <EntitiesScreen t={t} />
+      </div>
+      <div className="lm-m-scrim" aria-hidden="true" />
+      <section className="lm-m-sheet lm-m-sheet--map" role="dialog" aria-modal="true" aria-labelledby="lm-m-map-title">
+        <span aria-hidden="true" className="lm-m-grab" />
+        <div className="lm-m-sheet-head">
+          <h2 id="lm-m-map-title" className="lm-m-title">
+            {t.m12.mapTitle}
+          </h2>
+          <a className="lm-m-iconbtn" href="?view=entities" aria-label={t.m12.nav.close} autoFocus>
+            <span aria-hidden="true">×</span>
+          </a>
+        </div>
+        <div className="lm-m-sheet-body">
+          <p className="lm-col-hint lm-pad">{t.m12.mapHint}</p>
+          <div className="lm-m-mapscroll" tabIndex={0} role="region" aria-label={t.m12.mapTitle}>
+            <EntityGraph t={t} />
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -309,29 +486,46 @@ function EntityScreen({ t }: { t: Copy }) {
   return (
     <>
       <TopBar t={t} title={t.ent.title} back="entities" pinned={7} />
+      <Intro>{t.m12.intro.entity}</Intro>
       <EntityDetail t={t} />
     </>
   );
 }
 
-function EvidenceScreen({ t }: { t: Copy }) {
+function EvidenceScreen({ t, empty }: { t: Copy; empty: boolean }) {
   return (
     <>
-      <TopBar t={t} title={t.ev.title} pinned={7} />
+      <TopBar t={t} title={t.ev.title} pinned={empty ? 0 : 7} />
+      <Intro>{t.m12.intro.evidence}</Intro>
       <p className="lm-m-shift">
-        {fill(t.ev.count, { n: 7 })} · {t.ev.countNote}
+        {fill(t.ev.count, { n: empty ? 0 : 7 })} · {t.ev.countNote}
       </p>
-      <div className="lm-seg lm-seg--m" role="tablist" aria-label={t.ev.title}>
-        <span role="tab" aria-selected="true">
-          {t.ev.seg.timeline}
-        </span>
-        <span role="tab" aria-selected="false">
-          {t.ev.seg.hypotheses}
-        </span>
-      </div>
-      <ObservedList t={t} manage />
-      <h2 className="lm-m-h">{t.tl.hypTitle}</h2>
-      <WorkingHypotheses t={t} />
+      {empty ? (
+        <div className="lm-m-empty">
+          <span aria-hidden="true" className="lm-m-empty-mark">
+            ◇
+          </span>
+          <p>{t.ev.empty}</p>
+          <a className="lm-btn lm-btn--tall" href="?view=logs">
+            {t.tabs.logs}
+          </a>
+        </div>
+      ) : (
+        <>
+          <div className="lm-seg lm-seg--m" role="tablist" aria-label={t.ev.title}>
+            <span role="tab" aria-selected="true">
+              {t.ev.seg.timeline}
+            </span>
+            <span role="tab" aria-selected="false">
+              {t.ev.seg.hypotheses}
+            </span>
+          </div>
+          <ObservedList t={t} manage />
+          <h2 className="lm-m-h">{t.tl.hypTitle}</h2>
+          <WorkingHypotheses t={t} />
+          <NextStep label={t.m12.goVerdict} href="?view=verdict" />
+        </>
+      )}
     </>
   );
 }
@@ -445,34 +639,46 @@ function DebriefScreen({ t }: { t: Copy }) {
 
 export function MobileFlow({ t, view }: { t: Copy; view: MobileView }) {
   const stage = stageOf(view);
-  const pinned = view === "event" ? 6 : stageState[stage].pinned;
+  const pinned = pinnedFor(view, stage);
+  const screen = (() => {
+    switch (view) {
+      case "briefing":
+        return <BriefingScreen t={t} />;
+      case "queue":
+        return <QueueScreen t={t} stage={stage} />;
+      case "logs":
+        return <LogsScreen t={t} pinned={pinned} lastViewed />;
+      case "filters":
+        return <FiltersSheet t={t} />;
+      case "event":
+        return <EventSheet t={t} state="before" />;
+      case "event-pinned":
+        return <EventSheet t={t} state="pinned" />;
+      case "event-linked":
+        return <EventSheet t={t} state="linked" />;
+      case "unpin":
+        return <EventSheet t={t} state="unpin" />;
+      case "entities":
+        return <EntitiesScreen t={t} />;
+      case "entity":
+        return <EntityScreen t={t} />;
+      case "map":
+        return <MapScreen t={t} />;
+      case "evidence":
+        return <EvidenceScreen t={t} empty={false} />;
+      case "evidence-empty":
+        return <EvidenceScreen t={t} empty />;
+      case "verdict":
+        return <VerdictStep1 t={t} />;
+      case "findings":
+        return <VerdictStep3 t={t} />;
+      default:
+        return <DebriefScreen t={t} />;
+    }
+  })();
   return (
     <div className="lm-mobile" data-view={view}>
-      <div className="lm-m-screen">
-        {view === "briefing" ? (
-          <BriefingScreen t={t} />
-        ) : view === "queue" ? (
-          <QueueScreen t={t} stage={stage} />
-        ) : view === "logs" ? (
-          <LogsScreen t={t} pinned={pinned} />
-        ) : view === "filters" ? (
-          <FiltersSheet t={t} />
-        ) : view === "event" ? (
-          <EventSheet t={t} />
-        ) : view === "entities" ? (
-          <EntitiesScreen t={t} />
-        ) : view === "entity" ? (
-          <EntityScreen t={t} />
-        ) : view === "evidence" ? (
-          <EvidenceScreen t={t} />
-        ) : view === "verdict" ? (
-          <VerdictStep1 t={t} />
-        ) : view === "findings" ? (
-          <VerdictStep3 t={t} />
-        ) : (
-          <DebriefScreen t={t} />
-        )}
-      </div>
+      <div className="lm-m-screen">{screen}</div>
       {view === "briefing" ? null : <TabBar t={t} view={view} pinned={pinned} />}
     </div>
   );
