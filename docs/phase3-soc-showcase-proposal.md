@@ -839,9 +839,9 @@ timeline at exactly 30 fps, so they show the intended motion, not live playback 
 1. **Length.** Readable captions make chapter 2 ≈ 54 s and chapter 3 ≈ 64 s. Either accept about
    4 min 30 s for five chapters, or tighten the narration when you rewrite it (shorter captions at
    the same reading speed).
-2. **Desktop chapter 3 paint cost** (§23): proposed fix in §25 (camera-free focus and no SVG masks;
+2. **Desktop chapter 3 paint cost** *(fixed in §26)* (§23): proposed fix in §25 (camera-free focus and no SVG masks;
    measured 11.9 → 47.7 fps in this container). Not implemented yet.
-3. **Reading speed.** Five captions run above the 17 characters/s target:
+3. **Reading speed.** *(fixed in §26)* Five captions run above the 17 characters/s target:
    - chapter 2 "evt" (EN 17.3);
    - chapter 2 "base" (AR 17.1);
    - chapter 3 "spray" (AR 17.6);
@@ -849,12 +849,12 @@ timeline at exactly 30 fps, so they show the intended motion, not live playback 
 
    All stay under 20 characters/s (the test limit). Fix by shortening when you rewrite the
    narration, or by adding 0.5–1 s.
-4. **Chapter 3 opening.** The first 4.8 s show only the column titles, one node and the axis. Use
+4. **Chapter 3 opening.** *(fixed in §26)* The first 4.8 s show only the column titles, one node and the axis. Use
    that time to show the alert-window axis more prominently, or start the playhead sooner.
 5. **Desktop overview scale.** Whole-scene shots are about 0.75–0.96 zoom, so table text in the
    overview is small. Detail always comes from zoomed shots; a denser table or a taller stage would
    help.
-6. **Camera crop at the edges.** Some zoomed shots cut a label at the frame edge (for example the
+6. **Camera crop at the edges.** *(fixed in §26)* Some zoomed shots cut a label at the frame edge (for example the
    asset-inventory tag in the indicator shot). Tune the target rectangles.
 7. **iPhone chapter 2:** while the event sheet is up, the rows behind are only partly visible
    (intended), but the sheet could show the event time more prominently.
@@ -865,7 +865,7 @@ timeline at exactly 30 fps, so they show the intended motion, not live playback 
 10. **Real-device check:** Safari on iPhone (safe areas, the shrinking toolbar, performance).
 11. **Narration review (D3):** every caption is draft text for you to correct, in all three
     languages.
-12. **iPhone chapter 3 opening:** at the start, the legend line sits partly under the pinned path
+12. **iPhone chapter 3 opening:** *(fixed in §26)* at the start, the legend line sits partly under the pinned path
     strip. Push the opening frame down, or fold the legend into the strip.
 
 ## 25. Proposal: lightweight chapter 3 for desktop (not implemented; for your decision)
@@ -898,3 +898,49 @@ composition already runs at 52–60 fps and would not change.
 
 Acceptance for the change: desktop chapter 3 at 45 fps or more in this container, and checked on
 a real laptop and in Safari on iPhone; recordings re-rendered and re-verified.
+
+## 26. Chapter 3 optimization (approved 2026-10-17, implemented) and closure of SOC-01 work
+
+Narrow scope as approved. The dataset, event chronology, uncertainty statements and the
+AI-assistance disclosure are unchanged.
+
+**What changed**
+- **Desktop chapter 3: no camera zoom.**
+  - The graph stays at one scale. Each beat brings its group into focus: everything else dims to
+    28 % and the focused nodes get a cyan ring.
+  - A **close-up panel** beside the graph shows the detail for each beat: starting point, failed
+    logons (live counter), e-0193, e-0194, e-0201 with the asset-inventory link, the second
+    source, the shared client name, and "not in these logs".
+- **SVG masks removed.** Indicator and not-in-the-data lines are plain dashed strokes that fade in.
+- **The graph has its own compositing layer.** Measuring after the first two changes showed the
+  per-frame playhead/axis update was still repainting the whole graph (axis hidden: 43 fps; graph
+  on its own layer: 46 fps). One CSS property isolates it.
+- **Opening:** the source address and the starting-point panel appear at once, and the playhead
+  advances to the first attempt.
+- **Clipping and readability:** graph labels are about 2 px larger. The playhead time never leaves
+  the axis, the axis label moves below the ticks, and the legend no longer covers the panel.
+- **iPhone:** the opening frame keeps the legend below the pinned path strip (tested at 360, 390
+  and 430).
+- **Captions:** both chapters are paced 7 % slower, and five captions were shortened without
+  changing their content. Every caption is now at or below 16.1 characters per second in EN/HE/AR
+  (was up to 18.9); a unit test enforces ≤ 16.5. Desktop captions are slightly larger.
+  - Chapter 2 now runs 57.2 s and chapter 3 68.2 s.
+
+**Before and after** (same container, same scripts; Chromium with software rendering, no GPU)
+
+| Run | Before (`37fa963`) | After |
+|---|---|---|
+| Desktop chapter 3, normal CPU | 11.5 fps · 92 % of frames over 33 ms | **49.5 fps** · 6 % over 33 ms |
+| Desktop chapter 3, 4× slower CPU | 9.3 fps | **44.3 fps** |
+| iPhone chapter 3, normal / 4× | 60 / 51.2 fps | 59.9 / 53.0 fps |
+| Desktop chapter 2, normal / 4× | 50.1 / 43.3 fps | 50.7 / 45.6 fps (unchanged code; within run-to-run variation) |
+| iPhone chapter 2, normal / 4× | 55.9 / 44.6 fps | 53.8 / 45.8 fps (unchanged code) |
+| Idle page baseline | 60 fps | 59.9 fps |
+
+The remaining limits are as before: software rendering makes absolute numbers pessimistic, and a
+real laptop and Safari on iPhone still need checking.
+
+**Closure.** Work on the fictional SOC-01 presentation stops here, as decided. The next major
+priority is an authentic **"Eli Saad — Technical Work in Action"** showcase built from Eli's own
+Wireshark, Splunk and Active Directory recordings (to be proposed separately, with the media and
+sanitization rules in §18).
