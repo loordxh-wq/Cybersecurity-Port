@@ -2704,3 +2704,416 @@
   min-height: 2.75rem;
   padding-inline: 0.25rem;
 }
+
+/* ================================================================ M1.2 mobile refinement */
+.lm-only-mobile {
+  display: none;
+}
+@media (max-width: 1023.98px) {
+  .lm-only-desk {
+    display: none;
+  }
+  .lm-only-mobile {
+    display: inline;
+  }
+  /*
+   * Chrome budget on phones: the site header keeps its identity, menu and recruiter
+   * button but is compacted to 52 px on the lab workspace only (scoped with :has, so
+   * no other page changes). The page reserves the tab bar's height so the site footer
+   * never ends underneath it.
+   */
+  /* Without :has() support the 4 rem header and the default 4 rem offset stay paired. */
+  @supports selector(:has(*)) {
+    body:has(.lm-mobile) .site-bar {
+      height: 3.25rem;
+    }
+    body:has(.lm-mobile) .site-main {
+      padding-top: 3.25rem;
+    }
+    body:has(.lm-mobile) {
+      padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
+    }
+    .lm .lm-m-top {
+      top: 3.25rem;
+    }
+    .lm .lm-m-sheet {
+      top: calc(3.25rem + 0.75rem);
+    }
+    .lm .lm-m-sheet--form,
+    .lm .lm-m-sheet--map {
+      top: calc(3.25rem + 2.5rem);
+    }
+  }
+  .lm-review--ws {
+    padding: 0.2rem max(1rem, env(safe-area-inset-right)) 0.2rem max(1rem, env(safe-area-inset-left));
+    font-size: 0.625rem;
+    line-height: 1.45;
+  }
+}
+
+/* workspace bar: one row of 44 px controls */
+.lm-m-top {
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0.25rem 1rem;
+}
+.lm-m-top-id {
+  gap: 0.05rem;
+}
+.lm-m-top .lm-sim {
+  font-size: 0.625rem;
+  line-height: 1.2;
+}
+.lm-m-top-title {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lm-m-back {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.lm-m-pins {
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+/* tab bar: shorter, below the site header's menu layer, above content */
+.lm-m-tabbar {
+  z-index: 35;
+}
+.lm-m-tabbar a {
+  min-height: 3.25rem;
+  gap: 0.15rem;
+  padding: 0.4rem 0.15rem 0.3rem;
+}
+.lm-m-tabicon {
+  width: 1rem;
+  height: 1rem;
+}
+.lm-mobile {
+  padding-bottom: 1.5rem;
+}
+.lm-mobile [id] {
+  scroll-margin-top: 7.5rem;
+}
+.lm-mobile .lm-m-stepnav {
+  bottom: calc(3.25rem + env(safe-area-inset-bottom));
+}
+
+/* screen guidance */
+.lm-m-intro {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--lm-muted);
+}
+.lm-m-next {
+  margin-top: 0.4rem;
+  border-color: rgb(66 213 246 / 0.6);
+  color: var(--cc-cyan-hi);
+}
+
+/* sheets: backdrop, navigation header, contained scrolling */
+.lm-m-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgb(2 4 8 / 0.62);
+}
+.lm-m-sheet {
+  z-index: 60;
+  top: calc(4rem + 0.75rem);
+  max-height: none;
+}
+.lm-m-sheet--form,
+.lm-m-sheet--map {
+  top: calc(4rem + 2.5rem);
+}
+.lm-m-sheet[inert] {
+  filter: brightness(0.55);
+}
+.lm-m-sheet-body {
+  overscroll-behavior: contain;
+}
+.lm-m-sheet-head {
+  gap: 0.5rem;
+  align-items: center;
+}
+.lm-m-sheet-head .lm-m-title {
+  flex: 1;
+}
+.lm-m-sheetnav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--lm-rule);
+}
+.lm-m-textbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  color: #c9eef9;
+}
+.lm-m-pos {
+  margin-inline: auto;
+  font-size: 0.8125rem;
+  color: var(--lm-muted);
+}
+.lm-m-navbtns {
+  display: flex;
+  gap: 0.2rem;
+}
+.lm-m-iconbtn {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--lm-rule-strong);
+  font-size: 0.9375rem;
+  line-height: 1;
+  color: var(--lm-text);
+}
+.lm-m-iconbtn:focus-visible,
+.lm-m-textbtn:focus-visible {
+  outline: 2px solid var(--cc-cyan);
+  outline-offset: 2px;
+}
+
+/* event summary + grouped fields */
+.lm-insp-summary {
+  gap: 0.45rem;
+}
+.lm-insp-kicker {
+  gap: 0.6rem;
+}
+.lm-sumfacts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.45rem 0.9rem;
+  margin-top: 0.3rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--lm-rule);
+  background: var(--lm-panel-2);
+}
+.lm-sumfacts dt {
+  font-size: 0.6875rem;
+  color: var(--lm-dim);
+}
+.lm-sumfacts dd {
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.lm-fgroup {
+  padding: 0.25rem 1rem 0;
+}
+.lm-fgroup .lm-fields {
+  padding: 0;
+}
+.lm-fgroup-k {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lm-label);
+}
+:lang(he) .lm-fgroup-k,
+:lang(ar) .lm-fgroup-k {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* neutral reference ("Learn") */
+.lm-learn {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.9rem 1rem 0;
+}
+.lm-learn details,
+.lm-m-ref {
+  border: 1px solid var(--lm-rule);
+  background: var(--lm-panel-2);
+}
+.lm-learn summary,
+.lm-m-ref summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  list-style: none;
+}
+.lm-learn summary::-webkit-details-marker,
+.lm-m-ref summary::-webkit-details-marker {
+  display: none;
+}
+.lm-learn summary::after,
+.lm-m-ref summary::after {
+  content: "+";
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  color: var(--lm-dim);
+}
+.lm-learn details[open] summary::after,
+.lm-m-ref[open] summary::after {
+  content: "−";
+}
+.lm-learn-k {
+  flex: none;
+  padding: 0 0.35rem;
+  border: 1px solid rgb(148 180 220 / 0.35);
+  font-size: 0.6875rem;
+  color: var(--lm-steel);
+}
+.lm-learn details p {
+  padding: 0 0.75rem 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--lm-muted);
+}
+.lm-learn-src {
+  font-size: 0.6875rem;
+  color: var(--lm-dim);
+}
+.lm-m-ref ul {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 0.75rem 0.5rem;
+}
+.lm-m-ref li p {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--lm-muted);
+}
+.lm-m-ref .lm-m-ref-title {
+  font-weight: 600;
+  color: var(--lm-text);
+}
+.lm-m-ref .lm-learn-src {
+  padding: 0 0.75rem 0.75rem;
+}
+
+/* evidence states */
+.lm-pinbtn {
+  border-color: rgb(66 213 246 / 0.65);
+  color: var(--cc-cyan-hi);
+}
+.lm-pinrow--m {
+  flex-wrap: wrap;
+  min-height: 3rem;
+  padding: 0.2rem 0.2rem 0.2rem 0.75rem;
+}
+.lm-pin-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--lm-muted);
+}
+.lm-pinrow .lm-pin-links {
+  margin-inline-end: auto;
+}
+.lm-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  padding: 0 0 0 0.75rem;
+  border: 1px solid rgb(66 213 246 / 0.5);
+  background: rgb(66 213 246 / 0.1);
+  font-size: 0.875rem;
+}
+.lm-toast-mark {
+  color: var(--cc-cyan);
+}
+.lm-toast-undo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-inline-start: auto;
+  padding: 0 0.75rem;
+  color: var(--cc-cyan-hi);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lm-toast {
+    animation: lm-toast-in 0.22s ease-out;
+  }
+}
+@keyframes lm-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.lm-m-confirm {
+  position: fixed;
+  inset-inline: 1rem;
+  top: 50%;
+  z-index: 70;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.1rem 1rem 1rem;
+  border: 1px solid var(--lm-rule-strong);
+  background: #0b1324;
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.6);
+  transform: translateY(-50%);
+}
+.lm-m-confirm p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--lm-muted);
+}
+.lm-m-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.lm-btn--danger {
+  border-color: rgb(242 147 138 / 0.7);
+  color: var(--lm-fail);
+}
+.lm-m-lastviewed {
+  justify-self: start;
+  margin-top: 0.2rem;
+  padding: 0 0.35rem;
+  border: 1px solid rgb(66 213 246 / 0.5);
+  font-size: 0.6875rem;
+  color: var(--cc-cyan-hi);
+}
+.lm-m-empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--lm-rule-strong);
+  text-align: center;
+  color: var(--lm-muted);
+}
+.lm-m-empty-mark {
+  font-size: 1.75rem;
+  color: var(--lm-dim);
+}
+.lm-m-mapscroll {
+  overflow-x: auto;
+  padding: 0 1rem 1rem;
+}
+.lm-m-mapscroll .lm-graph {
+  width: 40rem;
+}

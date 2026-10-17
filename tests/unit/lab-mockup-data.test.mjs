@@ -112,3 +112,17 @@ test("copy: three locales with the same debrief structure; notes and answers onl
     assert.ok(!/j\.morgan|203\.0\.113/.test(c.brief.mission + c.brief.objectives.join(" ")), "the briefing reveals no answer or scope");
   }
 });
+
+test("M1.2: Learn explanations are neutral reference text in all three languages", () => {
+  const { en, he, ar } = copyFor;
+  const scenario = /j\.morgan|203\.0\.113|198\.51\.100|JMP01|SRV-|DESKTOP-|northwind|spray|ALR-0|svc-backup|n\.katz/i;
+  for (const c of [en, he, ar]) {
+    assert.deepEqual(Object.keys(c.m12.learn), ["e4624", "e4625", "lt3", "lt10"]);
+    for (const [k, v] of Object.entries(c.m12.learn)) {
+      assert.ok(!scenario.test(v.title + " " + v.body), `${k} must not mention the scenario`);
+      assert.ok(v.body.length > 60, `${k} has a real explanation`);
+    }
+    assert.match(c.m12.review, /M1\.2/);
+    assert.ok(c.m12.learnSource.length > 0, "explanations cite their source");
+  }
+});

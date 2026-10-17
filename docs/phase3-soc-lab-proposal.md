@@ -1,6 +1,6 @@
 # Phase 3: Interactive SOC Investigation Lab — architecture and visual proposal
 
-Status: **direction approved (M0); M1 approved as a foundation; M1.1 refinement in review (§11–§13). No interactive lab logic has been written.**
+Status: **direction approved (M0); M1/M1.1 approved as the design foundation; M1.2 mobile refinement in review (§15). No interactive lab logic has been written.**
 Branch: `proposal/phase3-soc-lab` (from `feature/case-files-cf01-03` at `94a4ca3`). Phase 1 and Phase 2 code is unchanged.
 Rules carried over:
 - Fully synthetic data. Every IP comes from the documentation ranges, every account and host is fictional, and there are no personal data or credentials.
@@ -21,6 +21,8 @@ Contents:
 11. Technical accuracy audit (M1.1)
 12. M1.1 change log
 13. Interaction specification for M2/M3
+14. Answer delivery: verification and limitations
+15. M1.2 mobile refinement
 
 ---
 
@@ -813,3 +815,52 @@ Every counter shown (pinned, linked, classified, steps complete) is a selector o
 - The answer key and model notes become a code-split chunk loaded with a dynamic `import()` only inside the submit handler. There are no prefetch or preload hints, the key is not in the message bundle, and the debrief/report views render only from submitted state. The same four-channel test will run against the interactive build and fail if the chunk is requested before submission.
 - **Unavoidable without a server:** once built, the chunk is a static file. Its name is listed in the build manifest, so a determined visitor could fetch it directly, outside the interface.
 - Closing that gap would need a server-side evaluation endpoint, which keeps the key on the server and returns only the debrief for a submitted verdict. That adds a backend and personal-data considerations the lab currently avoids. Recommendation: accept the limit for a training simulation and say so in "About this simulation".
+
+---
+
+## 15. M1.2 mobile refinement
+
+Scope: mobile experience only. The desktop workspace, the Cyber Command design, the dataset and the localisation are unchanged apart from the shared Event Inspector summary. No Phase 1 or Phase 2 file was edited.
+
+### 15.1 Change log (prioritized)
+
+| Priority | Change |
+| --- | --- |
+| P0 | **Chrome budget at 390 px: 179–199 px → 158 px** (plus the iOS safe area).<br>• Site header 64 → 52 px, on the lab workspace only: a scoped `body:has(.lm-mobile)` rule in the lab stylesheet. Logo, menu and recruiter button stay, all 44 px.<br>• Workspace bar: two lines 58–78 → one 53 px row (back, simulation label over the title, pin counter).<br>• Tab bar 57 → 53 px.<br>• Without `:has()` support the original 64 px header and a matching 4 rem offset stay paired. |
+| P0 | **No overlap.**<br>• The tab bar now sits below the site menu layer; before, it painted over the open site menu.<br>• The page reserves the tab bar's height, so the site footer never ends under it.<br>• The verdict step bar sits above the tab bar.<br>• The workspace bar sticks exactly under the header.<br>• Verified by a test at 360, 390 and 430 px in EN/HE/AR. |
+| P0 | **Event sheet dismissal and navigation.** A visible *Close* button (focused on open), *Results*, previous and next event, and the position ("13 of 19"). Also a dimmed backdrop, an inert background (`inert`) and contained scrolling (`overscroll-behavior: contain`). |
+| P1 | **Event Inspector summary first:**<br>• Event ID badge, outcome and a plain heading;<br>• account, computer, UTC timestamp, source and logon type;<br>• then technical fields grouped into account, source, logon and session. Shared with desktop. |
+| P1 | **Neutral "Learn" panels.**<br>• Event 4624, event 4625, logon type 3 and logon type 10, collapsed by default.<br>• The inspector shows the ones relevant to the open event; the briefing has the full reference.<br>• General Windows behaviour only, with a source note. A unit test rejects any scenario identifier in them. |
+| P1 | **Evidence states:**<br>• *Pin as evidence* (outline);<br>• *just pinned*, with a polite status message "Pinned as evidence · 7 pinned" and *Undo*;<br>• *pinned and linked* ("Linked to F2 F3");<br>• a confirmation before unpinning evidence that supports findings, with focus on *Keep pinned*;<br>• a removal message in the same style. |
+| P1 | **Flow guidance.**<br>• Each screen states its purpose in one line.<br>• Next-step actions: *Start investigation*, *Go to verdict*.<br>• The last viewed event is highlighted when returning to the list.<br>• An empty evidence state.<br>• The relationship map opens as a sheet with horizontal scroll at readable size. |
+| P1 | **Mockup honesty.** Every screen's review strip says "M1.2 design mockup · static screens, nothing is saved · Showing: [example state]". The pinned counts and verdict progress are labelled example states, not pre-filled answers. |
+| P2 | **Reduced motion:** the pin feedback does not animate, and transitions are effectively zero (tested). Heading order was fixed on the briefing. |
+
+### 15.2 Interaction specification additions (M2/M3)
+
+**Opening and closing an event**
+- Opening an event from the list stores `{ returnView: "logs", scrollY, filters, range, selectedEventId }` in the investigation state, and pushes `?event=<id>` so the iOS back gesture closes the sheet.
+- Closing (Close, Esc, back gesture, or tapping the backdrop; swipe-down on the handle is optional and never the only way) returns focus to the card that opened it.
+- The list is not re-rendered or re-scrolled, so the scroll position, filters and selected range are unchanged. The card shows "Last viewed" until another event is opened.
+- Previous and next move through the **current filtered results**. "i of n" comes from that list, and the buttons disable at the ends.
+- While the sheet is open, page scroll is locked, the sheet body scrolls on its own, and the background is `inert`.
+
+**Pinning and unpinning**
+- Pinning updates the state immediately and announces "Pinned e-0193 · 7 pinned" in a polite live region, with *Undo* available for 8 s; the message does not auto-dismiss while focused.
+- Unpinning unlinked evidence is immediate, with *Undo*.
+- Unpinning linked evidence asks first (`alertdialog`, focus on *Keep pinned*). Confirming removes its finding links too.
+
+**Counters, persistence, Learn panels and layering**
+- The top-bar counter, tab badge, evidence list, finding links and verdict progress are all selectors over the pins state, so they cannot disagree.
+- Persistence is `sessionStorage` for the tab only (§6.3). The M1.2 mockup saves nothing.
+- Learn panels are static reference content, identical for every scenario and never computed from scenario data. They are closed by default.
+- Layering, bottom to top: tab bar 35 < site header and menu 40 < sheet backdrop 55 < sheet 60 < confirmation 70. Anchors use a `scroll-margin-top` that clears both bars.
+
+**Answer protection** is unchanged (§14). The new screens are included in the delivery test.
+
+### 15.3 Remaining limitations
+- **The mockup is static.** Buttons move between example screens; there is no state, persistence, swipe gesture, Esc handling or real focus trap (focus is placed with `autofocus` only). All of these are specified above for M2/M3.
+- The header compaction relies on `:has()` (Safari 15.4+). Older browsers keep the original header with no overlap, but without the space saving.
+- The debrief remains a review-only screen reachable by URL in the mockup (§14).
+- The Microsoft documentation for ALR-0420 was consulted through search results, because this container cannot reach Microsoft Learn (§11). It should be confirmed against the live pages before M2.
+- Test emulation is Chromium with iOS-sized viewports. Real Safari, notch safe areas and the dynamic toolbar still need the hands-on iPhone review.

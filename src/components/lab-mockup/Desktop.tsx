@@ -5,7 +5,7 @@ import { EntityDetail, EntityGraph, EntityTable } from "./Entities";
 import { fill, Histogram, Outcome, Sev, V } from "./parts";
 
 export type View = "briefing" | "logs" | "entities" | "timeline" | "verdict" | "debrief";
-export const stageOf = (view: string): Stage => (view === "briefing" || view === "queue" ? "fresh" : view === "debrief" ? "submitted" : "progress");
+export const stageOf = (view: string): Stage => (view === "briefing" || view === "queue" || view === "evidence-empty" ? "fresh" : view === "debrief" ? "submitted" : "progress");
 
 const tabs = [
   ["logs", "logs"],
@@ -116,15 +116,16 @@ function Tabs({ t, view }: { t: Copy; view: View }) {
 
 /* ------------------------------------------------------------------ briefing */
 
-export function BriefingBody({ t }: { t: Copy }) {
+export function BriefingBody({ t, level = 3 }: { t: Copy; level?: 2 | 3 }) {
+  const H = level === 2 ? "h2" : "h3";
   return (
     <div className="lm-brief">
       <p className="lm-brief-mission">{t.brief.mission}</p>
       <div className="lm-brief-grid">
         <section aria-labelledby="lm-b-obj">
-          <h3 id="lm-b-obj" className="lm-label">
+          <H id="lm-b-obj" className="lm-label">
             {t.brief.objectivesTitle}
-          </h3>
+          </H>
           <ol className="lm-brief-list">
             {t.brief.objectives.map((o, i) => (
               <li key={o}>
@@ -135,9 +136,9 @@ export function BriefingBody({ t }: { t: Copy }) {
           </ol>
         </section>
         <section aria-labelledby="lm-b-ctl">
-          <h3 id="lm-b-ctl" className="lm-label">
+          <H id="lm-b-ctl" className="lm-label">
             {t.brief.controlsTitle}
-          </h3>
+          </H>
           <ul className="lm-brief-list lm-brief-list--plain">
             {t.brief.controls.map((c) => (
               <li key={c}>{c}</li>
@@ -146,9 +147,9 @@ export function BriefingBody({ t }: { t: Copy }) {
         </section>
       </div>
       <section className="lm-brief-data" aria-labelledby="lm-b-data">
-        <h3 id="lm-b-data" className="lm-label">
+        <H id="lm-b-data" className="lm-label">
           {t.brief.dataTitle}
-        </h3>
+        </H>
         <p>{t.brief.data}</p>
       </section>
       <p className="lm-gate">
@@ -329,16 +330,69 @@ function Facet({ label, items }: { label: string; items: readonly (readonly [str
   );
 }
 
+const fieldGroups = [
+  ["account", ["account", "domain"]],
+  ["source", ["source", "port", "client"]],
+  ["logon", ["logonType", "auth", "process"]],
+  ["session", ["logonId", "elevated"]],
+] as const;
+
+/** Neutral reference text: general Windows behaviour only, never the scenario's conclusions. */
+export function Learn({ t, items }: { t: Copy; items: readonly ("e4624" | "e4625" | "lt3" | "lt10")[] }) {
+  return (
+    <section className="lm-learn" aria-label={t.m12.learnTitle}>
+      {items.map((k) => (
+        <details key={k}>
+          <summary>
+            <span className="lm-learn-k">{t.m12.learnTitle}</span>
+            <span>{t.m12.learn[k].title}</span>
+          </summary>
+          <p>{t.m12.learn[k].body}</p>
+        </details>
+      ))}
+      <p className="lm-learn-src">{t.m12.learnSource}</p>
+    </section>
+  );
+}
+
 export function InspectorBody({ t }: { t: Copy }) {
+  const f = Object.fromEntries(selected.fields) as Record<(typeof selected.fields)[number][0], string>;
   return (
     <>
-      <div className="lm-insp-head">
+      <div className="lm-insp-head lm-insp-summary">
         <p className="lm-insp-kicker">
-          <V>4624</V> · <Outcome ok label={t.logs.outcome.ok} />
+          <V className="lm-evbadge">4624</V>
+          <Outcome ok label={t.logs.outcome.ok} />
         </p>
         <h3 className="lm-insp-name">{t.insp.name[4624]}</h3>
+        <dl className="lm-sumfacts">
+          <div>
+            <dt>{t.m12.sum.account}</dt>
+            <dd>
+              <V>{f.account}</V>
+            </dd>
+          </div>
+          <div>
+            <dt>{t.m12.sum.computer}</dt>
+            <dd>
+              <V>JMP01</V>
+            </dd>
+          </div>
+          <div>
+            <dt>{t.m12.sum.time}</dt>
+            <dd>
+              <V>{selected.ts}</V>
+            </dd>
+          </div>
+          <div>
+            <dt>{t.m12.sum.source}</dt>
+            <dd>
+              <V>{f.source}</V> · {t.insp.logonType["3"]}
+            </dd>
+          </div>
+        </dl>
         <p className="lm-insp-ts">
-          <V>{selected.ts}</V> UTC · <V>{selected.id}</V>
+          <V>{selected.id}</V>
         </p>
       </div>
       <div className="lm-subtabs" role="presentation">
@@ -346,18 +400,24 @@ export function InspectorBody({ t }: { t: Copy }) {
         <span>{t.insp.tabs.raw}</span>
         <span>{t.insp.tabs.related}</span>
       </div>
-      <dl className="lm-fields">
-        {selected.fields.map(([k, v]) => (
-          <div key={k} data-k={k}>
-            <dt>{t.insp.field[k]}</dt>
-            <dd>
-              {k === "elevated" ? t.insp.elevatedNo : <V>{v}</V>}
-              {k === "logonType" ? <span className="lm-gloss"> · {t.insp.logonType["3"]}</span> : null}
-              {k === "client" ? <span className="lm-client-note">{t.insp.clientNote}</span> : null}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      {fieldGroups.map(([g, keys]) => (
+        <section key={g} className="lm-fgroup" aria-label={t.m12.groups[g]}>
+          <p className="lm-fgroup-k">{t.m12.groups[g]}</p>
+          <dl className="lm-fields">
+            {keys.map((k) => (
+              <div key={k} data-k={k}>
+                <dt>{t.insp.field[k]}</dt>
+                <dd>
+                  {k === "elevated" ? t.insp.elevatedNo : <V>{f[k]}</V>}
+                  {k === "logonType" ? <span className="lm-gloss"> · {t.insp.logonType["3"]}</span> : null}
+                  {k === "client" ? <span className="lm-client-note">{t.insp.clientNote}</span> : null}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+      <Learn t={t} items={["e4624", "lt3"]} />
       <section className="lm-observed" aria-labelledby="lm-obs-title">
         <h4 id="lm-obs-title" className="lm-label">
           {t.insp.observedTitle}
@@ -394,6 +454,9 @@ function Inspector({ t }: { t: Copy }) {
         <div className="lm-pinrow">
           <span className="lm-pinstate">
             <span aria-hidden="true">◆</span> {t.insp.pinnedState}
+          </span>
+          <span className="lm-pin-links">
+            {t.m12.linkedTo} <FindingTag t={t} id="f2" /> <FindingTag t={t} id="f3" />
           </span>
           <button type="button" className="lm-btn lm-btn--ghost">
             {t.insp.unpin}
