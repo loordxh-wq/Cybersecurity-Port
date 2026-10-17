@@ -380,3 +380,19 @@ iPhone, in EN/HE/AR, at the same preview-only route. No Operations hub, nav or h
 | N4 | Narration: captions only, with no voice-over, for now | Captions only. A voice would need your own recording, so it stays a later option |
 | N5 | Masthead identity line uses your approved role "Aspiring SOC Analyst \| Blue Team & IT Support" | Yes, until you change the role wording site-wide |
 | N6 | Phone layout: one primary visual per chapter, with the rest in the text version | Yes |
+
+---
+
+## 11. Verification of this branch
+
+- Lint, typecheck and unit tests pass: 49/49, including the 8 new dataset and caption checks.
+- **Preview build:** new `netforensics-proto.spec.ts` checks:
+  - every frame in EN/HE/AR, on desktop and a 360 px phone: status 200, `noindex`, provenance
+    labels, the Eli Saad masthead, a left-to-right stage, no overflow, no axe violations;
+  - each display filter lists exactly the packets it matches;
+  - no first-person narration.
+
+  Together with the Operations, motion-study and preview specs: **40 passed, 3 skipped**.
+- **Public build:** `/[locale]/operations/network-forensics` returns 404, and no prototype
+  wording or data appears in `.next/static`. Full public regression: **164 passed, 69 skipped,
+  0 failed**.
