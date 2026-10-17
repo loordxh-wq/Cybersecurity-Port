@@ -172,7 +172,7 @@ const en: ShowcaseCopy = {
       examined: "All events from 203.0.113.45 in the alert window, then the successful logon e-0193, field by field.",
       why: "To test the alert against raw events, and to compare the success with the account's usual behaviour.",
       observed: [
-        "17 failures, one per account, about 20 seconds apart: sub-status 0xC000006A (wrong password) or 0xC0000064 (no such account).",
+        "17 failures, one per account, on average one attempt every 22 seconds: sub-status 0xC000006A (wrong password) or 0xC0000064 (no such account).",
         "e-0193: logon type 3 with NTLM. j.morgan's earlier logons used Kerberos from 198.51.100.142.",
         "Fifteen seconds later, e-0194: logon type 10, a Remote Desktop session from the same source.",
       ],
@@ -352,7 +352,7 @@ const he: ShowcaseCopy = {
       examined: "את כל האירועים מ-203.0.113.45 בחלון ההתראה, ואז את ההתחברות המוצלחת e-0193, שדה אחר שדה.",
       why: "כדי לבדוק את ההתראה מול האירועים הגולמיים, ולהשוות את ההצלחה להתנהגות הרגילה של החשבון.",
       observed: [
-        "17 כישלונות, אחד לכל חשבון, בהפרש של כ-20 שניות: תת-סטטוס 0xC000006A (סיסמה שגויה) או 0xC0000064 (חשבון לא קיים).",
+        "17 כישלונות, אחד לכל חשבון, בממוצע ניסיון כל 22 שניות: תת-סטטוס 0xC000006A (סיסמה שגויה) או 0xC0000064 (חשבון לא קיים).",
         "e-0193: סוג התחברות 3 עם NTLM. ההתחברויות הקודמות של j.morgan השתמשו ב-Kerberos מ-198.51.100.142.",
         "חמש עשרה שניות אחר כך, e-0194: סוג התחברות 10, סשן Remote Desktop מאותו מקור.",
       ],
@@ -528,7 +528,7 @@ const ar: ShowcaseCopy = {
       examined: "كل الأحداث الصادرة من 203.0.113.45 في نافذة التنبيه، ثم تسجيل الدخول الناجح e-0193 حقلًا حقلًا.",
       why: "لاختبار التنبيه أمام الأحداث الخام، ومقارنة النجاح بالسلوك المعتاد للحساب.",
       observed: [
-        "17 محاولة فاشلة، واحدة لكل حساب، بفارق نحو 20 ثانية: الحالة الفرعية 0xC000006A (كلمة مرور خاطئة) أو 0xC0000064 (حساب غير موجود).",
+        "17 محاولة فاشلة، واحدة لكل حساب، بمعدل محاولة كل 22 ثانية: الحالة الفرعية 0xC000006A (كلمة مرور خاطئة) أو 0xC0000064 (حساب غير موجود).",
         "e-0193: نوع تسجيل الدخول 3 مع NTLM. استخدمت تسجيلات j.morgan السابقة Kerberos من 198.51.100.142.",
         "بعد خمس عشرة ثانية، e-0194: نوع تسجيل الدخول 10، جلسة Remote Desktop من المصدر نفسه.",
       ],

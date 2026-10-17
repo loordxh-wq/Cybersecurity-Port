@@ -404,7 +404,7 @@ wording is draft (D3).
 |---|---|
 | Examined | All events from 203.0.113.45 in the alert window, then the successful logon e-0193, field by field |
 | Why | To test the alert against raw events and compare the success with the account's usual behaviour |
-| Observed | ① 17 failures, one per account, ~20 s apart; sub-status 0xC000006A or 0xC0000064 · ② e-0193: type 3, NTLM; j.morgan's earlier logons used Kerberos from 198.51.100.142 · ③ 15 s later, e-0194: type 10, Remote Desktop, same source |
+| Observed | ① 17 failures, one per account, on average one every 22 s; sub-status 0xC000006A or 0xC0000064 · ② e-0193: type 3, NTLM; j.morgan's earlier logons used Kerberos from 198.51.100.142 · ③ 15 s later, e-0194: type 10, Remote Desktop, same source |
 | Supports | A password spray from one source, during which a logon as j.morgan succeeded and was followed by an RDP session |
 | Uncertain | Who was at the keyboard: logs identify the account, not the person |
 
@@ -733,3 +733,103 @@ stays exactly as it is (D8).
    deleted without affecting the M1.2 Preview.
 
 **Needs your explicit approval before any of this runs.**
+
+---
+
+# Motion study (approved 2026-10-17 as a local, isolated prototype)
+
+Scope: chapters 2 and 3 only, on the showcase proposal branch. Preview-only route
+`/[locale]/showcase/motion?chapter=2|3`; it returns 404 on public builds and is never linked. Nothing
+was deployed or merged. This is not the full player.
+
+## 21. What was built
+
+- **A deterministic timeline engine** (`src/components/showcase-motion/timeline.ts`). Every visual
+  value is a pure function of the playhead, so the study can play, pause, restart and be recorded
+  frame by frame with identical results.
+  - Tracks: value keyframes with easing.
+  - Camera: frames named evidence areas with controlled zoom, clamped so empty space never shows.
+  - Pointer: glides to targets and clicks on arrival.
+  - Reduced motion uses the same engine: every change becomes a cut.
+- **One clock, two compositions.**
+  - Desktop shows the analyst's screen in a cinematic viewport with camera moves.
+  - iPhone has its own composition: a fixed-height viewport, two-line records, an event sheet that
+    rises inside the viewport, a pinned path strip for chapter 3, and a chronological card sequence.
+    It is not a shrunk desktop.
+- **Rendering:** the timeline writes CSS custom properties on the study root. The browser
+  animates only `transform` and `opacity` (and SVG stroke reveal), with no layout animation, so
+  each frame is cheap.
+- **Captions** are the draft narration in EN/HE/AR. A focus label names the evidence the camera is
+  on, with its technical value; it sits outside the camera, so it never scales.
+- **Closing lower third** in both chapters: *What the evidence supports* and *What remains
+  uncertain*.
+- **No autoplay** (D5): a Play control with "Nothing plays automatically". Transport controls stay
+  left to right in all languages (D6). The AI-assistance disclosure and the draft note sit under
+  the player (D7, D3).
+- **Answer protection:** the client receives only the lab labels it needs, picked on the server.
+  The lab's debrief and model notes never reach the client bundle (checked in the build output and
+  by a test).
+
+## 22. Timing and visual decisions
+
+| Decision | Why |
+|---|---|
+| Caption-led pacing: each beat lasts as long as its caption takes to read (target 17 characters/s, minimum 2.5 s) | Reading the technical point matters more than speed. Chapter 2 runs 53.5 s and chapter 3 63.7 s, longer than the storyboard's 40 s and 35 s (see §24) |
+| Typing at 60 ms/character | Slow enough to read the query being written, fast enough not to stall |
+| Rows stagger in over 1.6 s (≈ 85 ms apart) | Shows the result set arriving as a set, without a "loading" feel |
+| Column focus in turn: timestamps → source IP → accounts → event IDs and outcomes | The order an analyst reads a result set: when, from where, against whom, with what outcome |
+| Camera moves of 0.9–1.4 s, `cubic-bezier(.4,0,.2,1)`; zoom 1.0–1.45 on desktop, pan only (k = 1) on iPhone | Camera-like and calm. Zooming on a phone would make text inconsistent in size, so the phone pans between evidence areas instead |
+| Pointer only on desktop (moves 0.7–0.9 s, click ring 0.45 s); touch ring only on iPhone | A mouse pointer on a phone would be a fake interaction |
+| Non-focused rows dim to 38 % while the success is examined | Depth of field without blur: the evidence stays readable, the rest steps back |
+| Graph edges draw in chronological order, tied to a moving playhead on a 02:08–02:36 axis; counters ("failed ×12") follow the playhead | The order of events is the point of correlation |
+| Line styles carry meaning, always with words beside them: solid = observed in events; dotted = asset inventory; dashed amber = indicator only; dashed grey = not in the data | Keeps observed relationships, enrichment, unconfirmed hypotheses and absent data visibly different |
+| "File activity · not in these logs" shown as an explicit dashed node | Prevents any reading that a logon proves file access or data theft |
+| Lighting: one soft vignette, no glow beyond a 2 px focus ring, no particles, no 3D, no parallax, no glitch, no fake terminal | Professional restraint, per your brief |
+
+## 23. Performance and accessibility assessment
+
+**Accessibility (tested)**
+- No autoplay. Play, Pause and Restart are real buttons with names and 44 px targets. The progress
+  bar exposes its value.
+- Captions are always on screen, announced politely while playing. The animated stage is one
+  labelled image (training simulation, not a real incident), so assistive technology is not
+  walked through moving content.
+- Reduced motion: no autoplay, and every change is a cut. Verified by a test: 0.1 s into an
+  entrance the value is already final, and no pointer is shown.
+- axe: no violations, chapters 2 and 3, EN/HE/AR, desktop and 360 px.
+- RTL: chrome and captions mirror; times, IPs, IDs, the time axis and the transport stay left to
+  right; Hebrew and Arabic labels render inside the graph.
+- iPhone at 360, 390 and 430: fixed viewport height through both chapters, no horizontal overflow,
+  transport visible without scrolling (tested).
+
+**Performance (measured; see the table in the delivery message)**
+- The route adds about 12 kB of JavaScript; first load ≈ 115 kB, shared with the site. No video,
+  canvas or WebGL in the study.
+- Each frame updates about 30 custom properties and two transforms; no layout animation;
+  cumulative layout shift during playback measured at 0.
+- Measured in this container with software rendering (no GPU), which is pessimistic. A real
+  iPhone in Safari still needs checking.
+
+## 24. Issues to fix before the full player
+
+1. **Length.** Readable captions make chapter 2 ≈ 54 s and chapter 3 ≈ 64 s. Either accept about
+   4 min 30 s for five chapters, or tighten the narration when you rewrite it (shorter captions at
+   the same reading speed).
+2. **Reading speed.** Five captions run slightly above the 17 characters/s target (17.0–18.9;
+   Arabic "lateral" is the longest). Fix by shortening or adding 0.5–1 s.
+3. **Chapter 3 opening.** The first 4.8 s show only the column titles, one node and the axis. Use
+   that time to show the alert-window axis more prominently, or start the playhead sooner.
+4. **Desktop overview scale.** Whole-scene shots are about 0.75–0.96 zoom, so table text in the
+   overview is small. Detail always comes from zoomed shots; a denser table or a taller stage would
+   help.
+5. **Camera crop at the edges.** Some zoomed shots cut a label at the frame edge (for example the
+   asset-inventory tag in the indicator shot). Tune the target rectangles.
+6. **iPhone chapter 2:** while the event sheet is up, the rows behind are only partly visible
+   (intended), but the sheet could show the event time more prominently.
+7. **Technical labels in English inside the graph** ("type 3 · NTLM", "type 10 · RDP"): treated as
+   technical values, but HE/AR readers may prefer localized "Logon type" labels.
+8. **Text-version parity:** the full player must offer the same captions as a transcript and keep
+   the static text version (§7) in sync.
+9. **Real-device check:** Safari on iPhone (safe areas, the shrinking toolbar, performance).
+10. **Narration review (D3):** every caption is draft text for you to correct, in all three
+    languages.
