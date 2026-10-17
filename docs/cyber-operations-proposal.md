@@ -561,3 +561,24 @@ dataset numbers unchanged).
 | D7 | Publication rule for demonstrations | Public only after Eli's review is done |
 | D8 | The SOC-01 motion study becomes the first consumer of the shared player | Yes, gated by the determinism and frame-difference tests |
 | D9 | Fold `projects.json` into case files and Operations | Yes, in P6 |
+
+---
+
+## 17. Verification of this proposal branch
+
+- Lint (including the i18n and content guards) and typecheck pass.
+- **Public build:** `/[locale]/operations` returns 404 in all three locales, with and without
+  `?frame`. No mockup wording or synthetic values appear in `.next/static`; only the route's
+  stylesheet class names ship. Full public regression: **163 passed, 61 skipped, 0 failed**.
+- **Preview build:** new `operations-mockup.spec.ts` checks:
+  - every frame in EN/HE/AR on desktop and on a 360 px phone: status 200, `noindex`, provenance
+    labels, no horizontal overflow, no axe violations;
+  - no first-person words in demonstration copy;
+  - verified slots say "Awaiting evidence";
+  - "24.1 ms" isolated left-to-right in the Hebrew and Arabic captions.
+
+  Result together with the preview and motion-study specs: **32 passed, 2 skipped**. Full preview
+  suite: 215 passed, 8 skipped. Its one failure is `home.spec.ts` "public build: no placeholder",
+  a public-only test that has no preview skip and fails by design against a preview build.
+- Captures were taken automatically with Playwright from the preview build (desktop 1440 px,
+  phone 390 px, EN/HE/AR). They are for review only and are not committed.

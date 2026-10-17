@@ -997,6 +997,10 @@ li[data-focus] .op-chip,
 .op-text .op-pkts td {
   color: var(--op-fg);
 }
+/* Phones scroll the table sideways inside its region instead of squeezing the summary. */
+.op-text .op-pkts td:last-child {
+  min-width: 18rem;
+}
 .op-text .op-h3 {
   margin-top: 1.5rem;
 }
