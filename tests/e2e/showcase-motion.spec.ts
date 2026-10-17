@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { copyFor } from "../../src/components/lab-mockup/copy";
 import { motionCopy } from "../../src/components/showcase-motion/copy";
+import { ch2, ch3 } from "../../src/components/showcase-motion/script";
 import { showcaseCopy } from "../../src/components/showcase-mockup/copy";
 import { axe, dirOf, locales, viewports } from "./helpers";
 
@@ -125,6 +126,48 @@ test.describe("motion study · protected preview", () => {
     }
   });
 
+  test("chapter 3 desktop: fixed scale, no SVG masks, focus by light, close-ups name the detail", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en/showcase/motion?chapter=3&capture=1");
+    await expect(page.locator(".ms-vp--desk svg mask")).toHaveCount(0);
+    const c = motionCopy.en.ch3;
+    for (const [t, panel, text] of [
+      [2.5, "pStart", c.panel.start],
+      [12, "pSuccess", "e-0193 · 02:14:37"],
+      [28, "pLateral", "198.51.100.10 = JMP01"],
+      [42, "pInd", "DESKTOP-7Q2M4"],
+      [51, "pGap", c.panel.noFiles],
+    ] as const) {
+      await seek(page, t * 1.07);
+      const transform = await page.locator(".ms-vp--desk .ms-layer").evaluate((el) => (el as HTMLElement).style.transform);
+      expect(transform, `fixed scale at ${t}s`).toContain("scale(1)");
+      const card = page.locator(`.ms-vp--desk .d3-close[style*="--${panel})"]`);
+      await expect(card).toContainText(text);
+      expect(Number(await card.evaluate((el) => getComputedStyle(el).opacity))).toBeGreaterThan(0.95);
+    }
+    // While the lateral step is in focus, the failed spray steps back.
+    await seek(page, 28 * 1.07);
+    const sprayNode = Number(await page.locator('.ms-vp--desk .g-node[data-k="nA17"]').evaluate((el) => getComputedStyle(el).opacity));
+    const fileServer = Number(await page.locator('.ms-vp--desk .g-node[data-k="nSRV"]').evaluate((el) => getComputedStyle(el).opacity));
+    expect(sprayNode).toBeLessThan(0.4);
+    expect(fileServer).toBeGreaterThan(0.95);
+  });
+
+  test("iPhone chapter 3 opening: the legend sits fully below the pinned path strip", async ({ page }) => {
+    for (const [w, h] of [
+      [360, 800],
+      [390, 844],
+      [430, 932],
+    ] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/en/showcase/motion?chapter=3&capture=1");
+      await seek(page, 1);
+      const strip = (await page.locator(".ms-vp--mobile .m3-strip").boundingBox())!;
+      const legend = (await page.locator(".ms-vp--mobile .m3-start .ms-legend").boundingBox())!;
+      expect(legend.y, `${w}px`).toBeGreaterThanOrEqual(strip.y + strip.height);
+    }
+  });
+
   test("the closing frames state what the evidence supports and what remains uncertain", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     for (const [ch, k] of [
@@ -132,7 +175,7 @@ test.describe("motion study · protected preview", () => {
       [3, "ch3"],
     ] as const) {
       await page.goto(`/en/showcase/motion?chapter=${ch}&capture=1`);
-      await seek(page, ch === 2 ? 53 : 63);
+      await seek(page, (ch === 2 ? ch2 : ch3).duration - 0.3);
       const lower = page.locator(".ms-vp--desk .ms-lower");
       await expect(lower).toContainText(motionCopy.en[k].supports);
       await expect(lower).toContainText(motionCopy.en[k].uncertain);
@@ -146,7 +189,7 @@ test.describe("motion study · protected preview", () => {
     await page.goto("/en/showcase/motion?chapter=2");
     await expect(page.locator(".ms-start-hint")).toHaveText(motionCopy.en.reduced);
     await page.goto("/en/showcase/motion?chapter=2&capture=1");
-    await seek(page, 26.0); // 0.1 s into the inspector's entrance
+    await seek(page, ch2.tracks.insp![0]!.at + 0.1); // 0.1 s into the inspector's entrance
     const insp = await page.locator(".ms").evaluate((el) => getComputedStyle(el).getPropertyValue("--insp").trim());
     expect(insp).toBe("1.0000");
     await expect(page.locator(".ms-vp--desk .ms-cursor")).toHaveCSS("opacity", "0");

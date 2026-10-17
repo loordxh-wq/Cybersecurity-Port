@@ -40,7 +40,7 @@ test("the camera never shows empty space beyond the content", () => {
   assert.equal(end.y, 400 - 1200);
 });
 
-test("captions: in order, and on screen long enough to read in every language", () => {
+test("captions: in order, and on screen long enough to read in every language (≤ 16.5 characters/s)", () => {
   for (const [name, script, key] of [
     ["ch2", sc.ch2, "ch2"],
     ["ch3", sc.ch3, "ch3"],
@@ -52,7 +52,7 @@ test("captions: in order, and on screen long enough to read in every language", 
       for (const l of ["en", "he", "ar"]) {
         const text = motionCopy[l][key].captions[caps[i].key];
         assert.ok(text, `${name} ${caps[i].key} ${l} exists`);
-        const need = Math.max(2.5, text.length / 20);
+        const need = Math.max(2.5, text.length / 16.5);
         assert.ok(shown >= need, `${name} ${caps[i].key} ${l}: ${shown.toFixed(1)} s shown, needs ${need.toFixed(1)} s (${text.length} chars)`);
       }
     }

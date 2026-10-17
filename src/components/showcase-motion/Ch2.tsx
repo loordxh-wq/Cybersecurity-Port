@@ -252,9 +252,13 @@ export function Ch2Mobile({ lab, typed, count }: SceneProps) {
               <span className="m2-l2">
                 <span className="c-acct">{v(r.user)}</span>
                 <span className="c-ip">{v(r.ip)}</span>
-                {r.sub ? <span className="c-res ms-sub">{v(r.sub)}</span> : <span className="ms-sub">
+                {r.sub ? (
+                  <span className="c-res ms-sub">{v(r.sub)}</span>
+                ) : (
+                  <span className="ms-sub">
                     {lab.cols.type} {v(`${r.logonType} · ${r.auth}`)}
-                  </span>}
+                  </span>
+                )}
               </span>
               {i === 11 ? <Mark n={1} k="m1" /> : null}
               {r.id === "e-0193" ? <Mark n={2} k="m2" /> : null}

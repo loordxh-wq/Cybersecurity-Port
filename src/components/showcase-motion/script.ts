@@ -23,7 +23,7 @@ export type ChapterScript<C extends string, L extends string> = {
 
 /* ------------------------------------------------------------------ chapter 2 */
 
-export const ch2: ChapterScript<Ch2Caption, Ch2Label> = {
+const ch2Base: ChapterScript<Ch2Caption, Ch2Label> = {
   duration: 53.5,
   typing: { at: 1.5, text: "ip:203.0.113.45", perChar: 0.06 },
   count: { at: 2.6, dur: 0.6, to: 19 },
@@ -143,6 +143,7 @@ export const axisTime = (pos: number) => {
 
 export const ch3Playhead: Track = [
   { at: 0, to: 0, dur: 0 },
+  { at: 1.6, to: axisPos("02:10:00"), dur: 2.8, ease: "inOut" },
   { at: 4.8, to: axisPos("02:14:30"), dur: 4.4, ease: "linear" },
   { at: 9.4, to: axisPos("02:14:37"), dur: 0.6, ease: "inOut" },
   { at: 13.9, to: axisPos("02:14:52"), dur: 0.6, ease: "inOut" },
@@ -157,11 +158,11 @@ const failTimes = (ip: string) => [...results, ...windowEvents].filter((e) => e.
 const spray45 = failTimes("203.0.113.45");
 const spray77 = failTimes("203.0.113.77");
 export const failedSoFar = (t: number, reduced: boolean) => {
-  const ph = valueAt(ch3Playhead, t, reduced);
+  const ph = valueAt(ch3.tracks.ph!, t, reduced);
   return { s45: spray45.filter((p) => p <= ph + 1e-6).length, s77: spray77.filter((p) => p <= ph + 1e-6).length, ph };
 };
 
-export const ch3: ChapterScript<Ch3Caption, Ch3Label> = {
+const ch3Base: ChapterScript<Ch3Caption, Ch3Label> = {
   duration: 63.7,
   captions: [
     { at: 0.3, key: "intro" },
@@ -193,41 +194,78 @@ export const ch3: ChapterScript<Ch3Caption, Ch3Label> = {
     ph: ch3Playhead,
     legend: pulse(1.0, 0.5),
     cols: pulse(0.4, 0.6),
-    nS45: pulse(1.6, 0.5),
+    nS45: pulse(0.8, 0.5),
     nA17: pulse(5.3),
     nJMP: pulse(5.6),
     e1: pulse(5.2, 1.1, undefined, 0.28, "emphasized"),
     nAJM: pulse(9.6),
     e2: pulse(9.8, 1.0, undefined, 0.28, "emphasized"),
     e3: pulse(14.1, 1.0, undefined, 0.28, "emphasized"),
-    stop: pulse(20.4, 0.4),
     nSRV: pulse(21.5),
     e4: pulse(21.8, 1.2, undefined, 0.28, "emphasized"),
     inv: pulse(25.9, 0.8),
     nS77: pulse(32.4),
     nA7: pulse(32.8),
     e5: pulse(33.0, 1.1, undefined, 0.28, "emphasized"),
-    e6: pulse(37.8, 1.2, undefined, 0.28, "emphasized"),
+    e6: pulse(37.8, 0.8),
     ghost: pulse(45.3, 0.5),
-    e7: pulse(45.5, 0.8),
-    dim: pulse(52.1, 0.6),
+    e7: pulse(45.5, 0.6),
+    // Desktop focus (no camera): one group in focus per beat, the rest dims. The summary keeps the
+    // supported path and the open questions in focus.
+    focusOn: pulse(4.8, 0.4),
+    fSpray: [
+      { at: 4.8, to: 1, dur: 0.4 },
+      { at: 9.4, to: 0, dur: 0.4 },
+      { at: 18.8, to: 1, dur: 0.4 },
+      { at: 21.3, to: 0, dur: 0.4 },
+    ],
+    fSuccess: [
+      { at: 9.4, to: 1, dur: 0.4 },
+      { at: 13.9, to: 0, dur: 0.4 },
+      { at: 51.9, to: 1, dur: 0.6 },
+    ],
+    fRdp: [
+      { at: 13.9, to: 1, dur: 0.4 },
+      { at: 18.8, to: 0, dur: 0.4 },
+      { at: 51.9, to: 1, dur: 0.6 },
+    ],
+    fLateral: [
+      { at: 21.3, to: 1, dur: 0.4 },
+      { at: 32.2, to: 0, dur: 0.4 },
+      { at: 51.9, to: 1, dur: 0.6 },
+    ],
+    fSecond: pulse(32.2, 0.4, 37.5, 0.4),
+    fInd: [
+      { at: 37.5, to: 1, dur: 0.4 },
+      { at: 45.0, to: 0, dur: 0.4 },
+      { at: 51.9, to: 1, dur: 0.6 },
+    ],
+    fGap: [
+      { at: 45.0, to: 1, dur: 0.4 },
+      { at: 51.9, to: 1, dur: 0 },
+    ],
+    // Close-up panels beside the graph (desktop), crossfading per beat.
+    pStart: pulse(0.8, 0.5, 4.8, 0.3),
+    pSpray: [
+      { at: 4.9, to: 1, dur: 0.4 },
+      { at: 9.4, to: 0, dur: 0.3 },
+      { at: 18.9, to: 1, dur: 0.4 },
+      { at: 21.3, to: 0, dur: 0.3 },
+    ],
+    pSuccess: pulse(9.5, 0.4, 13.9, 0.3),
+    pRdp: pulse(14.0, 0.4, 18.8, 0.3),
+    pLateral: pulse(21.4, 0.4, 32.2, 0.3),
+    pSecond: pulse(32.3, 0.4, 37.5, 0.3),
+    pInd: pulse(37.6, 0.4, 45.0, 0.3),
+    pGap: pulse(45.1, 0.4, 51.9, 0.3),
     lt: pulse(52.1, 0.5),
     ltU: pulse(56.8, 0.5),
   },
   camera: {
-    desk: [
-      { at: 0, dur: 0, target: null },
-      { at: 4.8, dur: 1.1, target: "g-spray", maxK: 1.25 },
-      { at: 9.4, dur: 1.0, target: "g-success", maxK: 1.4 },
-      { at: 18.8, dur: 1.2, target: null },
-      { at: 21.3, dur: 1.1, target: "g-lateral", maxK: 1.45 },
-      { at: 32.2, dur: 1.1, target: "g-second", maxK: 1.35 },
-      { at: 37.5, dur: 1.0, target: "g-indicator", maxK: 1.5 },
-      { at: 45.0, dur: 1.1, target: "g-gap", maxK: 1.5 },
-      { at: 51.9, dur: 1.3, target: "g-summary", ay: 0.4, maxK: 0.9 },
-    ],
+    // Fixed scale on desktop: focus comes from light and the close-up panel, not from zooming the graph.
+    desk: [{ at: 0, dur: 0, target: null }],
     mobile: [
-      { at: 0, dur: 0, target: "m3-start", k: 1, ay: 0.08 },
+      { at: 0, dur: 0, target: "m3-start", k: 1, ay: 0.3 },
       { at: 4.8, dur: 0.9, target: "m3-a", k: 1, ay: 0.52 },
       { at: 9.4, dur: 0.9, target: "m3-b", k: 1, ay: 0.52 },
       { at: 13.9, dur: 0.9, target: "m3-c", k: 1, ay: 0.52 },
@@ -240,3 +278,28 @@ export const ch3: ChapterScript<Ch3Caption, Ch3Label> = {
   },
   cursor: { desk: [], mobile: [] },
 };
+
+/* ------------------------------------------------------------------ pacing */
+
+/**
+ * Reading pace: every time in a script is scaled by this factor, so captions stay at or below about
+ * 16 characters per second in all three languages (tested). Motion slows by the same factor.
+ */
+export const PACE = 1.07;
+
+function paced<C extends string, L extends string>(sc: ChapterScript<C, L>, f: number): ChapterScript<C, L> {
+  const key = <T extends { at: number; dur?: number }>(k: T): T => ({ ...k, at: k.at * f, ...(k.dur !== undefined ? { dur: k.dur * f } : {}) });
+  return {
+    duration: sc.duration * f,
+    tracks: Object.fromEntries(Object.entries(sc.tracks).map(([n, tr]) => [n, tr.map(key)])),
+    captions: sc.captions.map((c) => ({ ...c, at: c.at * f })),
+    labels: sc.labels.map((c) => ({ ...c, at: c.at * f })),
+    camera: { desk: sc.camera.desk.map(key), mobile: sc.camera.mobile.map(key) },
+    cursor: { desk: sc.cursor.desk.map(key), mobile: sc.cursor.mobile.map(key) },
+    ...(sc.typing ? { typing: { ...sc.typing, at: sc.typing.at * f, perChar: sc.typing.perChar * f } } : {}),
+    ...(sc.count ? { count: { ...sc.count, at: sc.count.at * f, dur: sc.count.dur * f } } : {}),
+  };
+}
+
+export const ch2 = paced(ch2Base, PACE);
+export const ch3 = paced(ch3Base, PACE);
