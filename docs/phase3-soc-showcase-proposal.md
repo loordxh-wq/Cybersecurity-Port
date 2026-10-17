@@ -802,43 +802,45 @@ was deployed or merged. This is not the full player.
 - iPhone at 360, 390 and 430: fixed viewport height through both chapters, no horizontal overflow,
   transport visible without scrolling (tested).
 
-**Performance (measured in this container: Chromium with software rendering, no GPU, 14 s of playback; a real iPhone in Safari still needs checking)**
+**Performance: final measurements** (commit `7a96db4`; Chromium in this container with software
+rendering and no GPU; 14 s of playback per run; iPhone-sized runs at 390 × 844, pixel ratio 3)
 
 | Run | Normal CPU | 4× slower CPU |
 |---|---|---|
-| Idle page, nothing animating (baseline) | 60 fps | — |
-| Desktop, chapter 2 | 53 fps · p95 frame 33 ms · 2.9 % of frames over 33 ms · 0 long tasks | 44 fps · 10.6 % over 33 ms · 53 long tasks |
-| Desktop, chapter 3 | **14 fps** · p95 133 ms · 83 % over 33 ms · 0 long tasks | 10 fps |
-| iPhone 390, chapter 2 | 57 fps · 2 % over 33 ms · 2 long tasks | 46 fps · 9.8 % over 33 ms |
-| iPhone 390, chapter 3 | 60 fps · 0 % over 33 ms | 54 fps · 2.9 % over 33 ms |
+| Idle page, nothing animating (baseline) | 59.4 fps | — |
+| Desktop, chapter 2 | 48.9 fps · p95 33 ms · 5.6 % frames over 33 ms · 1 long task | 43.8 fps · 8.6 % over 33 ms · 44 long tasks |
+| Desktop, chapter 3 | **12.1 fps** · p95 167 ms · 89.7 % over 33 ms · 0 long tasks | **9.8 fps** |
+| iPhone size, chapter 2 | 54.9 fps · 3.3 % over 33 ms · 2 long tasks | 42.9 fps · 7.7 % over 33 ms |
+| iPhone size, chapter 3 | 60 fps · 0 % over 33 ms | 51.6 fps · 4.8 % over 33 ms |
 
-- **Fixed during measurement:** the first build re-styled the whole scene every frame (chapter 2
-  spent 743 ms of every second on style recalculation; 915 ms on iPhone). The cause was two
-  per-frame values (progress, playhead) written on the study root. They are now scoped to the
-  one element that reads them. Chapter 2 desktop went from 32 → 53 fps; iPhone chapter 2 from 30 → 57 fps.
-  No visual change.
-- **Open — desktop chapter 3.** Main-thread work is small (≈ 66 ms per second), so the limit is
-  painting.
-  - A diagnostic run gave 12.8 fps as built, 20.2 fps without the SVG masks and 27 fps with the
-    camera frozen.
-  - So the cost is re-painting the large animated SVG while it is zoomed, made worse by the masks
-    used for the dashed lines.
-  - Software rendering exaggerates this; a GPU device will do better, but it must be fixed before
-    the full player (§24, item 1).
-- Layout shift during playback: ≤ 0.0045 (iPhone chapter 2), 0 elsewhere.
-- The route adds about 12 kB of JavaScript (first load ≈ 115 kB shared with the site). No video,
-  canvas or WebGL.
-- **The recordings are unaffected by playback speed.** They are rendered frame by frame from the
-  timeline at exactly 30 fps, with no dropped or duplicated frames.
+Main-thread work per second of playback (normal CPU):
+- desktop chapter 2: 231 ms (style 143);
+- desktop chapter 3: 73 ms;
+- iPhone chapter 2: 346 ms (style 253);
+- iPhone chapter 3: 203 ms.
+
+Layout shift ≤ 0.0045. Run-to-run variation in this container is about ±10 %.
+
+**Software-rendering limitation vs confirmed application bottleneck**
+
+| Finding | Classification | Evidence |
+|---|---|---|
+| Whole-scene style recalculation every frame (743 ms per second in the first build) | **Application bottleneck: confirmed and fixed** | Per-frame values were written on the study root. Scoping them cut style time to 143 ms/s and raised chapter 2 from 32 to 49–53 fps |
+| Remaining chapter 2 style work (143–253 ms/s) | Application cost, moderate | Track variables still update on the root while rows, columns and markers animate. Acceptable now; scoping them per element would reduce it further |
+| Desktop chapter 3 at about 12 fps | **Application bottleneck: confirmed**, worsened by software rendering | The main thread is nearly idle (73 ms/s), so the time goes to painting. Removing the SVG masks gives 18.9 fps; removing the camera zoom/pan gives 25.6 fps; removing both gives 47.7 fps. These are design choices in the study and cost time on any renderer |
+| Absolute frame rates and per-pixel raster speed | **Software-rendering limitation** | No GPU; the idle page reaches 60 fps, but every repaint is rasterized on the CPU. A GPU device will paint faster, so the absolute numbers are pessimistic. They have not been confirmed on real hardware |
+| Long tasks under 4× CPU slowdown in chapter 2 | Mostly the environment | They appear only with the CPU slowed 4×; at normal CPU there are 1–2 |
+
+**The recordings are unaffected by all of this.** They are rendered frame by frame from the
+timeline at exactly 30 fps, so they show the intended motion, not live playback speed.
 
 ## 24. Issues to fix before the full player
 
 1. **Length.** Readable captions make chapter 2 ≈ 54 s and chapter 3 ≈ 64 s. Either accept about
    4 min 30 s for five chapters, or tighten the narration when you rewrite it (shorter captions at
    the same reading speed).
-2. **Desktop chapter 3 paint cost** (§23): replace the SVG masks with plain dashed strokes revealed by opacity, and
-   draw the graph at the zoomed scale or zoom with the SVG `viewBox` instead of a CSS scale. Target ≥ 50 fps
-   on a mid-range laptop and in Safari on iPhone.
+2. **Desktop chapter 3 paint cost** (§23): proposed fix in §25 (camera-free focus and no SVG masks;
+   measured 11.9 → 47.7 fps in this container). Not implemented yet.
 3. **Reading speed.** Five captions run above the 17 characters/s target:
    - chapter 2 "evt" (EN 17.3);
    - chapter 2 "base" (AR 17.1);
@@ -865,3 +867,34 @@ was deployed or merged. This is not the full player.
     languages.
 12. **iPhone chapter 3 opening:** at the start, the legend line sits partly under the pinned path
     strip. Push the opening frame down, or fold the legend into the strip.
+
+## 25. Proposal: lightweight chapter 3 for desktop (not implemented; for your decision)
+
+The measurements point to two changes. Together they took desktop chapter 3 from 11.9 to 47.7 fps
+in this container (diagnostic CSS injected into the built page; average of two runs each):
+
+1. **Camera-free transitions on desktop.** Keep the graph at a fixed scale and focus by
+   *light* instead of zoom:
+   - non-focused nodes and edges dim to about 30 %;
+   - the focused group gets the cyan focus ring;
+   - the focus label names it, as now.
+
+   For the two moments that genuinely need detail (the lateral step, the file-activity gap), use a
+   short crossfade to a pre-composed close-up panel rendered at its own size, instead of scaling
+   the whole SVG.
+2. **No SVG masks.** Draw the dashed lines (indicator, not-in-the-data) as plain dashed strokes
+   that fade in by opacity, keeping the dash pattern. Solid observed edges can keep their
+   stroke-drawing reveal; it cost almost nothing (47.7 → 48.9 fps when also removed).
+3. **Optional simplification, only if needed after 1 and 2:**
+   - merge the two parallel success strands (type 3 and type 10) into one edge with a two-line
+     label;
+   - render the static parts (column titles, axis ticks) once as a separate layer that never
+     repaints.
+
+What stays the same: the chronological order, the playhead and axis, the counters, the
+line-style meanings (observed / asset inventory / indicator / not in the data), the "file
+activity · not in these logs" node, the captions and the closing lower third. The iPhone
+composition already runs at 52–60 fps and would not change.
+
+Acceptance for the change: desktop chapter 3 at 45 fps or more in this container, and checked on
+a real laptop and in Safari on iPhone; recordings re-rendered and re-verified.
