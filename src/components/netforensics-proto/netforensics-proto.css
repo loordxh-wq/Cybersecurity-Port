@@ -1,0 +1,638 @@
+/*
+ * Network Forensics prototype frames. Builds on operations-mockup.css (.op tokens,
+ * stage, rail, transport, reasoning panel, ladder strokes). Adds the player frame with
+ * Eli's identity masthead, the preview/walkthrough mode switch, the executive-preview
+ * path, the capture timeline, the TLS field cards and protocol colours. Protocol colours
+ * are always paired with a text label. Static frames: nothing animates here.
+ */
+.nf {
+  --nf-dns: #8fb8ff;
+  --nf-tcp: #42d5f6;
+  --nf-tls: #a99dff;
+}
+
+/* ------------------------------------------------------------- header */
+.nf-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.nf-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.nf-mode {
+  display: grid;
+  align-content: center;
+  min-height: 44px;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--op-line-strong);
+  border-radius: 6px;
+  color: var(--op-muted);
+  text-decoration: none;
+}
+.nf-mode[aria-current="page"] {
+  border-color: var(--op-fg);
+  background: var(--op-fg);
+  color: #06101d;
+}
+.nf-mode-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.nf-mode-hint {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+.nf-mode--text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+}
+
+/* ------------------------------------------------------------- player */
+.nf-player {
+  min-width: 0;
+}
+.nf-mast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--op-line-strong);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--op-surface);
+  font-size: 0.8125rem;
+}
+.nf-mast-id {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+}
+.nf-mast-mark {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: var(--op-accent);
+  stroke-width: 1.4;
+}
+.nf-mast-name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.nf-mast-role,
+.nf-mast-where {
+  color: var(--op-muted);
+}
+.nf-stage {
+  border-radius: 0 0 8px 8px;
+}
+.nf-caption {
+  min-height: 3.2em;
+}
+.nf-rail--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* -------------------------------------------------- preview: the path */
+.nf-stage--preview {
+  display: grid;
+  align-items: center;
+  min-height: 16rem;
+}
+.nf-path {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  counter-reset: s;
+}
+.nf-step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+  min-height: 9.5rem;
+  padding: 0.9rem;
+  border: 1px solid var(--op-line);
+  border-radius: 8px;
+  background: var(--op-surface);
+}
+/* Steps not reached yet are empty dashed frames: they reveal on their beat, never as dim text. */
+.nf-step[data-state="next"] {
+  border-style: dashed;
+  background: transparent;
+}
+.nf-step[data-state="next"] > * {
+  visibility: hidden;
+}
+.nf-step[data-state="now"] {
+  border-color: var(--op-accent);
+}
+.nf-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -0.75rem;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--op-line-strong);
+}
+.nf-step[data-state="done"]::after {
+  background: var(--op-accent);
+}
+.nf-step-n {
+  color: var(--op-dim);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.nf-step-label {
+  color: var(--op-muted);
+  font-size: 0.8125rem;
+}
+.nf-step-top {
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.nf-step-sub {
+  color: var(--op-accent);
+  font-size: 0.8125rem;
+}
+.nf-step-hs {
+  width: 100%;
+  height: auto;
+  margin-top: 0.3rem;
+  fill: none;
+  stroke: var(--op-accent);
+  stroke-width: 1.6;
+}
+.nf-chips {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+}
+.nf-chips span {
+  padding: 0.25rem 0.5rem;
+  border-inline-start: 3px solid var(--op-ok);
+  background: var(--op-raised);
+  font-size: 0.75rem;
+}
+.nf-chips [data-k="reasoning"] {
+  border-inline-start-color: var(--op-warn);
+}
+.nf-chips [data-k="limit"] {
+  border-inline-start-style: dashed;
+  border-inline-start-color: var(--op-dim);
+}
+
+/* ------------------------------------------------------------ end card */
+.nf-end {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem 1.5rem;
+  border: 1px solid var(--op-line-strong);
+  border-radius: 0 0 8px 8px;
+  background: var(--op-bg);
+}
+@media (min-width: 900px) {
+  .nf-end {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 2.5rem;
+    padding: 2.5rem;
+  }
+}
+.nf-end-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.nf-covers {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+.nf-covers li {
+  display: flex;
+  gap: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--op-line);
+  font-size: 0.9375rem;
+}
+.nf-covers .op-v {
+  color: var(--op-accent);
+}
+.nf-end-id {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--op-line-strong);
+  color: var(--op-muted);
+  font-size: 0.875rem;
+}
+.nf-end-id .nf-mast-name {
+  color: var(--op-fg);
+}
+
+/* ------------------------------------------------------------ timeline */
+.nf-timeline {
+  margin: 0 0 1rem;
+}
+.nf-timeline svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.nf-t-axis {
+  stroke: var(--op-line-strong);
+}
+.nf-t-tick,
+.nf-t-cap {
+  fill: var(--op-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.nf-t-cap {
+  text-anchor: start;
+}
+.nf-t-pk {
+  stroke-width: 2.4;
+}
+.nf-t-pk--dns {
+  stroke: var(--nf-dns);
+}
+.nf-t-pk--tcp {
+  stroke: var(--nf-tcp);
+}
+.nf-t-pk--tls {
+  stroke: var(--nf-tls);
+}
+.nf-t-grp {
+  fill: var(--op-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.nf-t-pk[data-dim],
+.nf-t-grp[data-dim] {
+  opacity: 0.25;
+}
+.nf-t-span path {
+  fill: none;
+  stroke: var(--op-warn);
+}
+.nf-t-span text {
+  fill: var(--op-warn);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-anchor: middle;
+}
+.nf-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--op-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.nf-keys li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.nf-key {
+  width: 0.7rem;
+  height: 3px;
+}
+.nf-key--dns {
+  background: var(--nf-dns);
+}
+.nf-key--tcp {
+  background: var(--nf-tcp);
+}
+.nf-key--tls {
+  background: var(--nf-tls);
+}
+
+/* --------------------------------------------------------- packet list */
+.nf-filter-n {
+  margin-inline-start: auto;
+  color: var(--op-dim);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+.nf-pkts td {
+  color: var(--op-muted);
+}
+.nf-pkts tr[data-hot] td {
+  background: var(--op-accent-soft);
+  color: var(--op-fg);
+}
+.nf-pkts tr[data-hot] td:first-child {
+  box-shadow: inset 2px 0 0 var(--op-accent);
+}
+.nf-pkts tr[data-enc] td:last-child {
+  color: var(--op-dim);
+  font-style: italic;
+}
+.nf-proto {
+  padding-left: 0.4rem;
+  border-left: 3px solid var(--nf-tcp);
+}
+tr[data-proto="DNS"] .nf-proto {
+  border-left-color: var(--nf-dns);
+}
+tr[data-proto="TLS"] .nf-proto {
+  border-left-color: var(--nf-tls);
+}
+.nf-filter-line {
+  margin: 1rem 0 0;
+}
+.nf-filter-line code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+/* --------------------------------------------------------- split scenes */
+.nf-split {
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 900px) {
+  .nf-split {
+    grid-template-columns: minmax(0, 1fr) 19rem;
+    align-items: start;
+  }
+}
+.nf-ladder {
+  margin: 0;
+}
+.nf-ladder svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.nf-l-dim {
+  opacity: 0.4;
+}
+.nf-l-enc .op-l-msg {
+  stroke: var(--nf-tls);
+  stroke-dasharray: 5 4;
+}
+.nf-l-enc .op-l-label {
+  fill: var(--nf-tls);
+  font-weight: 500;
+  font-style: italic;
+}
+.nf-l-div {
+  stroke: var(--nf-tls);
+  stroke-width: 1;
+}
+.nf-l-div-t {
+  fill: var(--nf-tls);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.nf-answers {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+@media (min-width: 600px) {
+  .nf-answers {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.nf-answer {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--op-line);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+}
+.nf-answer[data-hot] {
+  border-color: var(--op-accent);
+}
+.nf-answer .op-scene-label {
+  margin: 0;
+}
+.nf-answer strong {
+  font-size: 1rem;
+}
+.nf-hellos {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+@media (min-width: 600px) {
+  .nf-hellos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.nf-fields {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--op-line);
+  border-radius: 6px;
+}
+.nf-fields dl {
+  display: grid;
+  margin: 0;
+}
+.nf-fields div {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--op-line);
+}
+.nf-fields dt {
+  color: var(--op-dim);
+  font-size: 0.75rem;
+}
+.nf-fields dd {
+  margin: 0;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+.nf-fields div[data-hot] dd {
+  color: var(--op-accent);
+}
+.nf-enc-note {
+  margin: 0.75rem 0 0;
+  padding: 0.5rem 0.7rem;
+  border-left: 3px dashed var(--nf-tls);
+  color: var(--op-muted);
+  font-size: 0.8125rem;
+}
+.nf-further {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.nf-further li {
+  padding-inline-start: 0.8rem;
+  border-inline-start: 3px dashed var(--op-dim);
+}
+
+/* ----------------------------------------------------- phone phase bar */
+.nf-m-only {
+  display: none;
+}
+.nf-phases ol {
+  display: grid;
+  grid-template-columns: 4fr 3fr 5fr;
+  gap: 0.35rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+.nf-phase {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.5rem 0.55rem;
+  border-top: 3px solid var(--nf-tcp);
+  background: var(--op-surface);
+  font-size: 0.75rem;
+}
+.nf-phase--dns {
+  border-top-color: var(--nf-dns);
+}
+.nf-phase--tls {
+  border-top-color: var(--nf-tls);
+}
+.nf-phase-p {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------- RTL */
+[dir="rtl"] .nf-mast-name {
+  letter-spacing: 0.14em;
+}
+[dir="rtl"] .nf-mode-hint,
+[dir="rtl"] .nf-mast-where {
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------- phones */
+@media (max-width: 899px) {
+  /* One primary visual per chapter on phones (see the doc, §6.3); the rest is in the text version. */
+  .nf-m-hide {
+    display: none;
+  }
+  .nf-m-only {
+    display: block;
+  }
+  .nf-mast-where {
+    width: 100%;
+  }
+  .nf-head {
+    align-items: start;
+  }
+  .nf-modes {
+    width: 100%;
+  }
+  .nf-mode {
+    flex: 1;
+  }
+  .nf-mode--text {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+  /* The path turns vertical: one step per row, the connector runs down. */
+  .nf-stage--preview {
+    min-height: 0;
+  }
+  .nf-path {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .nf-step {
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    min-height: 0;
+    padding: 0.7rem 0.8rem;
+  }
+  .nf-step-label {
+    grid-column: 2;
+  }
+  .nf-step-top {
+    grid-column: 1 / -1;
+  }
+  .nf-step-sub {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .nf-step-hs {
+    grid-column: 1 / -1;
+    max-width: 9rem;
+  }
+  .nf-chips {
+    grid-column: 1 / -1;
+  }
+  .nf-step:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -0.6rem;
+    left: 1.4rem;
+    width: 1px;
+    height: 0.6rem;
+  }
+  /* Packet rows become two-line cards: number, time, protocol; then the summary. */
+  .nf-pkts thead {
+    display: none;
+  }
+  .nf-pkts tr {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 0.1rem 0.6rem;
+    padding: 0.45rem 0.4rem;
+    border-bottom: 1px solid var(--op-line);
+  }
+  .nf-pkts td {
+    padding: 0;
+    border: 0;
+  }
+  .nf-pkts tr[data-hot] {
+    background: var(--op-accent-soft);
+  }
+  .nf-pkts tr[data-hot] td {
+    background: none;
+  }
+  .nf-pkts tr[data-hot] td:first-child {
+    box-shadow: none;
+  }
+  .nf-pkts td:nth-child(3),
+  .nf-pkts td:nth-child(4) {
+    display: none;
+  }
+  .nf-pkts td:nth-child(6) {
+    justify-self: end;
+  }
+  .nf-pkts td:last-child {
+    grid-column: 1 / -1;
+    white-space: normal;
+  }
+  .nf-ch1 .nf-pkts td:last-child {
+    display: none;
+  }
+}

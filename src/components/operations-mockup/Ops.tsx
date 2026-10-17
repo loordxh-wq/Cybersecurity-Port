@@ -27,8 +27,8 @@ const V = ({ children }: { children: ReactNode }) => (
  * "SYN, SYN-ACK, ACK") so Hebrew and Arabic sentences keep technical values intact
  * and in reading order. Harmless in English.
  */
-const techRun = /[A-Za-z0-9][\w.:\-=/@]*(?:,? [A-Za-z0-9][\w.:\-=/@]*)*/g;
-function iso(text: string): ReactNode[] {
+export const techRun = /[A-Za-z0-9][\w.:\-=/@]*(?:,? [A-Za-z0-9][\w.:\-=/@]*)*/g;
+export function iso(text: string): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
   for (const m of text.matchAll(techRun)) {
@@ -50,7 +50,7 @@ function TierMark({ tier }: { tier: Tier }) {
   return <span aria-hidden="true" className={`op-mark op-mark--${tier}`} />;
 }
 
-function TierLabel({ c, tier }: { c: OpsCopy; tier: Tier }) {
+export function TierLabel({ c, tier }: { c: OpsCopy; tier: Tier }) {
   return (
     <span className={`op-tier op-tier--${tier}`}>
       <TierMark tier={tier} />
@@ -59,7 +59,7 @@ function TierLabel({ c, tier }: { c: OpsCopy; tier: Tier }) {
   );
 }
 
-function Provenance({ c, tier }: { c: OpsCopy; tier: Tier }) {
+export function Provenance({ c, tier }: { c: OpsCopy; tier: Tier }) {
   return (
     <div className="op-prov" role="note">
       <TierLabel c={c} tier={tier} />
@@ -373,7 +373,7 @@ const scenes: Record<StoryId, (p: { s: Story }) => ReactNode> = { net: NetScene,
 
 /* ---------------------------------------------------------------- player */
 
-function Icon({ name }: { name: "play" | "prev" | "next" | "cc" | "text" }) {
+export function Icon({ name }: { name: "play" | "prev" | "next" | "cc" | "text" }) {
   const d = {
     play: "M7 4.5v15l12-7.5z",
     prev: "M12 5V2L7 6.5 12 11V7.5a5.5 5.5 0 1 1-5.5 5.5H4a8 8 0 1 0 8-8z",
